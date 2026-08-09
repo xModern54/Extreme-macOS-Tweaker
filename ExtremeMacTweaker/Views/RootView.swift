@@ -7,7 +7,7 @@ struct RootView: View {
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
       SidebarView(selection: $selection)
-        .navigationSplitViewColumnWidth(min: 240, ideal: 270, max: 320)
+        .navigationSplitViewColumnWidth(min: 240, ideal: 290, max: 340)
     } detail: {
       DetailWorkspace(section: selection ?? .tweaker)
     }
@@ -31,12 +31,12 @@ private struct DetailWorkspace: View {
         SystemAppsView()
       }
     }
-    .navigationTitle(section.title)
+    .navigationTitle("Mac Extreme Tweaker")
     .toolbarTitleDisplayMode(.inline)
   }
 }
 
 #Preview {
   RootView()
-    .frame(width: 1180, height: 760)
+    .frame(width: 1200, height: 660)
 }

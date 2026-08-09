@@ -4,46 +4,53 @@ struct SidebarView: View {
   @Binding var selection: AppSection?
 
   var body: some View {
-    VStack(spacing: 0) {
-      List(selection: $selection) {
-        Section("TOOLS") {
-          ForEach(AppSection.allCases) { section in
-            NavigationLink(value: section) {
-              SidebarRow(section: section)
+    ZStack {
+      Rectangle()
+        .fill(.ultraThinMaterial)
+        .ignoresSafeArea()
+
+      VStack(spacing: 0) {
+        List(selection: $selection) {
+          Section("Features") {
+            ForEach(AppSection.allCases) { section in
+              NavigationLink(value: section) {
+                SidebarRow(section: section)
+              }
             }
           }
         }
-      }
-      .listStyle(.sidebar)
-      .scrollContentBackground(.hidden)
+        .listStyle(.sidebar)
+        .scrollContentBackground(.hidden)
+        .environment(\.defaultMinListRowHeight, 34)
 
-      Divider()
+        Divider()
+          .opacity(0.65)
 
-      VStack(alignment: .leading, spacing: 12) {
-        HStack(spacing: 8) {
-          Image(systemName: "checkmark.circle")
-            .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 10) {
+          HStack(spacing: 8) {
+            Image(systemName: "checkmark.circle")
+              .foregroundStyle(.secondary)
 
-          Text("No Pending Changes")
-            .font(.caption)
-            .foregroundStyle(.secondary)
+            Text("No Pending Changes")
+              .font(.caption)
+              .foregroundStyle(.secondary)
 
-          Spacer(minLength: 0)
+            Spacer(minLength: 0)
+          }
+
+          Button(action: applyChanges) {
+            Label("Apply", systemImage: "checkmark.circle.fill")
+              .frame(maxWidth: .infinity)
+          }
+          .buttonStyle(.borderedProminent)
+          .controlSize(.large)
+          .disabled(true)
+          .help("This button becomes available after selecting tweaks")
         }
-
-        Button(action: applyChanges) {
-          Label("Apply", systemImage: "checkmark.circle.fill")
-            .frame(maxWidth: .infinity)
-        }
-        .buttonStyle(.borderedProminent)
-        .controlSize(.large)
-        .disabled(true)
-        .help("This button becomes available after selecting tweaks")
+        .padding(14)
       }
-      .padding(16)
-      .background(.ultraThinMaterial)
     }
-    .navigationTitle("Mac Extreme Tweaker")
+    .navigationTitle("")
   }
 
   private func applyChanges() {
@@ -57,23 +64,17 @@ private struct SidebarRow: View {
   var body: some View {
     HStack(spacing: 11) {
       Image(systemName: section.systemImage)
-        .font(.system(size: 15, weight: .semibold))
-        .symbolRenderingMode(.hierarchical)
+        .font(.system(size: 16, weight: .medium))
+        .symbolRenderingMode(.monochrome)
         .foregroundStyle(Color.accentColor)
-        .frame(width: 24, height: 24)
+        .frame(width: 22, height: 22)
 
-      VStack(alignment: .leading, spacing: 1) {
-        Text(section.title)
-          .fontWeight(.medium)
-
-        Text(section.subtitle)
-          .font(.caption)
-          .foregroundStyle(.secondary)
-      }
+      Text(section.title)
+        .font(.body)
 
       Spacer(minLength: 0)
     }
-    .padding(.vertical, 3)
+    .padding(.vertical, 2)
   }
 }
 
@@ -81,5 +82,5 @@ private struct SidebarRow: View {
   @Previewable @State var selection: AppSection? = .tweaker
 
   SidebarView(selection: $selection)
-    .frame(width: 280, height: 720)
+    .frame(width: 290, height: 660)
 }

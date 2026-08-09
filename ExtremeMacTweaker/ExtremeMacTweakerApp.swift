@@ -5,10 +5,11 @@ struct ExtremeMacTweakerApp: App {
   var body: some Scene {
     WindowGroup {
       RootView()
-        .frame(minWidth: 920, minHeight: 600)
+        .frame(minWidth: 880, minHeight: 540)
     }
-    .defaultSize(width: 1180, height: 760)
+    .defaultSize(width: 1200, height: 660)
     .windowResizability(.contentMinSize)
+    .windowToolbarStyle(.unified)
     .commands {
       SidebarCommands()
     }

@@ -15,15 +15,6 @@ enum AppSection: String, CaseIterable, Identifiable {
     }
   }
 
-  var subtitle: String {
-    switch self {
-    case .tweaker:
-      "macOS Optimization"
-    case .systemApps:
-      "Removal & Disabling"
-    }
-  }
-
   var systemImage: String {
     switch self {
     case .tweaker:
