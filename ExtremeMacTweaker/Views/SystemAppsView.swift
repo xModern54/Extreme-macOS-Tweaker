@@ -71,6 +71,8 @@ private struct SystemApplicationCard: View {
 
   var body: some View {
     VStack(spacing: 7) {
+      SystemApplicationIcon(path: application.url.path)
+
       Group {
         if let sizeInBytes = application.sizeInBytes {
           Text(ByteCountFormatter.string(fromByteCount: sizeInBytes, countStyle: .file))
@@ -81,8 +83,6 @@ private struct SystemApplicationCard: View {
       .font(.caption2)
       .foregroundStyle(.secondary)
       .lineLimit(1)
-
-      SystemApplicationIcon(path: application.url.path)
 
       Text(application.name)
         .font(.system(size: 13))
