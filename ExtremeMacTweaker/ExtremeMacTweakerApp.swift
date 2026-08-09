@@ -6,6 +6,9 @@ struct ExtremeMacTweakerApp: App {
     WindowGroup {
       RootView()
         .frame(minWidth: 880, minHeight: 540)
+        .background(
+          InitialWindowConfiguration(width: 1200, height: 660)
+        )
     }
     .defaultSize(width: 1200, height: 660)
     .windowResizability(.contentMinSize)
