@@ -85,5 +85,5 @@ private struct SidebarRow: View {
   @Previewable @State var selection: AppSection? = .tweaker
 
   SidebarView(selection: $selection)
-    .frame(width: 290, height: 660)
+    .frame(width: 232, height: 592)
 }

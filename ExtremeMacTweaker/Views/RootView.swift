@@ -7,7 +7,7 @@ struct RootView: View {
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
       SidebarView(selection: $selection)
-        .navigationSplitViewColumnWidth(min: 240, ideal: 290, max: 340)
+        .navigationSplitViewColumnWidth(min: 200, ideal: 232, max: 272)
     } detail: {
       DetailWorkspace(section: selection ?? .tweaker)
     }
