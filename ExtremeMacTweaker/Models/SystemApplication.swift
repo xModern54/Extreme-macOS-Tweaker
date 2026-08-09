@@ -4,6 +4,7 @@ struct SystemApplication: Identifiable, Sendable {
   let url: URL
   let name: String
   let bundleIdentifier: String?
+  let state: SystemApplicationState
   var sizeInBytes: Int64?
 
   var id: String { url.path }

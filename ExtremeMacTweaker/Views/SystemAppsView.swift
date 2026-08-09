@@ -3,6 +3,7 @@ import SwiftUI
 
 struct SystemAppsView: View {
   @StateObject private var model = SystemAppsViewModel()
+  @EnvironmentObject private var optimizationStore: OptimizationStore
 
   private let columns = [
     GridItem(.adaptive(minimum: 104, maximum: 138), spacing: 18, alignment: .top)
@@ -58,6 +59,7 @@ struct SystemAppsView: View {
         LazyVGrid(columns: columns, alignment: .leading, spacing: 24) {
           ForEach(model.applications) { application in
             SystemApplicationCard(application: application)
+              .environmentObject(optimizationStore)
           }
         }
         .padding(24)
@@ -68,10 +70,27 @@ struct SystemAppsView: View {
 
 private struct SystemApplicationCard: View {
   let application: SystemApplication
+  @EnvironmentObject private var optimizationStore: OptimizationStore
+  @State private var isActionsPresented = false
+
+  private var pendingAction: SystemApplicationAction? {
+    optimizationStore.pendingSystemApplicationAction(for: application.id)
+  }
 
   var body: some View {
     VStack(spacing: 5.25) {
       SystemApplicationIcon(path: application.url.path)
+        .opacity(application.state == .disabled ? 0.42 : 1)
+        .overlay(alignment: .bottomTrailing) {
+          if let pendingAction {
+            Image(systemName: pendingAction.systemImage)
+              .font(.caption.weight(.semibold))
+              .foregroundStyle(.white)
+              .padding(5)
+              .background(pendingAction == .delete ? Color.red : Color.accentColor, in: Circle())
+              .overlay(Circle().stroke(.white, lineWidth: 1.5))
+          }
+        }
 
       Group {
         if let sizeInBytes = application.sizeInBytes {
@@ -91,9 +110,70 @@ private struct SystemApplicationCard: View {
         .frame(maxWidth: .infinity, minHeight: 32, alignment: .top)
     }
     .frame(maxWidth: .infinity)
+    .contentShape(Rectangle())
+    .onTapGesture { isActionsPresented = true }
+    .popover(isPresented: $isActionsPresented, arrowEdge: .trailing) {
+      SystemApplicationActions(
+        application: application,
+        pendingAction: pendingAction,
+        dismiss: { isActionsPresented = false }
+      )
+      .environmentObject(optimizationStore)
+    }
     .accessibilityElement(children: .combine)
     .accessibilityLabel(application.name)
     .accessibilityValue(application.formattedSize ?? "Size is being calculated")
+  }
+}
+
+private struct SystemApplicationActions: View {
+  let application: SystemApplication
+  let pendingAction: SystemApplicationAction?
+  let dismiss: () -> Void
+  @EnvironmentObject private var optimizationStore: OptimizationStore
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 12) {
+      Text(application.name)
+        .font(.headline)
+
+      if application.state == .installed {
+        actionButton(.disable)
+      } else {
+        actionButton(.restore)
+      }
+      actionButton(.delete, role: .destructive)
+
+      if let pendingAction {
+        Divider()
+        Button("Cancel \(pendingAction.title)") {
+          optimizationStore.removeChange(withID: "system-app:\(application.id)")
+          dismiss()
+        }
+      }
+    }
+    .buttonStyle(.plain)
+    .padding(16)
+    .frame(width: 220, alignment: .leading)
+  }
+
+  private func actionButton(
+    _ action: SystemApplicationAction,
+    role: ButtonRole? = nil
+  ) -> some View {
+    Button(role: role) {
+      optimizationStore.toggle(action, for: application)
+      dismiss()
+    } label: {
+      HStack {
+        Label(action.title, systemImage: action.systemImage)
+        Spacer()
+        if pendingAction == action {
+          Image(systemName: "checkmark")
+        }
+      }
+      .contentShape(Rectangle())
+    }
   }
 }
 
@@ -127,5 +207,6 @@ private struct SystemApplicationIcon: View {
 
 #Preview {
   SystemAppsView()
+    .environmentObject(OptimizationStore())
     .frame(width: 688, height: 592)
 }

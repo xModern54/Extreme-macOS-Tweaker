@@ -38,5 +38,6 @@ private struct DetailWorkspace: View {
 
 #Preview {
   RootView()
+    .environmentObject(OptimizationStore())
     .frame(width: 920, height: 592)
 }

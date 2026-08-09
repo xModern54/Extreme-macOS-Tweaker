@@ -5,11 +5,23 @@ enum SystemApplicationsScanner {
     fileURLWithPath: "/System/Applications",
     isDirectory: true
   )
+  static let disabledApplicationsDirectory = applicationsDirectory
+    .appendingPathComponent(".disabled", isDirectory: true)
 
   static func discoverApplications() throws -> [SystemApplication] {
+    let installed = try discoverApplications(in: applicationsDirectory, state: .installed)
+    let disabled = (try? discoverApplications(in: disabledApplicationsDirectory, state: .disabled)) ?? []
+    return (installed + disabled)
+      .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+  }
+
+  private static func discoverApplications(
+    in directory: URL,
+    state: SystemApplicationState
+  ) throws -> [SystemApplication] {
     let fileManager = FileManager.default
     let urls = try fileManager.contentsOfDirectory(
-      at: applicationsDirectory,
+      at: directory,
       includingPropertiesForKeys: [.isDirectoryKey, .isPackageKey],
       options: [.skipsHiddenFiles]
     )
@@ -33,10 +45,10 @@ enum SystemApplicationsScanner {
         url: url,
         name: name,
         bundleIdentifier: bundle?.bundleIdentifier,
+        state: state,
         sizeInBytes: nil
       )
     }
-    .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
   }
 
   static func allocatedSize(of applicationURL: URL) -> Int64? {

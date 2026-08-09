@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SidebarView: View {
   @Binding var selection: AppSection?
+  @EnvironmentObject private var optimizationStore: OptimizationStore
 
   var body: some View {
     ZStack {
@@ -34,7 +35,7 @@ struct SidebarView: View {
             Image(systemName: "checkmark.circle")
               .foregroundStyle(.secondary)
 
-            Text("No Pending Changes")
+            Text(pendingChangesLabel)
               .font(.caption)
               .foregroundStyle(.secondary)
 
@@ -47,17 +48,69 @@ struct SidebarView: View {
           }
           .buttonStyle(.borderedProminent)
           .controlSize(.large)
-          .disabled(true)
-          .help("This button becomes available after selecting tweaks")
+          .disabled(!optimizationStore.canApply)
+          .help("Review and apply pending changes")
         }
         .padding(14)
       }
     }
     .navigationTitle("")
+    .sheet(isPresented: $optimizationStore.isReviewPresented) {
+      ApplyReviewView()
+        .environmentObject(optimizationStore)
+    }
   }
 
   private func applyChanges() {
-    // The system change pipeline will be connected after the tweak model is defined.
+    optimizationStore.isReviewPresented = true
+  }
+
+  private var pendingChangesLabel: String {
+    let count = optimizationStore.pendingCount
+    return count == 0 ? "No Pending Changes" : "\(count) Pending Change\(count == 1 ? "" : "s")"
+  }
+}
+
+private struct ApplyReviewView: View {
+  @EnvironmentObject private var optimizationStore: OptimizationStore
+  @Environment(\.dismiss) private var dismiss
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 18) {
+      VStack(alignment: .leading, spacing: 5) {
+        Text("Review Changes")
+          .font(.title2.weight(.semibold))
+        Text("The execution engine and privileged helper will be connected next.")
+          .foregroundStyle(.secondary)
+      }
+
+      List {
+        Section("Selected Changes") {
+          ForEach(optimizationStore.pendingChanges) { change in
+            Text(change.title)
+          }
+        }
+
+        Section("Execution Plan") {
+          ForEach(optimizationStore.executionPlan.steps) { step in
+            Label(step.description, systemImage: "chevron.right")
+          }
+        }
+      }
+      .listStyle(.inset)
+
+      HStack {
+        Button("Cancel") { dismiss() }
+          .keyboardShortcut(.cancelAction)
+        Spacer()
+        Button("Apply Changes") {}
+          .buttonStyle(.borderedProminent)
+          .disabled(true)
+          .help("Privileged execution is not connected yet")
+      }
+    }
+    .padding(24)
+    .frame(width: 560, height: 480)
   }
 }
 
@@ -85,5 +138,6 @@ private struct SidebarRow: View {
   @Previewable @State var selection: AppSection? = .tweaker
 
   SidebarView(selection: $selection)
+    .environmentObject(OptimizationStore())
     .frame(width: 232, height: 592)
 }
