@@ -18,8 +18,8 @@ if xcodebuild \
   -configuration Release \
   -destination "generic/platform=macOS" \
   -derivedDataPath "$DERIVED_DATA_PATH" \
-  ARCHS="arm64 x86_64" \
-  ONLY_ACTIVE_ARCH=NO \
+  ARCHS=arm64 \
+  ONLY_ACTIVE_ARCH=YES \
   CODE_SIGNING_ALLOWED=NO \
   build >"$BUILD_LOG" 2>&1; then
   echo "complete"

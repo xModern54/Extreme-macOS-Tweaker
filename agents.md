@@ -28,7 +28,7 @@ Extreme Mac Tweaker is a macOS system optimization and customization utility des
 
 - The application UI and all user-facing text must be written in English. Localization may be added later.
 - The Xcode project uses a file-system-synchronized root group. New source files and resources placed inside `ExtremeMacTweaker/` are discovered by Xcode and automatically included in the application target. Do not manually add ordinary files to `project.pbxproj`.
-- Run `./Build.sh` after every code change. It creates a universal Release build for Apple Silicon and Intel in `.build/DerivedData`. A successful build prints only `complete`; a failed build prints the complete Xcode log.
+- Run `./Build.sh` after every code change. It always creates an ARM64-only Release build in `.build/DerivedData` for fast iteration. A successful build prints only `complete`; a failed build prints the complete Xcode log.
 - After a successful build at the end of every implementation task, run `./Deploy.sh "descriptive commit message"`.
 - `Deploy.sh` terminates the previous ExtremeMacTweaker process, launches the newly built application, stages all repository changes, creates a commit with the supplied message, and pushes the current branch to `origin`.
 - Never run `Deploy.sh` before `Build.sh` succeeds.
