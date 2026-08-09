@@ -70,7 +70,7 @@ private struct SystemApplicationCard: View {
   let application: SystemApplication
 
   var body: some View {
-    VStack(spacing: 7) {
+    VStack(spacing: 5.25) {
       SystemApplicationIcon(path: application.url.path)
 
       Group {
