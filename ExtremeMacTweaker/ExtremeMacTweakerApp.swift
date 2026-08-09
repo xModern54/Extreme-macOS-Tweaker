@@ -7,10 +7,10 @@ struct ExtremeMacTweakerApp: App {
       RootView()
         .frame(minWidth: 880, minHeight: 540)
         .background(
-          InitialWindowConfiguration(width: 970, height: 592)
+          InitialWindowConfiguration(width: 920, height: 592)
         )
     }
-    .defaultSize(width: 970, height: 592)
+    .defaultSize(width: 920, height: 592)
     .windowResizability(.contentMinSize)
     .windowToolbarStyle(.unified)
     .commands {
