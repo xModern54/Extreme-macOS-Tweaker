@@ -5,9 +5,12 @@ struct SidebarView: View {
 
   var body: some View {
     ZStack {
-      Rectangle()
-        .fill(.ultraThinMaterial)
-        .ignoresSafeArea()
+      VisualEffectView(
+        material: .sidebar,
+        blendingMode: .behindWindow,
+        state: .followsWindowActiveState
+      )
+      .ignoresSafeArea()
 
       VStack(spacing: 0) {
         List(selection: $selection) {

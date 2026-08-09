@@ -34,6 +34,10 @@ private final class InitialWindowConfigurationView: NSView {
     guard !hasConfiguredWindow, let window else { return }
     hasConfiguredWindow = true
 
+    window.isOpaque = false
+    window.backgroundColor = .clear
+    window.titlebarAppearsTransparent = true
+
     var frame = window.frame
     frame.size = targetSize
 
