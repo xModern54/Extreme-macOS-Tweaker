@@ -13,8 +13,5 @@ struct ExtremeMacTweakerApp: App {
     .defaultSize(width: 920, height: 592)
     .windowResizability(.contentMinSize)
     .windowToolbarStyle(.unified)
-    .commands {
-      SidebarCommands()
-    }
   }
 }

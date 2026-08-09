@@ -8,7 +8,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-APP_PATH="$PROJECT_ROOT/.build/DerivedData/Build/Products/Release/ExtremeMacTweaker.app"
+APP_PATH="$PROJECT_ROOT/.build/DerivedData/Build/Products/Release/Tweaker.app"
 COMMIT_MESSAGE="$*"
 
 cd "$PROJECT_ROOT"
@@ -24,6 +24,7 @@ if [[ ! -d "$APP_PATH" ]]; then
 fi
 
 pkill -x ExtremeMacTweaker >/dev/null 2>&1 || true
+pkill -x Tweaker >/dev/null 2>&1 || true
 open -na "$APP_PATH"
 
 git add -A

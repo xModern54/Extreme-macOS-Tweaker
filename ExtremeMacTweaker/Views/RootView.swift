@@ -2,12 +2,12 @@ import SwiftUI
 
 struct RootView: View {
   @State private var selection: AppSection? = .tweaker
-  @State private var columnVisibility: NavigationSplitViewVisibility = .all
 
   var body: some View {
-    NavigationSplitView(columnVisibility: $columnVisibility) {
+    NavigationSplitView(columnVisibility: .constant(.all)) {
       SidebarView(selection: $selection)
         .navigationSplitViewColumnWidth(min: 200, ideal: 232, max: 272)
+        .toolbar(removing: .sidebarToggle)
     } detail: {
       DetailWorkspace(section: selection ?? .tweaker)
     }
@@ -31,7 +31,7 @@ private struct DetailWorkspace: View {
         SystemAppsView()
       }
     }
-    .navigationTitle("Mac Extreme Tweaker")
+    .navigationTitle("Tweaker")
     .toolbarTitleDisplayMode(.inline)
   }
 }
