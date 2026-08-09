@@ -38,5 +38,5 @@ private struct DetailWorkspace: View {
 
 #Preview {
   RootView()
-    .frame(width: 1200, height: 660)
+    .frame(width: 970, height: 592)
 }
