@@ -38,14 +38,18 @@ private final class InitialWindowConfigurationView: NSView {
     window.backgroundColor = .clear
     window.titlebarAppearsTransparent = true
 
-    var frame = window.frame
-    frame.size = targetSize
+    DispatchQueue.main.async { [weak window] in
+      guard let window else { return }
 
-    if let visibleFrame = window.screen?.visibleFrame {
-      frame.origin.x = visibleFrame.midX - targetSize.width / 2
-      frame.origin.y = visibleFrame.midY - targetSize.height / 2
+      var frame = window.frame
+      frame.size = self.targetSize
+
+      if let visibleFrame = window.screen?.visibleFrame {
+        frame.origin.x = visibleFrame.midX - self.targetSize.width / 2
+        frame.origin.y = visibleFrame.midY - self.targetSize.height / 2
+      }
+
+      window.setFrame(frame, display: true)
     }
-
-    window.setFrame(frame, display: true)
   }
 }
