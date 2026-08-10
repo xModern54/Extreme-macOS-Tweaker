@@ -1,0 +1,295 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "2026.08.10",
+  "compatibility": {
+    "minimumMacOSMajor": 15,
+    "maximumMacOSMajor": 27,
+    "architectures": [
+      "arm64",
+      "x86_64"
+    ]
+  },
+  "categories": [
+    {
+      "id": "search-intelligence",
+      "title": "Search & Intelligence",
+      "systemImage": "sparkles",
+      "order": 100
+    },
+    {
+      "id": "connectivity",
+      "title": "Connectivity",
+      "systemImage": "antenna.radiowaves.left.and.right",
+      "order": 200
+    },
+    {
+      "id": "system-services",
+      "title": "System Services",
+      "systemImage": "gearshape.2",
+      "order": 300
+    }
+  ],
+  "services": [
+    {
+      "id": "metadata-mds",
+      "label": "com.apple.metadata.mds",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "metadata-mds-index",
+      "label": "com.apple.metadata.mds.index",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "metadata-mds-scan",
+      "label": "com.apple.metadata.mds.scan",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "spotlight-agent",
+      "label": "com.apple.Spotlight",
+      "domain": "user",
+      "kind": "agent"
+    },
+    {
+      "id": "assistantd",
+      "label": "com.apple.assistantd",
+      "domain": "user",
+      "kind": "agent"
+    },
+    {
+      "id": "siriactionsd",
+      "label": "com.apple.siriactionsd",
+      "domain": "user",
+      "kind": "agent"
+    },
+    {
+      "id": "dictation-im",
+      "label": "com.apple.DictationIM",
+      "domain": "user",
+      "kind": "agent"
+    },
+    {
+      "id": "airplay-xpc-helper",
+      "label": "com.apple.AirPlayXPCHelper",
+      "domain": "system",
+      "kind": "xpcService"
+    },
+    {
+      "id": "airplay-receiverd",
+      "label": "com.apple.airplayreceiverd",
+      "domain": "user",
+      "kind": "agent"
+    },
+    {
+      "id": "icloud-bird",
+      "label": "com.apple.bird",
+      "domain": "user",
+      "kind": "agent"
+    },
+    {
+      "id": "icloud-cloudd",
+      "label": "com.apple.cloudd",
+      "domain": "user",
+      "kind": "agent"
+    },
+    {
+      "id": "icloud-cloudpaird",
+      "label": "com.apple.cloudpaird",
+      "domain": "user",
+      "kind": "agent"
+    },
+    {
+      "id": "icloud-cloudphotod",
+      "label": "com.apple.cloudphotod",
+      "domain": "user",
+      "kind": "agent"
+    },
+    {
+      "id": "icloud-findmydeviced",
+      "label": "com.apple.icloud.findmydeviced",
+      "domain": "user",
+      "kind": "agent"
+    },
+    {
+      "id": "screen-time-agent",
+      "label": "com.apple.ScreenTimeAgent",
+      "domain": "user",
+      "kind": "agent"
+    },
+    {
+      "id": "screen-time-diagnose",
+      "label": "com.apple.screentimediagnose",
+      "domain": "user",
+      "kind": "agent"
+    },
+    {
+      "id": "locationd",
+      "label": "com.apple.locationd",
+      "domain": "system",
+      "kind": "daemon"
+    }
+  ],
+  "serviceGroups": [
+    {
+      "id": "spotlight-core",
+      "services": [
+        "metadata-mds",
+        "metadata-mds-index",
+        "metadata-mds-scan",
+        "spotlight-agent"
+      ]
+    },
+    {
+      "id": "siri-dictation",
+      "services": [
+        "assistantd",
+        "siriactionsd",
+        "dictation-im"
+      ]
+    },
+    {
+      "id": "airplay-receiver",
+      "services": [
+        "airplay-xpc-helper",
+        "airplay-receiverd"
+      ]
+    },
+    {
+      "id": "icloud-sync",
+      "services": [
+        "icloud-bird",
+        "icloud-cloudd",
+        "icloud-cloudpaird",
+        "icloud-cloudphotod",
+        "icloud-findmydeviced"
+      ]
+    },
+    {
+      "id": "screen-time",
+      "services": [
+        "screen-time-agent",
+        "screen-time-diagnose"
+      ]
+    },
+    {
+      "id": "location-services",
+      "services": [
+        "locationd"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "spotlight",
+      "categoryID": "search-intelligence",
+      "title": "Spotlight Search",
+      "question": "Do you use Spotlight to find files and applications?",
+      "description": "Indexes files, application metadata, messages, and other searchable content across macOS.",
+      "disableGuidance": "Disable this only if you use another launcher and do not rely on Finder or Spotlight content search.",
+      "systemImage": "magnifyingglass",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "spotlight-core"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 120,
+        "estimatedProcessReduction": 4
+      },
+      "order": 100
+    },
+    {
+      "id": "siri",
+      "categoryID": "search-intelligence",
+      "title": "Siri & Dictation",
+      "question": "Do you use Siri or voice dictation?",
+      "description": "Provides voice activation, speech recognition, Siri suggestions, and system-wide dictation services.",
+      "disableGuidance": "Disable this when you never use Siri, voice shortcuts, or the dictation key in text fields.",
+      "systemImage": "waveform",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "siri-dictation"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 85,
+        "estimatedProcessReduction": 3
+      },
+      "order": 200
+    },
+    {
+      "id": "airplay",
+      "categoryID": "connectivity",
+      "title": "AirPlay Receiver",
+      "question": "Do you stream content to this Mac with AirPlay?",
+      "description": "Allows nearby Apple devices to discover this Mac as an AirPlay audio and video destination.",
+      "disableGuidance": "Disable this if this Mac is never used as an AirPlay receiver or wireless presentation display.",
+      "systemImage": "airplayvideo",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "airplay-receiver"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 45,
+        "estimatedProcessReduction": 2
+      },
+      "order": 100
+    },
+    {
+      "id": "icloud",
+      "categoryID": "connectivity",
+      "title": "iCloud Synchronization",
+      "question": "Do you synchronize files and application data with iCloud?",
+      "description": "Keeps iCloud Drive, CloudKit data, documents, and supported application state synchronized.",
+      "disableGuidance": "Disable this only on a Mac that does not use iCloud Drive, CloudKit applications, or Apple device synchronization.",
+      "systemImage": "icloud",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "icloud-sync"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 160,
+        "estimatedProcessReduction": 5
+      },
+      "order": 200
+    },
+    {
+      "id": "screen-time",
+      "categoryID": "system-services",
+      "title": "Screen Time",
+      "question": "Do you use usage reports or application limits?",
+      "description": "Collects device usage statistics and enforces downtime, content restrictions, and application limits.",
+      "disableGuidance": "Disable this if you do not review Screen Time reports and do not use parental or application restrictions.",
+      "systemImage": "hourglass",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "screen-time"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 35,
+        "estimatedProcessReduction": 2
+      },
+      "order": 100
+    },
+    {
+      "id": "location",
+      "categoryID": "system-services",
+      "title": "Location Services",
+      "question": "Do applications need the location of this Mac?",
+      "description": "Determines the approximate location of this Mac for applications, time zones, Find My, and system suggestions.",
+      "disableGuidance": "Disable this only if maps, automatic time zones, Find My, and location-aware applications are unnecessary.",
+      "systemImage": "location",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "location-services"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 30,
+        "estimatedProcessReduction": 1
+      },
+      "order": 200
+    }
+  ]
+}

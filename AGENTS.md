@@ -45,6 +45,16 @@ Extreme Mac Tweaker is a macOS system optimization and customization utility des
 - `Deploy.sh` terminates the previous ExtremeMacTweaker process, launches the newly built application, stages all repository changes, creates a commit with the supplied message, and pushes the current branch to `origin`.
 - Never run `Deploy.sh` before `Build.sh` succeeds.
 
+## Tweak Catalog Workflow
+
+- System Tweaker categories, features, service groups, launchd services, descriptions, and impact estimates are loaded from `ExtremeMacTweaker/Resources/TweakCatalog.json`.
+- The bundled catalog currently targets macOS 15 through 27 on ARM64 and x86_64 using one universal data set.
+- Run `./Catalog.sh install` once to create the live development override at `~/Library/Application Support/Tweaker/TweakCatalog.json`.
+- Tweaker monitors the external override and reloads successful JSON edits automatically without rebuilding or restarting the application.
+- Run `./Catalog.sh sync` to replace the development override with the repository catalog and `./Catalog.sh path` to print its location.
+- English catalog copy is the fallback. Dynamic localization keys use `tweak.<feature-id>.<field>` and `category.<category-id>.title` from the `TweakCatalog` string table.
+- Semantic validation and SHA-256 integrity infrastructure exist in `TweakCatalogValidator` and `TweakCatalogLoader`, but both runtime policies are intentionally disabled during active catalog development.
+
 ## Repository
 
 - Remote: `https://github.com/xModern54/Extreme-macOS-Tweaker.git`

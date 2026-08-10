@@ -1,16 +1,44 @@
 import SwiftUI
 
 struct SystemTweakerView: View {
-  @State private var selectedFeatureID = SystemTweakFeature.previewData[0].id
+  @EnvironmentObject private var catalogStore: TweakCatalogStore
+  @State private var selectedFeatureID: String?
   @State private var choices: [String: SystemTweakChoice] = [:]
 
-  private let features = SystemTweakFeature.previewData
+  private var categories: [TweakCatalogCategory] {
+    catalogStore.catalog?.categories.sorted { $0.order < $1.order } ?? []
+  }
 
-  private var selectedFeature: SystemTweakFeature {
-    features.first(where: { $0.id == selectedFeatureID }) ?? features[0]
+  private var features: [TweakCatalogFeature] {
+    catalogStore.catalog?.features.sorted { $0.order < $1.order } ?? []
+  }
+
+  private var selectedFeature: TweakCatalogFeature? {
+    features.first(where: { $0.id == selectedFeatureID }) ?? features.first
   }
 
   var body: some View {
+    Group {
+      if let selectedFeature {
+        workspace(selectedFeature: selectedFeature)
+      } else if let error = catalogStore.loadingError {
+        ContentUnavailableView(
+          "Unable to Load Tweak Catalog",
+          systemImage: "doc.badge.gearshape",
+          description: Text(error)
+        )
+      } else {
+        ProgressView("Loading Tweak Catalog…")
+          .controlSize(.small)
+      }
+    }
+    .onAppear { selectFirstFeatureIfNeeded() }
+    .onChange(of: catalogStore.catalog?.catalogVersion) {
+      selectFirstFeatureIfNeeded()
+    }
+  }
+
+  private func workspace(selectedFeature: TweakCatalogFeature) -> some View {
     GeometryReader { geometry in
       let inspectorWidth = min(260, max(210, geometry.size.width * 0.34))
 
@@ -25,7 +53,8 @@ struct SystemTweakerView: View {
 
         SystemTweakInspector(
           feature: selectedFeature,
-          choice: choices[selectedFeature.id, default: .keepEnabled]
+          services: catalogStore.services(for: selectedFeature),
+          choice: choice(for: selectedFeature)
         )
         .frame(width: inspectorWidth, height: geometry.size.height)
       }
@@ -41,7 +70,6 @@ struct SystemTweakerView: View {
         Text("Select the macOS features you use.")
           .font(.subheadline)
           .foregroundStyle(.secondary)
-          .fixedSize(horizontal: false, vertical: true)
       }
       .padding(.horizontal, 24)
       .padding(.top, 20)
@@ -51,37 +79,36 @@ struct SystemTweakerView: View {
 
       ScrollView {
         LazyVStack(alignment: .leading, spacing: 20) {
-          ForEach(SystemTweakCategory.allCases) { category in
-            let categoryFeatures = features.filter { $0.category == category }
+          ForEach(categories) { category in
+            let categoryFeatures = features.filter { $0.categoryID == category.id }
 
-            VStack(alignment: .leading, spacing: 9) {
-              Label(category.title, systemImage: category.systemImage)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .textCase(.uppercase)
+            if !categoryFeatures.isEmpty {
+              VStack(alignment: .leading, spacing: 9) {
+                Label(category.localizedTitle, systemImage: category.systemImage)
+                  .font(.caption.weight(.semibold))
+                  .foregroundStyle(.secondary)
+                  .textCase(.uppercase)
 
-              VStack(spacing: 0) {
-                ForEach(Array(categoryFeatures.enumerated()), id: \.element.id) { index, feature in
-                  SystemTweakFeatureRow(
-                    feature: feature,
-                    choice: binding(for: feature),
-                    isSelected: selectedFeatureID == feature.id
-                  )
-                  .contentShape(Rectangle())
-                  .onTapGesture {
-                    selectedFeatureID = feature.id
-                  }
+                VStack(spacing: 0) {
+                  ForEach(Array(categoryFeatures.enumerated()), id: \.element.id) { index, feature in
+                    SystemTweakFeatureRow(
+                      feature: feature,
+                      choice: binding(for: feature),
+                      isSelected: selectedFeatureID == feature.id
+                    )
+                    .contentShape(Rectangle())
+                    .onTapGesture { selectedFeatureID = feature.id }
 
-                  if index < categoryFeatures.count - 1 {
-                    Divider()
-                      .padding(.leading, 54)
+                    if index < categoryFeatures.count - 1 {
+                      Divider().padding(.leading, 54)
+                    }
                   }
                 }
-              }
-              .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
-              .overlay {
-                RoundedRectangle(cornerRadius: 10)
-                  .stroke(.separator.opacity(0.45), lineWidth: 1)
+                .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+                .overlay {
+                  RoundedRectangle(cornerRadius: 10)
+                    .stroke(.separator.opacity(0.45), lineWidth: 1)
+                }
               }
             }
           }
@@ -91,19 +118,33 @@ struct SystemTweakerView: View {
     }
   }
 
-  private func binding(for feature: SystemTweakFeature) -> Binding<SystemTweakChoice> {
+  private func choice(for feature: TweakCatalogFeature) -> SystemTweakChoice {
+    choices[feature.id] ?? (feature.defaultEnabled ? .keepEnabled : .disable)
+  }
+
+  private func binding(for feature: TweakCatalogFeature) -> Binding<SystemTweakChoice> {
     Binding(
-      get: { choices[feature.id, default: .keepEnabled] },
+      get: { choice(for: feature) },
       set: { newValue in
         choices[feature.id] = newValue
         selectedFeatureID = feature.id
       }
     )
   }
+
+  private func selectFirstFeatureIfNeeded() {
+    guard !features.isEmpty else {
+      selectedFeatureID = nil
+      return
+    }
+    if !features.contains(where: { $0.id == selectedFeatureID }) {
+      selectedFeatureID = features[0].id
+    }
+  }
 }
 
 private struct SystemTweakFeatureRow: View {
-  let feature: SystemTweakFeature
+  let feature: TweakCatalogFeature
   @Binding var choice: SystemTweakChoice
   let isSelected: Bool
 
@@ -118,11 +159,9 @@ private struct SystemTweakFeatureRow: View {
           in: RoundedRectangle(cornerRadius: 8)
         )
 
-      VStack(alignment: .leading, spacing: 2) {
-        Text(feature.title)
-          .font(.body.weight(.medium))
-          .lineLimit(1)
-      }
+      Text(feature.localizedTitle)
+        .font(.body.weight(.medium))
+        .lineLimit(1)
 
       Spacer(minLength: 8)
 
@@ -144,7 +183,8 @@ private struct SystemTweakFeatureRow: View {
 }
 
 private struct SystemTweakInspector: View {
-  let feature: SystemTweakFeature
+  let feature: TweakCatalogFeature
+  let services: [TweakCatalogService]
   let choice: SystemTweakChoice
 
   var body: some View {
@@ -156,10 +196,7 @@ private struct SystemTweakInspector: View {
           guidanceSection
           servicesSection
         }
-        .frame(
-          width: max(0, geometry.size.width - 32),
-          alignment: .leading
-        )
+        .frame(width: max(0, geometry.size.width - 32), alignment: .leading)
         .padding(16)
       }
     }
@@ -176,7 +213,7 @@ private struct SystemTweakInspector: View {
           .background(Color.accentColor.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
 
         VStack(alignment: .leading, spacing: 4) {
-          Text(feature.title)
+          Text(feature.localizedTitle)
             .font(.headline)
             .lineLimit(2)
             .minimumScaleFactor(0.8)
@@ -187,12 +224,12 @@ private struct SystemTweakInspector: View {
         }
       }
 
-      Text(feature.question)
+      Text(feature.localizedQuestion)
         .font(.subheadline.weight(.medium))
         .frame(maxWidth: .infinity, alignment: .leading)
         .fixedSize(horizontal: false, vertical: true)
 
-      Text(feature.description)
+      Text(feature.localizedDescription)
         .font(.caption)
         .foregroundStyle(.secondary)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -205,15 +242,16 @@ private struct SystemTweakInspector: View {
       sectionTitle("Estimated Impact")
 
       HStack(spacing: 7) {
-        Image(systemName: "memorychip")
-          .foregroundStyle(Color.accentColor)
-        Text(feature.memoryEstimate)
+        Image(systemName: "memorychip").foregroundStyle(Color.accentColor)
+        Text("~\(feature.impact.estimatedMemoryMB) MB")
           .font(.subheadline.weight(.medium).monospacedDigit())
-        Text("·")
-          .foregroundStyle(.tertiary)
-        Text("\(feature.processEstimate) process\(feature.processEstimate == 1 ? "" : "es")")
-          .font(.subheadline.monospacedDigit())
-          .foregroundStyle(.secondary)
+        Text("·").foregroundStyle(.tertiary)
+        Text(
+          "\(feature.impact.estimatedProcessReduction) process"
+            + (feature.impact.estimatedProcessReduction == 1 ? "" : "es")
+        )
+        .font(.subheadline.monospacedDigit())
+        .foregroundStyle(.secondary)
       }
     }
   }
@@ -222,7 +260,7 @@ private struct SystemTweakInspector: View {
     VStack(alignment: .leading, spacing: 8) {
       sectionTitle("When to Disable")
 
-      Text(feature.disableGuidance)
+      Text(feature.localizedDisableGuidance)
         .font(.subheadline)
         .foregroundStyle(.secondary)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -235,14 +273,14 @@ private struct SystemTweakInspector: View {
       HStack {
         sectionTitle("Related Services")
         Spacer()
-        Text("\(feature.services.count)")
+        Text("\(services.count)")
           .font(.caption.monospacedDigit())
           .foregroundStyle(.secondary)
       }
 
       VStack(alignment: .leading, spacing: 7) {
-        ForEach(feature.services, id: \.self) { service in
-          Text(service)
+        ForEach(services) { service in
+          Text(service.label)
             .font(.caption2.monospaced())
             .foregroundStyle(.secondary)
             .textSelection(.enabled)
@@ -262,156 +300,13 @@ private struct SystemTweakInspector: View {
   }
 }
 
-private enum SystemTweakChoice: String, CaseIterable, Identifiable {
+private enum SystemTweakChoice {
   case keepEnabled
   case disable
-
-  var id: Self { self }
-
-  var title: String {
-    switch self {
-    case .keepEnabled: "Keep"
-    case .disable: "Disable"
-    }
-  }
-}
-
-private enum SystemTweakCategory: String, CaseIterable, Identifiable {
-  case searchAndIntelligence
-  case connectivity
-  case systemServices
-
-  var id: Self { self }
-
-  var title: String {
-    switch self {
-    case .searchAndIntelligence: "Search & Intelligence"
-    case .connectivity: "Connectivity"
-    case .systemServices: "System Services"
-    }
-  }
-
-  var systemImage: String {
-    switch self {
-    case .searchAndIntelligence: "sparkles"
-    case .connectivity: "antenna.radiowaves.left.and.right"
-    case .systemServices: "gearshape.2"
-    }
-  }
-}
-
-private struct SystemTweakFeature: Identifiable {
-  let id: String
-  let title: String
-  let question: String
-  let description: String
-  let disableGuidance: String
-  let memoryEstimate: String
-  let processEstimate: Int
-  let systemImage: String
-  let category: SystemTweakCategory
-  let services: [String]
-
-  static let previewData: [SystemTweakFeature] = [
-    SystemTweakFeature(
-      id: "spotlight",
-      title: "Spotlight Search",
-      question: "Do you use Spotlight to find files and applications?",
-      description: "Indexes files, application metadata, messages, and other searchable content across macOS.",
-      disableGuidance: "Disable this only if you use another launcher and do not rely on Finder or Spotlight content search.",
-      memoryEstimate: "~120 MB",
-      processEstimate: 4,
-      systemImage: "magnifyingglass",
-      category: .searchAndIntelligence,
-      services: [
-        "com.apple.metadata.mds",
-        "com.apple.metadata.mds.index",
-        "com.apple.metadata.mds.scan",
-        "com.apple.Spotlight",
-      ]
-    ),
-    SystemTweakFeature(
-      id: "siri",
-      title: "Siri & Dictation",
-      question: "Do you use Siri or voice dictation?",
-      description: "Provides voice activation, speech recognition, Siri suggestions, and system-wide dictation services.",
-      disableGuidance: "Disable this when you never use Siri, voice shortcuts, or the dictation key in text fields.",
-      memoryEstimate: "~85 MB",
-      processEstimate: 3,
-      systemImage: "waveform",
-      category: .searchAndIntelligence,
-      services: [
-        "com.apple.assistantd",
-        "com.apple.siriactionsd",
-        "com.apple.DictationIM",
-      ]
-    ),
-    SystemTweakFeature(
-      id: "airplay",
-      title: "AirPlay Receiver",
-      question: "Do you stream content to this Mac with AirPlay?",
-      description: "Allows nearby Apple devices to discover this Mac as an AirPlay audio and video destination.",
-      disableGuidance: "Disable this if this Mac is never used as an AirPlay receiver or wireless presentation display.",
-      memoryEstimate: "~45 MB",
-      processEstimate: 2,
-      systemImage: "airplayvideo",
-      category: .connectivity,
-      services: [
-        "com.apple.AirPlayXPCHelper",
-        "com.apple.airplayreceiverd",
-      ]
-    ),
-    SystemTweakFeature(
-      id: "icloud",
-      title: "iCloud Synchronization",
-      question: "Do you synchronize files and application data with iCloud?",
-      description: "Keeps iCloud Drive, CloudKit data, documents, and supported application state synchronized.",
-      disableGuidance: "Disable this only on a Mac that does not use iCloud Drive, CloudKit applications, or Apple device synchronization.",
-      memoryEstimate: "~160 MB",
-      processEstimate: 5,
-      systemImage: "icloud",
-      category: .connectivity,
-      services: [
-        "com.apple.bird",
-        "com.apple.cloudd",
-        "com.apple.cloudpaird",
-        "com.apple.cloudphotod",
-        "com.apple.icloud.findmydeviced",
-      ]
-    ),
-    SystemTweakFeature(
-      id: "screen-time",
-      title: "Screen Time",
-      question: "Do you use usage reports or application limits?",
-      description: "Collects device usage statistics and enforces downtime, content restrictions, and application limits.",
-      disableGuidance: "Disable this if you do not review Screen Time reports and do not use parental or application restrictions.",
-      memoryEstimate: "~35 MB",
-      processEstimate: 2,
-      systemImage: "hourglass",
-      category: .systemServices,
-      services: [
-        "com.apple.ScreenTimeAgent",
-        "com.apple.screentimediagnose",
-      ]
-    ),
-    SystemTweakFeature(
-      id: "location",
-      title: "Location Services",
-      question: "Do applications need the location of this Mac?",
-      description: "Determines the approximate location of this Mac for applications, time zones, Find My, and system suggestions.",
-      disableGuidance: "Disable this only if maps, automatic time zones, Find My, and location-aware applications are unnecessary.",
-      memoryEstimate: "~30 MB",
-      processEstimate: 1,
-      systemImage: "location",
-      category: .systemServices,
-      services: [
-        "com.apple.locationd",
-      ]
-    ),
-  ]
 }
 
 #Preview {
   SystemTweakerView()
+    .environmentObject(TweakCatalogStore())
     .frame(width: 900, height: 620)
 }
