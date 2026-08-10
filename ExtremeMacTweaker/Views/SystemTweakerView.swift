@@ -13,13 +13,13 @@ struct SystemTweakerView: View {
   var body: some View {
     HSplitView {
       featureBrowser
-        .frame(minWidth: 390)
+        .frame(minWidth: 300)
 
       SystemTweakInspector(
         feature: selectedFeature,
         choice: choices[selectedFeature.id, default: .keepEnabled]
       )
-      .frame(minWidth: 250, idealWidth: 272, maxWidth: 310)
+      .frame(minWidth: 220, idealWidth: 242, maxWidth: 280)
     }
   }
 
@@ -29,7 +29,7 @@ struct SystemTweakerView: View {
         Text("System Tweaker")
           .font(.title2.weight(.semibold))
 
-        Text("Choose which macOS features you use. Tweaker will prepare the related service changes.")
+        Text("Select the macOS features you use.")
           .font(.subheadline)
           .foregroundStyle(.secondary)
           .fixedSize(horizontal: false, vertical: true)
@@ -113,30 +113,24 @@ private struct SystemTweakFeatureRow: View {
         Text(feature.title)
           .font(.body.weight(.medium))
           .lineLimit(1)
-
-        Text(feature.question)
-          .font(.caption)
-          .foregroundStyle(.secondary)
-          .lineLimit(1)
       }
 
       Spacer(minLength: 8)
 
-      Picker("", selection: $choice) {
-        ForEach(SystemTweakChoice.allCases) { choice in
-          Text(choice.title).tag(choice)
-        }
-      }
-      .labelsHidden()
-      .pickerStyle(.segmented)
-      .frame(width: 152)
-      .onTapGesture {
-        // Preserve row selection while interacting with the segmented picker.
-      }
+      Toggle("", isOn: keepEnabledBinding)
+        .labelsHidden()
+        .toggleStyle(.checkbox)
     }
     .padding(.horizontal, 12)
     .padding(.vertical, 10)
     .background(isSelected ? Color.accentColor.opacity(0.08) : Color.clear)
+  }
+
+  private var keepEnabledBinding: Binding<Bool> {
+    Binding(
+      get: { choice == .keepEnabled },
+      set: { choice = $0 ? .keepEnabled : .disable }
+    )
   }
 }
 
@@ -147,7 +141,7 @@ private struct SystemTweakInspector: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
       ScrollView {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: 18) {
           inspectorHeader
           impactSection
           guidanceSection
@@ -178,28 +172,31 @@ private struct SystemTweakInspector: View {
         }
       }
 
+      Text(feature.question)
+        .font(.subheadline.weight(.medium))
+        .fixedSize(horizontal: false, vertical: true)
+
       Text(feature.description)
-        .font(.subheadline)
+        .font(.caption)
         .foregroundStyle(.secondary)
         .fixedSize(horizontal: false, vertical: true)
     }
   }
 
   private var impactSection: some View {
-    VStack(alignment: .leading, spacing: 10) {
+    VStack(alignment: .leading, spacing: 8) {
       sectionTitle("Estimated Impact")
 
-      HStack(spacing: 10) {
-        ImpactTile(
-          value: feature.memoryEstimate,
-          label: "Memory",
-          systemImage: "memorychip"
-        )
-        ImpactTile(
-          value: "\(feature.processEstimate)",
-          label: feature.processEstimate == 1 ? "Process" : "Processes",
-          systemImage: "cpu"
-        )
+      HStack(spacing: 7) {
+        Image(systemName: "memorychip")
+          .foregroundStyle(Color.accentColor)
+        Text(feature.memoryEstimate)
+          .font(.subheadline.weight(.medium).monospacedDigit())
+        Text("·")
+          .foregroundStyle(.tertiary)
+        Text("\(feature.processEstimate) process\(feature.processEstimate == 1 ? "" : "es")")
+          .font(.subheadline.monospacedDigit())
+          .foregroundStyle(.secondary)
       }
     }
   }
@@ -225,31 +222,14 @@ private struct SystemTweakInspector: View {
           .foregroundStyle(.secondary)
       }
 
-      VStack(spacing: 0) {
-        ForEach(Array(feature.services.enumerated()), id: \.element) { index, service in
-          HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Circle()
-              .fill(choice == .disable ? Color.orange : Color.green)
-              .frame(width: 7, height: 7)
-
-            Text(service)
-              .font(.caption.monospaced())
-              .textSelection(.enabled)
-              .frame(maxWidth: .infinity, alignment: .leading)
-          }
-          .padding(.horizontal, 10)
-          .padding(.vertical, 9)
-
-          if index < feature.services.count - 1 {
-            Divider()
-              .padding(.leading, 25)
-          }
+      VStack(alignment: .leading, spacing: 7) {
+        ForEach(feature.services, id: \.self) { service in
+          Text(service)
+            .font(.caption2.monospaced())
+            .foregroundStyle(.secondary)
+            .textSelection(.enabled)
+            .lineLimit(1)
         }
-      }
-      .background(.background, in: RoundedRectangle(cornerRadius: 8))
-      .overlay {
-        RoundedRectangle(cornerRadius: 8)
-          .stroke(.separator.opacity(0.45), lineWidth: 1)
       }
     }
   }
@@ -259,33 +239,6 @@ private struct SystemTweakInspector: View {
       .font(.caption.weight(.semibold))
       .foregroundStyle(.secondary)
       .textCase(.uppercase)
-  }
-}
-
-private struct ImpactTile: View {
-  let value: String
-  let label: String
-  let systemImage: String
-
-  var body: some View {
-    VStack(alignment: .leading, spacing: 7) {
-      Image(systemName: systemImage)
-        .foregroundStyle(Color.accentColor)
-
-      Text(value)
-        .font(.title3.weight(.semibold).monospacedDigit())
-
-      Text(label)
-        .font(.caption)
-        .foregroundStyle(.secondary)
-    }
-    .frame(maxWidth: .infinity, alignment: .leading)
-    .padding(12)
-    .background(.background, in: RoundedRectangle(cornerRadius: 9))
-    .overlay {
-      RoundedRectangle(cornerRadius: 9)
-        .stroke(.separator.opacity(0.45), lineWidth: 1)
-    }
   }
 }
 
