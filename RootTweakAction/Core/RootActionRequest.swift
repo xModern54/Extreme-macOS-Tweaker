@@ -9,6 +9,7 @@ enum RootActionRequest {
 
   case identity
   case preflight
+  case checkSystemIntegrityProtection
   case mountSystemVolume(mountPath: String)
   case unmountSystemVolume(mountPath: String)
   case disableApplication(mountPath: String, sourcePath: String, destinationPath: String)
@@ -27,6 +28,7 @@ enum RootActionRequest {
     switch self {
     case .identity: "identity"
     case .preflight: "preflight"
+    case .checkSystemIntegrityProtection: "check-system-integrity-protection"
     case .mountSystemVolume: "mount-system-volume"
     case .unmountSystemVolume: "unmount-system-volume"
     case .disableApplication: "disable-application"
@@ -42,6 +44,7 @@ enum RootActionRequest {
     switch self {
     case .identity: "Checking privileged execution"
     case .preflight: "Checking system requirements"
+    case .checkSystemIntegrityProtection: "Checking System Integrity Protection"
     case .mountSystemVolume: "Mounting the writable system volume"
     case .unmountSystemVolume: "Unmounting the writable system volume"
     case .disableApplication(_, let source, _): "Disabling \(appName(source))"
@@ -63,6 +66,7 @@ enum RootActionRequest {
     switch command {
     case "identity": return .identity
     case "preflight": return .preflight
+    case "check-system-integrity-protection": return .checkSystemIntegrityProtection
     case "mount-system-volume":
       return .mountSystemVolume(mountPath: options["mount-path"] ?? "/Volumes/SystemRW")
     case "unmount-system-volume":

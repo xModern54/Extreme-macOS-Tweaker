@@ -49,9 +49,20 @@ final class OptimizationStore: ObservableObject {
   var canApply: Bool { !pendingChanges.isEmpty && !isExecuting }
   var canStartExecution: Bool {
     guard canApply else { return false }
-    guard executionPlan.requiresReboot else { return true }
+    let plan = executionPlan
+    guard plan.requiresSystemProtectionCheck else { return true }
     guard case .checked(let status) = systemProtectionCheck else { return false }
-    return status.requirementsSatisfied
+    if plan.requiresSystemIntegrityProtectionDisabled,
+      !status.systemIntegrityProtectionDisabled
+    {
+      return false
+    }
+    if plan.requiresAuthenticatedRootDisabled,
+      !status.authenticatedRootDisabled
+    {
+      return false
+    }
+    return true
   }
   var executionPlan: ExecutionPlan { OptimizationInterpreter.compile(pendingChanges) }
   var isExecuting: Bool { executionPhase == .authorizing || executionPhase == .running }
@@ -80,13 +91,13 @@ final class OptimizationStore: ObservableObject {
 
   func presentReview() {
     resetExecution()
-    systemProtectionCheck = executionPlan.requiresReboot ? .checking : .notRequired
+    systemProtectionCheck = executionPlan.requiresSystemProtectionCheck ? .checking : .notRequired
     isReviewPresented = true
     Task { await refreshSystemProtectionStatus() }
   }
 
   func refreshSystemProtectionStatus() async {
-    guard executionPlan.requiresReboot else {
+    guard executionPlan.requiresSystemProtectionCheck else {
       systemProtectionCheck = .notRequired
       return
     }

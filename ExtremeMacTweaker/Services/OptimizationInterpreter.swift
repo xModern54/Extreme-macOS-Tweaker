@@ -56,6 +56,11 @@ enum OptimizationInterpreter {
     var steps: [ExecutionStep] = []
     if !applicationSteps.isEmpty {
       steps.append(.verifySystemRequirements)
+    } else if launchServiceSteps.contains(where: { step in
+      if case .setLaunchService(_, _, _, let enabled) = step { return !enabled }
+      return false
+    }) {
+      steps.append(.verifySystemIntegrityProtection)
     }
     steps.append(contentsOf: launchServiceSteps)
     steps.append(contentsOf: securitySteps)

@@ -5,6 +5,27 @@ struct ExecutionPlan: Sendable {
   let steps: [ExecutionStep]
 
   var requiresPrivileges: Bool { !steps.isEmpty }
+  var requiresSystemIntegrityProtectionDisabled: Bool {
+    changes.contains { change in
+      switch change {
+      case .systemApplication:
+        true
+      case .launchService(let service):
+        service.action == .disable
+      case .securityFeature(let feature):
+        feature.action == .disable
+      }
+    }
+  }
+  var requiresAuthenticatedRootDisabled: Bool {
+    changes.contains { change in
+      if case .systemApplication = change { return true }
+      return false
+    }
+  }
+  var requiresSystemProtectionCheck: Bool {
+    requiresSystemIntegrityProtectionDisabled || requiresAuthenticatedRootDisabled
+  }
   var requiresReboot: Bool {
     steps.contains { step in
       if case .createSystemSnapshot = step { return true }
@@ -15,6 +36,7 @@ struct ExecutionPlan: Sendable {
 
 enum ExecutionStep: Identifiable, Sendable {
   case verifySystemRequirements
+  case verifySystemIntegrityProtection
   case mountSystemVolume
   case disableSystemApplication(sourcePath: String, destinationPath: String)
   case restoreSystemApplication(sourcePath: String, destinationPath: String)
@@ -35,6 +57,8 @@ enum ExecutionStep: Identifiable, Sendable {
     switch self {
     case .verifySystemRequirements:
       "Verify system requirements"
+    case .verifySystemIntegrityProtection:
+      "Verify System Integrity Protection is disabled"
     case .mountSystemVolume:
       "Mount the system volume for writing"
     case .disableSystemApplication(let source, _):

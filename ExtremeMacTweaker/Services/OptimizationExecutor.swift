@@ -43,6 +43,8 @@ final class OptimizationExecutor {
     switch step {
     case .verifySystemRequirements:
       ["preflight"]
+    case .verifySystemIntegrityProtection:
+      ["check-system-integrity-protection"]
     case .mountSystemVolume:
       ["mount-system-volume", "--mount-path", mountPath]
     case .disableSystemApplication(let source, let destination):

@@ -23,6 +23,9 @@ enum RootActions {
     case .preflight:
       return try preflight(context)
 
+    case .checkSystemIntegrityProtection:
+      return try checkSystemIntegrityProtection(context)
+
     case .mountSystemVolume(let mountPath):
       return try mountSystemVolume(mountPath, context)
 
@@ -73,6 +76,19 @@ enum RootActions {
     context.events.progress(0.4, "Requesting a clean system restart")
     _ = try context.commands.requireSuccess("/sbin/shutdown", ["-r", "now"])
     return ("System restart was requested", true, [:])
+  }
+
+  private static func checkSystemIntegrityProtection(
+    _ context: RootActionContext
+  ) throws -> (String, Bool, [String: String]) {
+    context.events.progress(0.5, "Checking System Integrity Protection")
+    let sip = try context.commands.requireSuccess("/usr/bin/csrutil", ["status"])
+    guard sip.standardOutput.localizedCaseInsensitiveContains("disabled") else {
+      throw RootActionError.prerequisitesNotMet(
+        "System Integrity Protection must be disabled from macOS Recovery."
+      )
+    }
+    return ("System Integrity Protection is disabled", false, [:])
   }
 
   private static func setLaunchService(

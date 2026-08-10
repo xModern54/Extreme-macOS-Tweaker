@@ -109,7 +109,7 @@ private struct ApplyReviewView: View {
         }
       }
 
-      if optimizationStore.executionPlan.requiresReboot {
+      if optimizationStore.executionPlan.requiresSystemProtectionCheck {
         systemProtectionRequirements
       }
 
@@ -134,16 +134,20 @@ private struct ApplyReviewView: View {
         }
 
       case .checked(let status):
-        protectionStatusRow(
-          title: "System Integrity Protection",
-          isDisabled: status.systemIntegrityProtectionDisabled
-        )
-        protectionStatusRow(
-          title: "Authenticated Root",
-          isDisabled: status.authenticatedRootDisabled
-        )
+        if optimizationStore.executionPlan.requiresSystemIntegrityProtectionDisabled {
+          protectionStatusRow(
+            title: "System Integrity Protection",
+            isDisabled: status.systemIntegrityProtectionDisabled
+          )
+        }
+        if optimizationStore.executionPlan.requiresAuthenticatedRootDisabled {
+          protectionStatusRow(
+            title: "Authenticated Root",
+            isDisabled: status.authenticatedRootDisabled
+          )
+        }
 
-        if !status.requirementsSatisfied {
+        if !optimizationStore.canStartExecution {
           Label(
             "Disable the required protections from macOS Recovery before applying these changes.",
             systemImage: "exclamationmark.triangle.fill"
