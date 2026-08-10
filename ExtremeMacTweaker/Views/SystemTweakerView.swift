@@ -11,15 +11,24 @@ struct SystemTweakerView: View {
   }
 
   var body: some View {
-    HSplitView {
-      featureBrowser
-        .frame(minWidth: 300)
+    GeometryReader { geometry in
+      let inspectorWidth = min(260, max(210, geometry.size.width * 0.34))
 
-      SystemTweakInspector(
-        feature: selectedFeature,
-        choice: choices[selectedFeature.id, default: .keepEnabled]
-      )
-      .frame(minWidth: 220, idealWidth: 242, maxWidth: 280)
+      HStack(spacing: 0) {
+        featureBrowser
+          .frame(
+            width: max(0, geometry.size.width - inspectorWidth - 1),
+            height: geometry.size.height
+          )
+
+        Divider()
+
+        SystemTweakInspector(
+          feature: selectedFeature,
+          choice: choices[selectedFeature.id, default: .keepEnabled]
+        )
+        .frame(width: inspectorWidth, height: geometry.size.height)
+      }
     }
   }
 
@@ -139,7 +148,7 @@ private struct SystemTweakInspector: View {
   let choice: SystemTweakChoice
 
   var body: some View {
-    VStack(alignment: .leading, spacing: 0) {
+    GeometryReader { geometry in
       ScrollView {
         VStack(alignment: .leading, spacing: 18) {
           inspectorHeader
@@ -147,7 +156,11 @@ private struct SystemTweakInspector: View {
           guidanceSection
           servicesSection
         }
-        .padding(20)
+        .frame(
+          width: max(0, geometry.size.width - 32),
+          alignment: .leading
+        )
+        .padding(16)
       }
     }
     .background(Color(nsColor: .controlBackgroundColor).opacity(0.72))
@@ -165,6 +178,8 @@ private struct SystemTweakInspector: View {
         VStack(alignment: .leading, spacing: 4) {
           Text(feature.title)
             .font(.headline)
+            .lineLimit(2)
+            .minimumScaleFactor(0.8)
 
           Text(choice == .disable ? "Selected for disabling" : "Kept enabled")
             .font(.caption.weight(.medium))
@@ -174,11 +189,13 @@ private struct SystemTweakInspector: View {
 
       Text(feature.question)
         .font(.subheadline.weight(.medium))
+        .frame(maxWidth: .infinity, alignment: .leading)
         .fixedSize(horizontal: false, vertical: true)
 
       Text(feature.description)
         .font(.caption)
         .foregroundStyle(.secondary)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .fixedSize(horizontal: false, vertical: true)
     }
   }
@@ -208,6 +225,7 @@ private struct SystemTweakInspector: View {
       Text(feature.disableGuidance)
         .font(.subheadline)
         .foregroundStyle(.secondary)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .fixedSize(horizontal: false, vertical: true)
     }
   }
@@ -229,6 +247,8 @@ private struct SystemTweakInspector: View {
             .foregroundStyle(.secondary)
             .textSelection(.enabled)
             .lineLimit(1)
+            .minimumScaleFactor(0.65)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
       }
     }
