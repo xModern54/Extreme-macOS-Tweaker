@@ -55,6 +55,9 @@ struct SidebarView: View {
       }
     }
     .navigationTitle("")
+    .background(
+      SidebarSplitConstraints(minimumWidth: 200, maximumWidth: 272)
+    )
     .sheet(isPresented: $optimizationStore.isReviewPresented) {
       ApplyReviewView()
         .environmentObject(optimizationStore)
