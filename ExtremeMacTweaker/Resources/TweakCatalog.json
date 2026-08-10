@@ -2365,7 +2365,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 500,
-        "estimatedProcessReduction": 8
+        "estimatedProcessReduction": 42
       },
       "order": 100
     },
