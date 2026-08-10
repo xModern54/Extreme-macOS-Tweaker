@@ -2364,7 +2364,7 @@
         "spotlight-core"
       ],
       "impact": {
-        "estimatedMemoryMB": 400,
+        "estimatedMemoryMB": 500,
         "estimatedProcessReduction": 8
       },
       "order": 100
