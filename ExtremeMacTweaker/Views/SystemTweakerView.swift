@@ -4,7 +4,6 @@ struct SystemTweakerView: View {
   @EnvironmentObject private var catalogStore: TweakCatalogStore
   @EnvironmentObject private var optimizationStore: OptimizationStore
   @State private var selectedFeatureID: String?
-  @State private var choices: [String: SystemTweakChoice] = [:]
 
   private var categories: [TweakCatalogCategory] {
     catalogStore.catalog?.categories.sorted { $0.order < $1.order } ?? []
@@ -33,9 +32,13 @@ struct SystemTweakerView: View {
           .controlSize(.small)
       }
     }
-    .onAppear { selectFirstFeatureIfNeeded() }
+    .onAppear {
+      selectFirstFeatureIfNeeded()
+      reconcileLegacyPendingChanges()
+    }
     .onChange(of: catalogStore.catalog?.catalogVersion) {
       selectFirstFeatureIfNeeded()
+      reconcileLegacyPendingChanges()
     }
   }
 
@@ -120,25 +123,24 @@ struct SystemTweakerView: View {
   }
 
   private func choice(for feature: TweakCatalogFeature) -> SystemTweakChoice {
-    if let choice = choices[feature.id] {
-      return choice
-    }
     let services = catalogStore.services(for: feature)
-    if let pendingAction = optimizationStore.pendingLaunchServiceAction(for: services) {
-      return pendingAction == .enable ? .keepEnabled : .disable
-    }
-    return feature.defaultEnabled ? .keepEnabled : .disable
+    return optimizationStore.launchServicesAreEnabled(
+      services,
+      defaultEnabled: feature.defaultEnabled
+    ) ? .keepEnabled : .disable
   }
 
   private func binding(for feature: TweakCatalogFeature) -> Binding<SystemTweakChoice> {
     Binding(
       get: { choice(for: feature) },
       set: { newValue in
-        choices[feature.id] = newValue
         selectedFeatureID = feature.id
         optimizationStore.setLaunchServices(
           catalogStore.services(for: feature),
-          enabled: newValue == .keepEnabled
+          enabled: newValue == .keepEnabled,
+          defaultEnabled: feature.defaultEnabled,
+          featureID: feature.id,
+          featureTitle: feature.localizedTitle
         )
       }
     )
@@ -151,6 +153,15 @@ struct SystemTweakerView: View {
     }
     if !features.contains(where: { $0.id == selectedFeatureID }) {
       selectedFeatureID = features[0].id
+    }
+  }
+
+  private func reconcileLegacyPendingChanges() {
+    for feature in features {
+      optimizationStore.reconcileLegacyLaunchFeature(
+        feature,
+        services: catalogStore.services(for: feature)
+      )
     }
   }
 }

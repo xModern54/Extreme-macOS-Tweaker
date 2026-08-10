@@ -9,6 +9,11 @@ enum OptimizationExecutionPhase: Equatable {
   case failed
 }
 
+struct PendingChangeSummary: Identifiable {
+  let id: String
+  let title: String
+}
+
 @MainActor
 final class OptimizationStore: ObservableObject {
   @Published private(set) var pendingChanges: [OptimizationChange] = []
@@ -19,24 +24,51 @@ final class OptimizationStore: ObservableObject {
   @Published private(set) var executionLog: [String] = []
   @Published private(set) var executionError: String?
   @Published private(set) var executionRequiresReboot = false
+  @Published private(set) var appliedLaunchServiceStates: [String: Bool] = [:]
 
   private let persistenceURL: URL?
+  private let launchServiceStatesURL: URL?
 
   init() {
     let applicationSupport = FileManager.default.urls(
       for: .applicationSupportDirectory,
       in: .userDomainMask
     ).first
-    persistenceURL = applicationSupport?
+    let tweakerDirectory = applicationSupport?
       .appendingPathComponent("Tweaker", isDirectory: true)
-      .appendingPathComponent("pending-changes.json")
+    persistenceURL = tweakerDirectory?.appendingPathComponent("pending-changes.json")
+    launchServiceStatesURL = tweakerDirectory?
+      .appendingPathComponent("launch-service-states.json")
+    restoreAppliedLaunchServiceStates()
     restorePendingChanges()
   }
 
-  var pendingCount: Int { pendingChanges.count }
+  var pendingCount: Int { pendingChangeSummaries.count }
   var canApply: Bool { !pendingChanges.isEmpty && !isExecuting }
   var executionPlan: ExecutionPlan { OptimizationInterpreter.compile(pendingChanges) }
   var isExecuting: Bool { executionPhase == .authorizing || executionPhase == .running }
+  var pendingChangeSummaries: [PendingChangeSummary] {
+    var summaries: [PendingChangeSummary] = []
+    var includedIDs: Set<String> = []
+
+    for change in pendingChanges {
+      let summary: PendingChangeSummary
+      if case .launchService(let service) = change, let featureID = service.featureID {
+        summary = PendingChangeSummary(
+          id: "launch-feature:\(featureID)",
+          title: "\(service.action == .enable ? "Enable" : "Disable") "
+            + (service.featureTitle ?? featureID)
+        )
+      } else {
+        summary = PendingChangeSummary(id: change.id, title: change.title)
+      }
+
+      if includedIDs.insert(summary.id).inserted {
+        summaries.append(summary)
+      }
+    }
+    return summaries
+  }
 
   func presentReview() {
     resetExecution()
@@ -89,6 +121,7 @@ final class OptimizationStore: ObservableObject {
         }
       )
 
+      recordAppliedLaunchServiceChanges(plan.changes)
       clearPendingChanges()
       executionProgress = 1
       executionMessage = "Changes were applied successfully"
@@ -140,41 +173,122 @@ final class OptimizationStore: ObservableObject {
     }
   }
 
-  func setLaunchServices(_ services: [TweakCatalogService], enabled: Bool) {
+  func setLaunchServices(
+    _ services: [TweakCatalogService],
+    enabled: Bool,
+    defaultEnabled: Bool,
+    featureID: String,
+    featureTitle: String
+  ) {
     let action: LaunchServiceChange.Action = enabled ? .enable : .disable
     for service in services {
-      upsert(
-        .launchService(
-          LaunchServiceChange(
-            serviceID: service.id,
-            label: service.label,
-            domain: service.domain,
-            action: action
-          )
-        ),
-        persist: false
-      )
+      let baselineEnabled = appliedLaunchServiceStates[service.id] ?? defaultEnabled
+      if enabled == baselineEnabled {
+        pendingChanges.removeAll { $0.id == "launch-service:\(service.id)" }
+      } else {
+        upsert(
+          .launchService(
+            LaunchServiceChange(
+              serviceID: service.id,
+              label: service.label,
+              domain: service.domain,
+              featureID: featureID,
+              featureTitle: featureTitle,
+              action: action
+            )
+          ),
+          persist: false
+        )
+      }
     }
     persistPendingChanges()
   }
 
-  func pendingLaunchServiceAction(
-    for services: [TweakCatalogService]
-  ) -> LaunchServiceChange.Action? {
+  func launchServicesAreEnabled(
+    _ services: [TweakCatalogService],
+    defaultEnabled: Bool
+  ) -> Bool {
     let serviceIDs = Set(services.map(\.id))
-    guard !serviceIDs.isEmpty else { return nil }
+    guard !serviceIDs.isEmpty else { return defaultEnabled }
 
-    let actions = pendingChanges.compactMap { change -> LaunchServiceChange.Action? in
+    let pendingStates = pendingChanges.compactMap { change -> Bool? in
       guard
         case .launchService(let service) = change,
         serviceIDs.contains(service.serviceID)
       else {
         return nil
       }
-      return service.action
+      return service.action == .enable
     }
-    guard actions.count == serviceIDs.count, let first = actions.first else { return nil }
-    return actions.allSatisfy { $0 == first } ? first : nil
+    if pendingStates.count == serviceIDs.count, let first = pendingStates.first,
+      pendingStates.allSatisfy({ $0 == first })
+    {
+      return first
+    }
+
+    let baselineStates = services.map {
+      appliedLaunchServiceStates[$0.id] ?? defaultEnabled
+    }
+    return baselineStates.allSatisfy { $0 }
+  }
+
+  func reconcileLegacyLaunchFeature(
+    _ feature: TweakCatalogFeature,
+    services: [TweakCatalogService]
+  ) {
+    let serviceIDs = Set(services.map(\.id))
+    let hasLegacyChanges = pendingChanges.contains { change in
+      guard case .launchService(let service) = change else { return false }
+      return serviceIDs.contains(service.serviceID) && service.featureID == nil
+    }
+    guard hasLegacyChanges else { return }
+
+    let userID = getuid()
+    var disabledLabelsByDomain: [TweakCatalogService.Domain: Set<String>] = [:]
+    for domain in Set(services.map(\.domain)) {
+      let target = switch domain {
+      case .system: "system"
+      case .user: "user/\(userID)"
+      case .gui: "gui/\(userID)"
+      }
+      if let labels = launchdDisabledLabels(in: target) {
+        disabledLabelsByDomain[domain] = labels
+      }
+    }
+
+    for service in services {
+      guard
+        let index = pendingChanges.firstIndex(where: { change in
+          guard case .launchService(let pendingService) = change else { return false }
+          return pendingService.serviceID == service.id && pendingService.featureID == nil
+        }),
+        case .launchService(let pendingService) = pendingChanges[index]
+      else {
+        continue
+      }
+
+      if let disabledLabels = disabledLabelsByDomain[service.domain] {
+        let currentlyEnabled = !disabledLabels.contains(service.label)
+        appliedLaunchServiceStates[service.id] = currentlyEnabled
+        if (pendingService.action == .enable) == currentlyEnabled {
+          pendingChanges.remove(at: index)
+          continue
+        }
+      }
+
+      pendingChanges[index] = .launchService(
+        LaunchServiceChange(
+          serviceID: service.id,
+          label: service.label,
+          domain: service.domain,
+          featureID: feature.id,
+          featureTitle: feature.localizedTitle,
+          action: pendingService.action
+        )
+      )
+    }
+    persistPendingChanges()
+    persistAppliedLaunchServiceStates()
   }
 
   func removeChange(withID id: String) {
@@ -207,6 +321,69 @@ final class OptimizationStore: ObservableObject {
       return
     }
     pendingChanges = decoded
+  }
+
+  private func recordAppliedLaunchServiceChanges(_ changes: [OptimizationChange]) {
+    var changed = false
+    for change in changes {
+      guard case .launchService(let service) = change else { continue }
+      appliedLaunchServiceStates[service.serviceID] = service.action == .enable
+      changed = true
+    }
+    if changed {
+      persistAppliedLaunchServiceStates()
+    }
+  }
+
+  private func restoreAppliedLaunchServiceStates() {
+    guard
+      let launchServiceStatesURL,
+      let data = try? Data(contentsOf: launchServiceStatesURL),
+      let decoded = try? JSONDecoder().decode([String: Bool].self, from: data)
+    else {
+      return
+    }
+    appliedLaunchServiceStates = decoded
+  }
+
+  private func persistAppliedLaunchServiceStates() {
+    guard let launchServiceStatesURL else { return }
+
+    do {
+      try FileManager.default.createDirectory(
+        at: launchServiceStatesURL.deletingLastPathComponent(),
+        withIntermediateDirectories: true
+      )
+      let data = try JSONEncoder().encode(appliedLaunchServiceStates)
+      try data.write(to: launchServiceStatesURL, options: .atomic)
+    } catch {
+      // The next launch falls back to catalog defaults if this cache cannot be saved.
+    }
+  }
+
+  private func launchdDisabledLabels(in domainTarget: String) -> Set<String>? {
+    let process = Process()
+    let outputPipe = Pipe()
+    process.executableURL = URL(fileURLWithPath: "/bin/launchctl")
+    process.arguments = ["print-disabled", domainTarget]
+    process.standardOutput = outputPipe
+    process.standardError = FileHandle.nullDevice
+
+    do {
+      try process.run()
+      let data = outputPipe.fileHandleForReading.readDataToEndOfFile()
+      process.waitUntilExit()
+      guard process.terminationStatus == 0 else { return nil }
+
+      let output = String(decoding: data, as: UTF8.self)
+      return Set(output.split(separator: "\n").compactMap { line in
+        guard line.contains("=> disabled") else { return nil }
+        let parts = line.split(separator: "\"")
+        return parts.count >= 2 ? String(parts[1]) : nil
+      })
+    } catch {
+      return nil
+    }
   }
 
   private func persistPendingChanges() {

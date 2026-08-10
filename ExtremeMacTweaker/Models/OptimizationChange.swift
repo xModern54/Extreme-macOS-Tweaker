@@ -43,6 +43,8 @@ struct LaunchServiceChange: Codable, Hashable, Sendable {
   let serviceID: String
   let label: String
   let domain: TweakCatalogService.Domain
+  let featureID: String?
+  let featureTitle: String?
   let action: Action
 }
 

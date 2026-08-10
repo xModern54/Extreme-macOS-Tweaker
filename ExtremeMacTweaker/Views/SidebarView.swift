@@ -104,7 +104,7 @@ private struct ApplyReviewView: View {
   private var reviewList: some View {
     List {
       Section("Selected Changes") {
-        ForEach(optimizationStore.pendingChanges) { change in
+        ForEach(optimizationStore.pendingChangeSummaries) { change in
           Text(change.title)
         }
       }

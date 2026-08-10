@@ -31,7 +31,7 @@ struct TweakCatalogCategory: Decodable, Identifiable, Sendable {
 }
 
 struct TweakCatalogService: Decodable, Identifiable, Sendable {
-  enum Domain: String, Codable, Sendable {
+  enum Domain: String, Codable, Hashable, Sendable {
     case system
     case user
     case gui
