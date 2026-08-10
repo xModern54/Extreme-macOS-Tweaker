@@ -2436,7 +2436,7 @@
         "apple-intelligence"
       ],
       "impact": {
-        "estimatedMemoryMB": 106,
+        "estimatedMemoryMB": 206,
         "estimatedProcessReduction": 6
       },
       "order": 200
