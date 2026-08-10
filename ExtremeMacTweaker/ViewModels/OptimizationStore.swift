@@ -27,6 +27,7 @@ final class OptimizationStore: ObservableObject {
   @Published private(set) var appliedLaunchServiceStates: [String: Bool] = [:]
   @Published private(set) var systemProtectionCheck: SystemProtectionCheckState = .notRequired
   @Published private(set) var restartInProgress = false
+  @Published private(set) var observedLaunchServiceStates: [String: LaunchServiceRuntimeState] = [:]
 
   private let persistenceURL: URL?
   private let launchServiceStatesURL: URL?
@@ -239,7 +240,9 @@ final class OptimizationStore: ObservableObject {
   ) {
     let action: LaunchServiceChange.Action = enabled ? .enable : .disable
     for service in services {
-      let baselineEnabled = appliedLaunchServiceStates[service.id] ?? defaultEnabled
+      let baselineEnabled = observedLaunchServiceStates[service.id]?.isEffectivelyActive
+        ?? appliedLaunchServiceStates[service.id]
+        ?? defaultEnabled
       if enabled == baselineEnabled {
         pendingChanges.removeAll { $0.id == "launch-service:\(service.id)" }
       } else {
@@ -265,28 +268,30 @@ final class OptimizationStore: ObservableObject {
     _ services: [TweakCatalogService],
     defaultEnabled: Bool
   ) -> Bool {
-    let serviceIDs = Set(services.map(\.id))
-    guard !serviceIDs.isEmpty else { return defaultEnabled }
+    guard !services.isEmpty else { return defaultEnabled }
 
-    let pendingStates = pendingChanges.compactMap { change -> Bool? in
-      guard
-        case .launchService(let service) = change,
-        serviceIDs.contains(service.serviceID)
-      else {
-        return nil
-      }
-      return service.action == .enable
+    let pendingStates = pendingChanges.reduce(into: [String: Bool]()) { states, change in
+      guard case .launchService(let service) = change else { return }
+      states[service.serviceID] = service.action == .enable
     }
-    if pendingStates.count == serviceIDs.count, let first = pendingStates.first,
-      pendingStates.allSatisfy({ $0 == first })
-    {
-      return first
+    let effectiveStates = services.map { service in
+      pendingStates[service.id]
+        ?? observedLaunchServiceStates[service.id]?.isEffectivelyActive
+        ?? appliedLaunchServiceStates[service.id]
+        ?? defaultEnabled
     }
+    return effectiveStates.contains(true)
+  }
 
-    let baselineStates = services.map {
-      appliedLaunchServiceStates[$0.id] ?? defaultEnabled
+  func refreshLaunchServiceStates(_ services: [TweakCatalogService]) async {
+    guard !services.isEmpty else {
+      observedLaunchServiceStates = [:]
+      return
     }
-    return baselineStates.allSatisfy { $0 }
+    observedLaunchServiceStates = await LaunchServiceStateScanner.scan(
+      services: services,
+      userID: getuid()
+    )
   }
 
   func reconcileLegacyLaunchFeature(
@@ -385,6 +390,7 @@ final class OptimizationStore: ObservableObject {
     for change in changes {
       guard case .launchService(let service) = change else { continue }
       appliedLaunchServiceStates[service.serviceID] = service.action == .enable
+      observedLaunchServiceStates.removeValue(forKey: service.serviceID)
       changed = true
     }
     if changed {

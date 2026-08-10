@@ -40,6 +40,14 @@ struct SystemTweakerView: View {
       selectFirstFeatureIfNeeded()
       reconcileLegacyPendingChanges()
     }
+    .task(id: catalogStore.catalog?.catalogVersion) {
+      while !Task.isCancelled {
+        await optimizationStore.refreshLaunchServiceStates(
+          catalogStore.catalog?.services ?? []
+        )
+        try? await Task.sleep(nanoseconds: 5_000_000_000)
+      }
+    }
   }
 
   private func workspace(selectedFeature: TweakCatalogFeature) -> some View {
@@ -231,6 +239,7 @@ private struct EstimatedMemoryPill: View {
 }
 
 private struct SystemTweakInspector: View {
+  @EnvironmentObject private var optimizationStore: OptimizationStore
   let feature: TweakCatalogFeature
   let services: [TweakCatalogService]
   let choice: SystemTweakChoice
@@ -321,23 +330,42 @@ private struct SystemTweakInspector: View {
       HStack {
         sectionTitle("Related Services")
         Spacer()
-        Text("\(services.count)")
+        Text("\(activeServiceCount)/\(services.count) active")
           .font(.caption.monospacedDigit())
           .foregroundStyle(.secondary)
       }
 
       VStack(alignment: .leading, spacing: 7) {
         ForEach(services) { service in
-          Text(service.label)
-            .font(.caption2.monospaced())
-            .foregroundStyle(.secondary)
-            .textSelection(.enabled)
-            .lineLimit(1)
-            .minimumScaleFactor(0.65)
-            .frame(maxWidth: .infinity, alignment: .leading)
+          HStack(spacing: 6) {
+            Circle()
+              .fill(serviceStateColor(service))
+              .frame(width: 6, height: 6)
+
+            Text(service.label)
+              .font(.caption2.monospaced())
+              .foregroundStyle(.secondary)
+              .textSelection(.enabled)
+              .lineLimit(1)
+              .minimumScaleFactor(0.65)
+              .frame(maxWidth: .infinity, alignment: .leading)
+          }
         }
       }
     }
+  }
+
+  private var activeServiceCount: Int {
+    services.count { service in
+      optimizationStore.observedLaunchServiceStates[service.id]?.isEffectivelyActive ?? true
+    }
+  }
+
+  private func serviceStateColor(_ service: TweakCatalogService) -> Color {
+    guard let state = optimizationStore.observedLaunchServiceStates[service.id] else {
+      return .secondary
+    }
+    return state.isEffectivelyActive ? .green : .red
   }
 
   private func sectionTitle(_ title: String) -> some View {
