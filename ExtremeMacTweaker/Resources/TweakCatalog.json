@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.10",
+  "catalogVersion": "2026.08.10.1",
   "compatibility": {
     "minimumMacOSMajor": 15,
     "maximumMacOSMajor": 27,
@@ -17,16 +17,70 @@
       "order": 100
     },
     {
-      "id": "connectivity",
-      "title": "Connectivity",
-      "systemImage": "antenna.radiowaves.left.and.right",
+      "id": "apple-intelligence-siri",
+      "title": "Siri & Apple Intelligence",
+      "systemImage": "waveform",
       "order": 200
     },
     {
-      "id": "system-services",
-      "title": "System Services",
-      "systemImage": "gearshape.2",
+      "id": "communication",
+      "title": "Communication",
+      "systemImage": "message",
       "order": 300
+    },
+    {
+      "id": "continuity-sharing",
+      "title": "Continuity & Sharing",
+      "systemImage": "airplayaudio",
+      "order": 400
+    },
+    {
+      "id": "icloud-store",
+      "title": "iCloud & App Store",
+      "systemImage": "icloud",
+      "order": 500
+    },
+    {
+      "id": "photos-media",
+      "title": "Photos & Media",
+      "systemImage": "photo.on.rectangle",
+      "order": 600
+    },
+    {
+      "id": "location-findmy",
+      "title": "Location & Find My",
+      "systemImage": "location",
+      "order": 700
+    },
+    {
+      "id": "privacy-telemetry",
+      "title": "Privacy & Telemetry",
+      "systemImage": "hand.raised",
+      "order": 800
+    },
+    {
+      "id": "consumer-apps",
+      "title": "Consumer Features",
+      "systemImage": "square.grid.2x2",
+      "order": 900
+    },
+    {
+      "id": "accessibility",
+      "title": "Accessibility",
+      "systemImage": "figure.stand",
+      "order": 1000
+    },
+    {
+      "id": "security-optional",
+      "title": "Optional Security",
+      "systemImage": "lock.shield",
+      "order": 1100
+    },
+    {
+      "id": "system-maintenance",
+      "title": "System & Maintenance",
+      "systemImage": "gearshape.2",
+      "order": 1200
     }
   ],
   "services": [
@@ -51,84 +105,1566 @@
     {
       "id": "spotlight-agent",
       "label": "com.apple.Spotlight",
-      "domain": "user",
+      "domain": "gui",
       "kind": "agent"
+    },
+    {
+      "id": "corespotlightd",
+      "label": "com.apple.corespotlightd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "spotlightknowledged",
+      "label": "com.apple.spotlightknowledged",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "metadata-mdworker-shared",
+      "label": "com.apple.mdworker.shared",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "metadata-mdbulkimport",
+      "label": "com.apple.metadata.mdbulkimport",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "metadata-mdwrite",
+      "label": "com.apple.metadata.mdwrite",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "chronod",
+      "label": "com.apple.chronod",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "mediaanalysisd",
+      "label": "com.apple.mediaanalysisd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "photoanalysisd",
+      "label": "com.apple.photoanalysisd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "photolibraryd",
+      "label": "com.apple.photolibraryd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "revisiond",
+      "label": "com.apple.revisiond",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "homed",
+      "label": "com.apple.homed",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "homeeventsd",
+      "label": "com.apple.homeeventsd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "homeenergyd",
+      "label": "com.apple.homeenergyd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "thread-commissioner",
+      "label": "com.apple.ThreadCommissionerService",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "threadradiod",
+      "label": "com.apple.threadradiod",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "corespeechd",
+      "label": "com.apple.corespeechd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "corespeechd-system",
+      "label": "com.apple.corespeechd_system",
+      "domain": "system",
+      "kind": "daemon"
     },
     {
       "id": "assistantd",
       "label": "com.apple.assistantd",
-      "domain": "user",
+      "domain": "gui",
       "kind": "agent"
     },
     {
-      "id": "siriactionsd",
-      "label": "com.apple.siriactionsd",
-      "domain": "user",
+      "id": "assistant-service",
+      "label": "com.apple.assistant_service",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "assistant-cdmd",
+      "label": "com.apple.assistant_cdmd",
+      "domain": "gui",
       "kind": "agent"
     },
     {
       "id": "dictation-im",
       "label": "com.apple.DictationIM",
-      "domain": "user",
+      "domain": "gui",
       "kind": "agent"
     },
     {
-      "id": "airplay-xpc-helper",
-      "label": "com.apple.AirPlayXPCHelper",
+      "id": "asr",
+      "label": "com.apple.asr",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "voicebankingd",
+      "label": "com.apple.voicebankingd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "voicememod",
+      "label": "com.apple.voicememod",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "speech-synthesisserver",
+      "label": "com.apple.speech.synthesisserver",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "speech-datainstallerd",
+      "label": "com.apple.speech.speechdatainstallerd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "siri-tts-training",
+      "label": "com.apple.SiriTTSTrainingAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "speechsynthesisd-arm64",
+      "label": "com.apple.speech.speechsynthesisd.arm64",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "axassetsd",
+      "label": "com.apple.accessibility.axassetsd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "accessibility-heard",
+      "label": "com.apple.accessibility.heard",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "accessibility-uiserver",
+      "label": "com.apple.AccessibilityUIServer",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "accessibility-visuals",
+      "label": "com.apple.AccessibilityVisualsAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "generativeexperiencesd",
+      "label": "com.apple.generativeexperiencesd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "modelmanagerd",
+      "label": "com.apple.modelmanagerd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "modelcatalogd",
+      "label": "com.apple.modelcatalogd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "model-catalog-agent",
+      "label": "com.apple.ModelCatalogAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "intelligenceplatformd",
+      "label": "com.apple.intelligenceplatformd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "textcomposerd",
+      "label": "com.apple.textcomposerd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "triald",
+      "label": "com.apple.triald",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "triald-system",
+      "label": "com.apple.triald_system",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "biome-agent",
+      "label": "com.apple.BiomeAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "biomed",
+      "label": "com.apple.biomed",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "routined",
+      "label": "com.apple.routined",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "context-store-agent",
+      "label": "com.apple.ContextStoreAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "contextstored",
+      "label": "com.apple.contextstored",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "duetexpertd",
+      "label": "com.apple.duetexpertd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "proactived",
+      "label": "com.apple.proactived",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "proactiveeventtrackerd",
+      "label": "com.apple.proactiveeventtrackerd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "coreduetd",
+      "label": "com.apple.coreduetd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "ospredictiond",
+      "label": "com.apple.ospredictiond",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "analyticsd",
+      "label": "com.apple.analyticsd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "analyticsagent",
+      "label": "com.apple.analyticsagent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "osanalytics-helper",
+      "label": "com.apple.osanalytics.osanalyticshelper",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "rtcreportingd",
+      "label": "com.apple.rtcreportingd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "geoanalyticsd",
+      "label": "com.apple.geoanalyticsd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "metrickitd",
+      "label": "com.apple.metrickitd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "inputanalyticsd",
+      "label": "com.apple.inputanalyticsd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "audioanalyticsd",
+      "label": "com.apple.audioanalyticsd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "systemstats-analysis",
+      "label": "com.apple.systemstats.analysis",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "systemstats-daily",
+      "label": "com.apple.systemstats.daily",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "usbctelemetryd",
+      "label": "com.apple.usbctelemetryd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "ecosystemd",
+      "label": "com.apple.ecosystemd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "aslmanager",
+      "label": "com.apple.aslmanager",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "reportcrash",
+      "label": "com.apple.ReportCrash",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "reportcrash-root",
+      "label": "com.apple.ReportCrash.Root",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "imagent",
+      "label": "com.apple.imagent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "imtransferagent",
+      "label": "com.apple.imcore.imtransferagent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "identityservicesd",
+      "label": "com.apple.identityservicesd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "ids-remote-url",
+      "label": "com.apple.idsfoundation.IDSRemoteURLConnectionAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "facetimemessagestored",
+      "label": "com.apple.facetimemessagestored",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "callhistoryd",
+      "label": "com.apple.callhistoryd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "callhistory-sync",
+      "label": "com.apple.CallHistorySyncHelper",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "callhistory-plugin",
+      "label": "com.apple.CallHistoryPluginHelper",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "screensharing-messages",
+      "label": "com.apple.screensharing.MessagesAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "linkd",
+      "label": "com.apple.linkd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "callservicesd",
+      "label": "com.apple.telephonyutilities.callservicesd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "avconferenced",
+      "label": "com.apple.avconferenced",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "sharingd",
+      "label": "com.apple.sharingd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "rapportd",
+      "label": "com.apple.rapportd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "nearbyd",
+      "label": "com.apple.nearbyd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "useractivityd",
+      "label": "com.apple.coreservices.useractivityd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "wifip2pd",
+      "label": "com.apple.wifip2pd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "continuity-capture",
+      "label": "com.apple.cmio.ContinuityCaptureAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "mediacontinuityd",
+      "label": "com.apple.mediacontinuityd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "amp-mediasharingd",
+      "label": "com.apple.amp.mediasharingd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "rapport-ui-agent",
+      "label": "com.apple.RapportUIAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "sidecar-relay",
+      "label": "com.apple.sidecar-relay",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "companiond",
+      "label": "com.apple.companiond",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "ensemble",
+      "label": "com.apple.ensemble",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "intelligentroutingd",
+      "label": "com.apple.intelligentroutingd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "bluetoothuserd",
+      "label": "com.apple.bluetoothuserd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "findmy-locate-agent",
+      "label": "com.apple.findmy.findmylocateagent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "findmy-beaconingd",
+      "label": "com.apple.findmy.findmybeaconingd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "findmydeviced",
+      "label": "com.apple.icloud.findmydeviced",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "findmymacd",
+      "label": "com.apple.findmymacd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "findmymacmessenger",
+      "label": "com.apple.findmymacmessenger",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "searchpartyd",
+      "label": "com.apple.icloud.searchpartyd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "searchpartyuseragent",
+      "label": "com.apple.icloud.searchpartyuseragent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "findmydevice-user-agent",
+      "label": "com.apple.icloud.findmydeviced.findmydevice-user-agent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "financed",
+      "label": "com.apple.financed",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "passd",
+      "label": "com.apple.passd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "nfcd",
+      "label": "com.apple.nfcd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "seld",
+      "label": "com.apple.seld",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "contactsd",
+      "label": "com.apple.contactsd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "addressbook-sourcesync",
+      "label": "com.apple.AddressBook.SourceSync",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "addressbook-abd",
+      "label": "com.apple.AddressBook.abd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "addressbook-assistant",
+      "label": "com.apple.AddressBook.AssistantService",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "contacts-postersyncd",
+      "label": "com.apple.contacts.postersyncd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "contacts-donation",
+      "label": "com.apple.contacts.donation-agent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "calaccessd",
+      "label": "com.apple.calaccessd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "peopled",
+      "label": "com.apple.peopled",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "familycircled",
+      "label": "com.apple.familycircled",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "remindd",
+      "label": "com.apple.remindd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "donotdisturbd",
+      "label": "com.apple.donotdisturbd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "screentime-agent",
+      "label": "com.apple.ScreenTimeAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "usage-tracking-agent",
+      "label": "com.apple.UsageTrackingAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "liveactivitiesd",
+      "label": "com.apple.liveactivitiesd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "sociallayerd",
+      "label": "com.apple.sociallayerd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "managed-settings-agent",
+      "label": "com.apple.ManagedSettingsAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "dmd",
+      "label": "com.apple.dmd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "askpermissiond",
+      "label": "com.apple.askpermissiond",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "usernoted",
+      "label": "com.apple.usernoted",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "usernotificationsd",
+      "label": "com.apple.usernotificationsd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "notificationcenterui",
+      "label": "com.apple.notificationcenterui.agent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "apsd",
+      "label": "com.apple.apsd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "su-notification-manager",
+      "label": "com.apple.SoftwareUpdateNotificationManager",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "user-notification-center-agent",
+      "label": "com.apple.UserNotificationCenterAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "user-notification-center",
+      "label": "com.apple.UserNotificationCenter",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "icloud-notification-agent",
+      "label": "com.apple.iCloudNotificationAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "icloud-usernotificationsd",
+      "label": "com.apple.iCloudUserNotificationsd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "familynotificationd",
+      "label": "com.apple.familynotificationd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "safari-notification-agent",
+      "label": "com.apple.SafariNotificationAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "webpushd",
+      "label": "com.apple.webkit.webpushd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "usbnotificationagent",
+      "label": "com.apple.usbnotificationagent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "diagnosticspushd",
+      "label": "com.apple.diagnosticspushd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "aos-push-relay",
+      "label": "com.apple.AOSPushRelay",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "bird",
+      "label": "com.apple.bird",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "fileprovider",
+      "label": "com.apple.FileProvider",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "cloudphotod",
+      "label": "com.apple.cloudphotod",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "cloudd",
+      "label": "com.apple.cloudd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "syncdefaultsd",
+      "label": "com.apple.syncdefaultsd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "cloudsettingssyncagent",
+      "label": "com.apple.cloudsettingssyncagent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "safari-bookmarks-sync",
+      "label": "com.apple.SafariBookmarksSyncAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "safari-history",
+      "label": "com.apple.Safari.History",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "feature-access-agent",
+      "label": "com.apple.FeatureAccessAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "cdpd",
+      "label": "com.apple.cdpd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "cloudkeychainproxy3",
+      "label": "com.apple.security.cloudkeychainproxy3",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "protected-cloud-key-sync",
+      "label": "com.apple.protectedcloudstorage.protectedcloudkeysyncing",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "appstoreagent",
+      "label": "com.apple.appstoreagent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "commerce",
+      "label": "com.apple.commerce",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "storedownloadd",
+      "label": "com.apple.storedownloadd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "storeaccountd",
+      "label": "com.apple.storeaccountd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "storeassetd",
+      "label": "com.apple.storeassetd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "storelegacy",
+      "label": "com.apple.storelegacy",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "storeuid",
+      "label": "com.apple.storeuid",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "appstorecomponentsd",
+      "label": "com.apple.appstorecomponentsd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "storekitagent",
+      "label": "com.apple.storekitagent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "appstored",
+      "label": "com.apple.appstored",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "store-privileged-odr",
+      "label": "com.apple.AppStoreDaemon.StorePrivilegedODRService",
       "domain": "system",
       "kind": "xpcService"
     },
     {
-      "id": "airplay-receiverd",
-      "label": "com.apple.airplayreceiverd",
-      "domain": "user",
+      "id": "store-privileged-task",
+      "label": "com.apple.AppStoreDaemon.StorePrivilegedTaskService",
+      "domain": "system",
+      "kind": "xpcService"
+    },
+    {
+      "id": "store-ae-service",
+      "label": "com.apple.AppStoreDaemon.StoreAEService",
+      "domain": "system",
+      "kind": "xpcService"
+    },
+    {
+      "id": "storereceiptinstaller",
+      "label": "com.apple.storereceiptinstaller",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "amsaccountsd",
+      "label": "com.apple.amsaccountsd",
+      "domain": "gui",
       "kind": "agent"
     },
     {
-      "id": "icloud-bird",
-      "label": "com.apple.bird",
-      "domain": "user",
+      "id": "amsengagementd",
+      "label": "com.apple.amsengagementd",
+      "domain": "gui",
       "kind": "agent"
     },
     {
-      "id": "icloud-cloudd",
-      "label": "com.apple.cloudd",
-      "domain": "user",
+      "id": "promotedcontentd",
+      "label": "com.apple.ap.promotedcontentd",
+      "domain": "gui",
       "kind": "agent"
     },
     {
-      "id": "icloud-cloudpaird",
-      "label": "com.apple.cloudpaird",
-      "domain": "user",
+      "id": "adprivacyd",
+      "label": "com.apple.ap.adprivacyd",
+      "domain": "gui",
       "kind": "agent"
     },
     {
-      "id": "icloud-cloudphotod",
-      "label": "com.apple.cloudphotod",
-      "domain": "user",
+      "id": "amsondevicestoraged",
+      "label": "com.apple.amsondevicestoraged",
+      "domain": "gui",
       "kind": "agent"
     },
     {
-      "id": "icloud-findmydeviced",
-      "label": "com.apple.icloud.findmydeviced",
-      "domain": "user",
+      "id": "appplaceholdersyncd",
+      "label": "com.apple.appplaceholdersyncd",
+      "domain": "gui",
       "kind": "agent"
     },
     {
-      "id": "screen-time-agent",
-      "label": "com.apple.ScreenTimeAgent",
-      "domain": "user",
+      "id": "installcoordinationd",
+      "label": "com.apple.installcoordinationd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "fairplayd",
+      "label": "com.apple.fairplayd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "itunescloudd",
+      "label": "com.apple.itunescloudd",
+      "domain": "gui",
       "kind": "agent"
     },
     {
-      "id": "screen-time-diagnose",
-      "label": "com.apple.screentimediagnose",
-      "domain": "user",
+      "id": "softwareupdated",
+      "label": "com.apple.softwareupdated",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "mobile-softwareupdated",
+      "label": "com.apple.mobile.softwareupdated",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "suhelperd",
+      "label": "com.apple.suhelperd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "assetcache-builtin",
+      "label": "com.apple.AssetCache.builtin",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "assetcache-locator-system",
+      "label": "com.apple.AssetCacheLocatorService",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "assetcache-manager",
+      "label": "com.apple.AssetCacheManagerService",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "assetcache-tetherator",
+      "label": "com.apple.AssetCacheTetheratorService",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "assetcache-agent",
+      "label": "com.apple.AssetCache.agent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "backupd",
+      "label": "com.apple.backupd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "backupd-helper",
+      "label": "com.apple.backupd-helper",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "tm-helper-agent",
+      "label": "com.apple.TMHelperAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "gamepolicy-agent",
+      "label": "com.apple.GamePolicyAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "gamepolicyd",
+      "label": "com.apple.gamepolicyd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "gamecontrollerd",
+      "label": "com.apple.GameController.gamecontrollerd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "gamecontrolleragentd",
+      "label": "com.apple.GameController.gamecontrolleragentd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "gamed",
+      "label": "com.apple.gamed",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "gamesaved",
+      "label": "com.apple.gamesaved",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "game-overlay-ui",
+      "label": "com.apple.GameOverlayUI",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "sportsd",
+      "label": "com.apple.sportsd",
+      "domain": "gui",
       "kind": "agent"
     },
     {
       "id": "locationd",
       "label": "com.apple.locationd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "corelocation-agent",
+      "label": "com.apple.CoreLocationAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "geod-bridge",
+      "label": "com.apple.geodMachServiceBridge",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "countryd",
+      "label": "com.apple.countryd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "milod",
+      "label": "com.apple.milod",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "weatherd",
+      "label": "com.apple.weatherd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "cmio-registerassistant",
+      "label": "com.apple.cmio.registerassistantservice",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "cameracaptured",
+      "label": "com.apple.cameracaptured",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "appleh16camerad",
+      "label": "com.apple.appleh16camerad",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "vdc-assistant",
+      "label": "com.apple.cmio.VDCAssistant",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "uvc-assistant",
+      "label": "com.apple.cmio.uvcassistantextension",
+      "domain": "system",
+      "kind": "xpcService"
+    },
+    {
+      "id": "xprotectd",
+      "label": "com.apple.security.xprotectd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "xprotect-daemon-scan",
+      "label": "com.apple.XProtect.daemon.scan",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "xprotect-daemon-scan-startup",
+      "label": "com.apple.XProtect.daemon.scan.startup",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "xprotect-plugin-system",
+      "label": "com.apple.XprotectFramework.PluginService",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "xprotect-agent-scan",
+      "label": "com.apple.XProtect.agent.scan",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "xprotect-agent-scan-startup",
+      "label": "com.apple.XProtect.agent.scan.startup",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "syspolicyd",
+      "label": "com.apple.security.syspolicy",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "email-maild",
+      "label": "com.apple.email.maild",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "helpd",
+      "label": "com.apple.helpd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "studentd",
+      "label": "com.apple.studentd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "assessmentagent",
+      "label": "com.apple.assessmentagent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "appssso-agent",
+      "label": "com.apple.AppSSOAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "appssso-daemon",
+      "label": "com.apple.AppSSODaemon",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "appssso-login",
+      "label": "com.apple.AppSSOAgent.login",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "remotemanagementd",
+      "label": "com.apple.remotemanagementd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "mdmclient-daemon",
+      "label": "com.apple.mdmclient.daemon",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "mdmclient-agent",
+      "label": "com.apple.mdmclient.agent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "networkserviceproxy",
+      "label": "com.apple.networkserviceproxy",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "captiveagent",
+      "label": "com.apple.captiveagent",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "translationd",
+      "label": "com.apple.translationd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "applespell",
+      "label": "com.apple.applespell",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "talagent",
+      "label": "com.apple.talagent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "amp-device-discovery",
+      "label": "com.apple.AMPDeviceDiscoveryAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "icdd",
+      "label": "com.apple.icdd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "ctkd",
+      "label": "com.apple.ctkd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "commcenter",
+      "label": "com.apple.CommCenter",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "symptomsd",
+      "label": "com.apple.symptomsd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "wifi-agent",
+      "label": "com.apple.wifi.WiFiAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "wallpaper-export",
+      "label": "com.apple.wallpaper.export",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "netbiosd",
+      "label": "com.apple.netbiosd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "kerberos-digest",
+      "label": "com.apple.Kerberos.digest-service",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "gsscred",
+      "label": "com.apple.GSSCred",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "gssd",
+      "label": "com.apple.gssd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "accessoryupdaterd",
+      "label": "com.apple.accessoryupdaterd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "uarpd",
+      "label": "com.apple.uarpd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "bootinstalld",
+      "label": "com.apple.bootinstalld",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "corerepaird",
+      "label": "com.apple.corerepaird",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "mobilerepaird",
+      "label": "com.apple.mobilerepaird",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "perfpower-services",
+      "label": "com.apple.PerfPowerServices",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "mobiletimerd",
+      "label": "com.apple.mobiletimerd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "ndoagent",
+      "label": "com.apple.ndoagent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "eligibilityd",
+      "label": "com.apple.eligibilityd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "feedbackd",
+      "label": "com.apple.feedbackd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "swtransparencyd",
+      "label": "com.apple.swtransparencyd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "backgroundtaskmanagementd",
+      "label": "com.apple.backgroundtaskmanagementd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "backgroundtaskmanagement-agent",
+      "label": "com.apple.backgroundtaskmanagement.agent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "safari-platform-helper",
+      "label": "com.apple.SafariPlatformSupport.Helper",
+      "domain": "system",
+      "kind": "xpcService"
+    },
+    {
+      "id": "safari-safebrowsing",
+      "label": "com.apple.Safari.SafeBrowsing.Service",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "auth-services-agent",
+      "label": "com.apple.AuthenticationServicesCore.AuthenticationServicesAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "cursor-ui-view",
+      "label": "com.apple.TextInputUI.xpc.CursorUIViewService",
+      "domain": "gui",
+      "kind": "xpcService"
+    },
+    {
+      "id": "quicklook-ui",
+      "label": "com.apple.quicklook.ui.helper",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "quicklook-thumbnail",
+      "label": "com.apple.quicklook.ThumbnailsAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "followupd",
+      "label": "com.apple.followupd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "warmd",
+      "label": "com.apple.warmd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "dasd",
+      "label": "com.apple.dasd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "imklaunchagent",
+      "label": "com.apple.imklaunchagent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "audioclocksyncd",
+      "label": "com.apple.timesync.audioclocksyncd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "apfsuseragent",
+      "label": "com.apple.apfsuseragent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "autofsd",
+      "label": "com.apple.autofsd",
       "domain": "system",
       "kind": "daemon"
     }
@@ -140,45 +1676,677 @@
         "metadata-mds",
         "metadata-mds-index",
         "metadata-mds-scan",
-        "spotlight-agent"
+        "spotlight-agent",
+        "corespotlightd",
+        "spotlightknowledged",
+        "metadata-mdbulkimport",
+        "metadata-mdwrite",
+        "metadata-mdworker-shared"
       ]
     },
     {
-      "id": "siri-dictation",
+      "id": "widgets-chrono",
       "services": [
+        "chronod"
+      ]
+    },
+    {
+      "id": "photos-analysis",
+      "services": [
+        "mediaanalysisd",
+        "photoanalysisd"
+      ]
+    },
+    {
+      "id": "photos-library",
+      "services": [
+        "photolibraryd"
+      ]
+    },
+    {
+      "id": "document-versions",
+      "services": [
+        "revisiond"
+      ]
+    },
+    {
+      "id": "homekit",
+      "services": [
+        "homed",
+        "homeeventsd",
+        "homeenergyd",
+        "thread-commissioner",
+        "threadradiod"
+      ]
+    },
+    {
+      "id": "speech-siri",
+      "services": [
+        "corespeechd",
+        "corespeechd-system",
         "assistantd",
-        "siriactionsd",
-        "dictation-im"
+        "assistant-service",
+        "assistant-cdmd",
+        "dictation-im",
+        "asr",
+        "voicebankingd",
+        "voicememod",
+        "speech-synthesisserver",
+        "speech-datainstallerd",
+        "siri-tts-training",
+        "speechsynthesisd-arm64"
       ]
     },
     {
-      "id": "airplay-receiver",
+      "id": "accessibility-tts",
       "services": [
-        "airplay-xpc-helper",
-        "airplay-receiverd"
+        "axassetsd"
       ]
     },
     {
-      "id": "icloud-sync",
+      "id": "accessibility-hearing",
       "services": [
-        "icloud-bird",
-        "icloud-cloudd",
-        "icloud-cloudpaird",
-        "icloud-cloudphotod",
-        "icloud-findmydeviced"
+        "accessibility-heard"
+      ]
+    },
+    {
+      "id": "accessibility-ui-overlays",
+      "services": [
+        "accessibility-uiserver",
+        "accessibility-visuals"
+      ]
+    },
+    {
+      "id": "apple-intelligence",
+      "services": [
+        "generativeexperiencesd",
+        "modelmanagerd",
+        "modelcatalogd",
+        "model-catalog-agent",
+        "intelligenceplatformd",
+        "textcomposerd"
+      ]
+    },
+    {
+      "id": "apple-trial",
+      "services": [
+        "triald",
+        "triald-system"
+      ]
+    },
+    {
+      "id": "biome-streams",
+      "services": [
+        "biome-agent",
+        "biomed"
+      ]
+    },
+    {
+      "id": "routine-proactive",
+      "services": [
+        "routined",
+        "context-store-agent",
+        "contextstored",
+        "duetexpertd",
+        "proactived",
+        "proactiveeventtrackerd",
+        "coreduetd",
+        "ospredictiond"
+      ]
+    },
+    {
+      "id": "analytics-hub",
+      "services": [
+        "analyticsd",
+        "analyticsagent",
+        "osanalytics-helper",
+        "rtcreportingd",
+        "geoanalyticsd",
+        "metrickitd"
+      ]
+    },
+    {
+      "id": "telemetry-tails",
+      "services": [
+        "inputanalyticsd",
+        "audioanalyticsd",
+        "systemstats-analysis",
+        "systemstats-daily",
+        "usbctelemetryd",
+        "ecosystemd",
+        "aslmanager"
+      ]
+    },
+    {
+      "id": "crash-reporter",
+      "services": [
+        "reportcrash",
+        "reportcrash-root"
+      ]
+    },
+    {
+      "id": "messages-imessage",
+      "services": [
+        "imagent",
+        "imtransferagent",
+        "identityservicesd",
+        "ids-remote-url",
+        "facetimemessagestored",
+        "callhistoryd",
+        "callhistory-sync",
+        "callhistory-plugin",
+        "screensharing-messages"
+      ]
+    },
+    {
+      "id": "appintents-linkd",
+      "services": [
+        "linkd"
+      ]
+    },
+    {
+      "id": "facetime-callkit",
+      "services": [
+        "callservicesd",
+        "avconferenced"
+      ]
+    },
+    {
+      "id": "continuity-sharing",
+      "services": [
+        "sharingd",
+        "rapportd",
+        "nearbyd",
+        "useractivityd",
+        "wifip2pd",
+        "continuity-capture",
+        "mediacontinuityd",
+        "amp-mediasharingd",
+        "intelligentroutingd"
+      ]
+    },
+    {
+      "id": "continuity-remainder",
+      "services": [
+        "rapport-ui-agent",
+        "sidecar-relay",
+        "companiond",
+        "ensemble"
+      ]
+    },
+    {
+      "id": "bluetooth-user",
+      "services": [
+        "bluetoothuserd"
+      ]
+    },
+    {
+      "id": "find-my",
+      "services": [
+        "findmy-locate-agent",
+        "findmy-beaconingd",
+        "findmydeviced",
+        "findmymacd",
+        "findmymacmessenger",
+        "searchpartyd",
+        "searchpartyuseragent",
+        "findmydevice-user-agent"
+      ]
+    },
+    {
+      "id": "wallet-applepay",
+      "services": [
+        "financed",
+        "passd",
+        "nfcd",
+        "seld"
+      ]
+    },
+    {
+      "id": "contacts-addressbook",
+      "services": [
+        "contactsd",
+        "addressbook-sourcesync",
+        "addressbook-abd",
+        "addressbook-assistant",
+        "contacts-postersyncd",
+        "contacts-donation"
+      ]
+    },
+    {
+      "id": "people-family-calendar",
+      "services": [
+        "calaccessd",
+        "peopled",
+        "familycircled"
+      ]
+    },
+    {
+      "id": "reminders",
+      "services": [
+        "remindd"
+      ]
+    },
+    {
+      "id": "focus-dnd",
+      "services": [
+        "donotdisturbd"
       ]
     },
     {
       "id": "screen-time",
       "services": [
-        "screen-time-agent",
-        "screen-time-diagnose"
+        "screentime-agent",
+        "usage-tracking-agent",
+        "liveactivitiesd",
+        "sociallayerd",
+        "managed-settings-agent",
+        "dmd",
+        "askpermissiond"
+      ]
+    },
+    {
+      "id": "notifications-core",
+      "services": [
+        "usernoted",
+        "usernotificationsd",
+        "notificationcenterui",
+        "apsd"
+      ]
+    },
+    {
+      "id": "notifications-peripheral",
+      "services": [
+        "su-notification-manager",
+        "user-notification-center-agent",
+        "user-notification-center",
+        "icloud-notification-agent",
+        "icloud-usernotificationsd",
+        "familynotificationd",
+        "safari-notification-agent",
+        "webpushd",
+        "usbnotificationagent",
+        "diagnosticspushd",
+        "aos-push-relay"
+      ]
+    },
+    {
+      "id": "icloud-drive",
+      "services": [
+        "bird",
+        "fileprovider",
+        "cloudphotod"
+      ]
+    },
+    {
+      "id": "cloudkit-hub",
+      "services": [
+        "cloudd"
+      ]
+    },
+    {
+      "id": "icloud-sync-tails",
+      "services": [
+        "syncdefaultsd",
+        "cloudsettingssyncagent",
+        "safari-bookmarks-sync",
+        "safari-history",
+        "feature-access-agent"
+      ]
+    },
+    {
+      "id": "icloud-keychain-sync",
+      "services": [
+        "cdpd",
+        "cloudkeychainproxy3",
+        "protected-cloud-key-sync"
+      ]
+    },
+    {
+      "id": "appstore-stage-a",
+      "services": [
+        "appstoreagent",
+        "commerce",
+        "storedownloadd",
+        "storeaccountd",
+        "storeassetd",
+        "storelegacy",
+        "storeuid",
+        "appstorecomponentsd",
+        "storekitagent",
+        "appstored",
+        "store-privileged-odr",
+        "store-privileged-task",
+        "store-ae-service",
+        "storereceiptinstaller",
+        "appplaceholdersyncd",
+        "amsondevicestoraged"
+      ]
+    },
+    {
+      "id": "appstore-stage-b",
+      "services": [
+        "amsaccountsd"
+      ]
+    },
+    {
+      "id": "appstore-ads",
+      "services": [
+        "amsengagementd",
+        "promotedcontentd",
+        "adprivacyd"
+      ]
+    },
+    {
+      "id": "appstore-stage-c",
+      "services": [
+        "installcoordinationd",
+        "fairplayd"
+      ]
+    },
+    {
+      "id": "media-stores",
+      "services": [
+        "itunescloudd"
+      ]
+    },
+    {
+      "id": "software-update",
+      "services": [
+        "softwareupdated",
+        "mobile-softwareupdated",
+        "suhelperd"
+      ]
+    },
+    {
+      "id": "content-caching",
+      "services": [
+        "assetcache-builtin",
+        "assetcache-locator-system",
+        "assetcache-manager",
+        "assetcache-tetherator",
+        "assetcache-agent"
+      ]
+    },
+    {
+      "id": "time-machine",
+      "services": [
+        "backupd",
+        "backupd-helper",
+        "tm-helper-agent"
+      ]
+    },
+    {
+      "id": "game-stack",
+      "services": [
+        "gamepolicy-agent",
+        "gamepolicyd",
+        "gamecontrollerd",
+        "gamecontrolleragentd",
+        "gamed",
+        "gamesaved",
+        "game-overlay-ui",
+        "sportsd"
       ]
     },
     {
       "id": "location-services",
       "services": [
-        "locationd"
+        "locationd",
+        "corelocation-agent",
+        "geod-bridge",
+        "countryd",
+        "milod"
+      ]
+    },
+    {
+      "id": "weather-maps-tails",
+      "services": [
+        "weatherd"
+      ]
+    },
+    {
+      "id": "camera-cmio",
+      "services": [
+        "cmio-registerassistant",
+        "cameracaptured",
+        "appleh16camerad",
+        "vdc-assistant",
+        "uvc-assistant"
+      ]
+    },
+    {
+      "id": "xprotect-scanners",
+      "services": [
+        "xprotectd",
+        "xprotect-daemon-scan",
+        "xprotect-daemon-scan-startup",
+        "xprotect-plugin-system",
+        "xprotect-agent-scan",
+        "xprotect-agent-scan-startup"
+      ]
+    },
+    {
+      "id": "gatekeeper-syspolicy",
+      "services": [
+        "syspolicyd"
+      ]
+    },
+    {
+      "id": "mail",
+      "services": [
+        "email-maild"
+      ]
+    },
+    {
+      "id": "help-indexer",
+      "services": [
+        "helpd"
+      ]
+    },
+    {
+      "id": "education",
+      "services": [
+        "studentd",
+        "assessmentagent"
+      ]
+    },
+    {
+      "id": "enterprise-sso",
+      "services": [
+        "appssso-agent",
+        "appssso-daemon",
+        "appssso-login"
+      ]
+    },
+    {
+      "id": "mdm-remote-management",
+      "services": [
+        "remotemanagementd",
+        "mdmclient-daemon",
+        "mdmclient-agent"
+      ]
+    },
+    {
+      "id": "private-relay",
+      "services": [
+        "networkserviceproxy"
+      ]
+    },
+    {
+      "id": "captive-portal",
+      "services": [
+        "captiveagent"
+      ]
+    },
+    {
+      "id": "translation",
+      "services": [
+        "translationd"
+      ]
+    },
+    {
+      "id": "spellcheck",
+      "services": [
+        "applespell"
+      ]
+    },
+    {
+      "id": "app-lifecycle-tal",
+      "services": [
+        "talagent"
+      ]
+    },
+    {
+      "id": "ios-finder-discovery",
+      "services": [
+        "amp-device-discovery"
+      ]
+    },
+    {
+      "id": "image-capture",
+      "services": [
+        "icdd"
+      ]
+    },
+    {
+      "id": "smartcards",
+      "services": [
+        "ctkd"
+      ]
+    },
+    {
+      "id": "cellular-commcenter",
+      "services": [
+        "commcenter"
+      ]
+    },
+    {
+      "id": "network-symptoms",
+      "services": [
+        "symptomsd"
+      ]
+    },
+    {
+      "id": "wifi-menu-agent",
+      "services": [
+        "wifi-agent"
+      ]
+    },
+    {
+      "id": "wallpaper-export",
+      "services": [
+        "wallpaper-export"
+      ]
+    },
+    {
+      "id": "netbios",
+      "services": [
+        "netbiosd"
+      ]
+    },
+    {
+      "id": "kerberos-gss",
+      "services": [
+        "kerberos-digest",
+        "gsscred",
+        "gssd"
+      ]
+    },
+    {
+      "id": "accessory-firmware",
+      "services": [
+        "accessoryupdaterd",
+        "uarpd",
+        "bootinstalld"
+      ]
+    },
+    {
+      "id": "hardware-repair",
+      "services": [
+        "corerepaird",
+        "mobilerepaird"
+      ]
+    },
+    {
+      "id": "power-diagnostics",
+      "services": [
+        "perfpower-services"
+      ]
+    },
+    {
+      "id": "clock-timers",
+      "services": [
+        "mobiletimerd"
+      ]
+    },
+    {
+      "id": "onboarding-feedback",
+      "services": [
+        "ndoagent",
+        "eligibilityd",
+        "feedbackd",
+        "swtransparencyd"
+      ]
+    },
+    {
+      "id": "background-task-ui",
+      "services": [
+        "backgroundtaskmanagementd",
+        "backgroundtaskmanagement-agent"
+      ]
+    },
+    {
+      "id": "safari-helpers",
+      "services": [
+        "safari-platform-helper",
+        "safari-safebrowsing"
+      ]
+    },
+    {
+      "id": "passkeys-autofill",
+      "services": [
+        "auth-services-agent"
+      ]
+    },
+    {
+      "id": "cursor-language-pill",
+      "services": [
+        "cursor-ui-view"
+      ]
+    },
+    {
+      "id": "quicklook",
+      "services": [
+        "quicklook-ui",
+        "quicklook-thumbnail"
+      ]
+    },
+    {
+      "id": "family-followup",
+      "services": [
+        "followupd"
+      ]
+    },
+    {
+      "id": "misc-coding-trims",
+      "services": [
+        "warmd",
+        "dasd",
+        "imklaunchagent",
+        "audioclocksyncd"
+      ]
+    },
+    {
+      "id": "apfs-volume-ui",
+      "services": [
+        "apfsuseragent"
+      ]
+    },
+    {
+      "id": "automount",
+      "services": [
+        "autofsd"
       ]
     }
   ],
@@ -189,107 +2357,1391 @@
       "title": "Spotlight Search",
       "question": "Do you use Spotlight to find files and applications?",
       "description": "Indexes files, application metadata, messages, and other searchable content across macOS.",
-      "disableGuidance": "Disable this only if you use another launcher and do not rely on Finder or Spotlight content search.",
+      "disableGuidance": "Disable this if you use another launcher and do not rely on Finder or Spotlight content search. Background indexing workers will stop.",
       "systemImage": "magnifyingglass",
       "defaultEnabled": true,
       "disableServiceGroups": [
         "spotlight-core"
       ],
       "impact": {
-        "estimatedMemoryMB": 120,
-        "estimatedProcessReduction": 4
+        "estimatedMemoryMB": 400,
+        "estimatedProcessReduction": 8
       },
       "order": 100
     },
     {
-      "id": "siri",
+      "id": "widgets",
       "categoryID": "search-intelligence",
+      "title": "Desktop Widgets",
+      "question": "Do you use desktop or Notification Center widgets?",
+      "description": "Runs WidgetKit processes that keep widget timelines and control descriptors up to date.",
+      "disableGuidance": "Disable this if you do not use widgets. Widget extensions will no longer load in the background.",
+      "systemImage": "rectangle.3.group",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "widgets-chrono"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 200,
+        "estimatedProcessReduction": 6
+      },
+      "order": 200
+    },
+    {
+      "id": "document-versions",
+      "categoryID": "search-intelligence",
+      "title": "Document Versions",
+      "question": "Do you use Browse All Versions for document history?",
+      "description": "Stores macOS Auto Save document revisions for supported Cocoa applications.",
+      "disableGuidance": "Disable this if you rely on Git or editor history instead. File → Revert To → Browse All Versions will stop working.",
+      "systemImage": "clock.arrow.circlepath",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "document-versions"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 10,
+        "estimatedProcessReduction": 1
+      },
+      "order": 300
+    },
+    {
+      "id": "siri-dictation",
+      "categoryID": "apple-intelligence-siri",
       "title": "Siri & Dictation",
-      "question": "Do you use Siri or voice dictation?",
-      "description": "Provides voice activation, speech recognition, Siri suggestions, and system-wide dictation services.",
-      "disableGuidance": "Disable this when you never use Siri, voice shortcuts, or the dictation key in text fields.",
+      "question": "Do you use Siri or system dictation?",
+      "description": "Provides local speech recognition, Siri assistant services, and system-wide dictation.",
+      "disableGuidance": "Disable this if you never use Siri, the dictation key, or voice control speech pipelines. Voice dictation and Siri will stop.",
       "systemImage": "waveform",
       "defaultEnabled": true,
       "disableServiceGroups": [
-        "siri-dictation"
+        "speech-siri"
       ],
       "impact": {
-        "estimatedMemoryMB": 85,
+        "estimatedMemoryMB": 100,
+        "estimatedProcessReduction": 10
+      },
+      "order": 100
+    },
+    {
+      "id": "apple-intelligence",
+      "categoryID": "apple-intelligence-siri",
+      "title": "Apple Intelligence",
+      "question": "Do you use on-device Apple Intelligence features?",
+      "description": "Hosts generative model runtime, model catalog, and intelligence platform services.",
+      "disableGuidance": "Disable this if you do not use Apple Intelligence writing tools or on-device generative features.",
+      "systemImage": "cpu",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "apple-intelligence"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 106,
+        "estimatedProcessReduction": 6
+      },
+      "order": 200
+    },
+    {
+      "id": "proactive-suggestions",
+      "categoryID": "apple-intelligence-siri",
+      "title": "Proactive Suggestions",
+      "question": "Do you want routine learning and app prediction suggestions?",
+      "description": "Learns routines and usage patterns to power App Prediction and proactive suggestions.",
+      "disableGuidance": "Disable this on a coding-only Mac where proactive suggestions are not useful.",
+      "systemImage": "lightbulb",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "routine-proactive",
+        "biome-streams"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 180,
+        "estimatedProcessReduction": 8
+      },
+      "order": 300
+    },
+    {
+      "id": "apple-trial",
+      "categoryID": "apple-intelligence-siri",
+      "title": "Experiment Enrollment",
+      "question": "Allow Apple A/B experiment enrollment on this Mac?",
+      "description": "Downloads and applies Apple Trial feature-flag experiment payloads.",
+      "disableGuidance": "Disable this to stop experiment enrollment and related background fetches.",
+      "systemImage": "testtube.2",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "apple-trial"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 52,
+        "estimatedProcessReduction": 3
+      },
+      "order": 400
+    },
+    {
+      "id": "imessage",
+      "categoryID": "communication",
+      "title": "Messages & iMessage",
+      "question": "Do you use Messages or iMessage on this Mac?",
+      "description": "Runs the Messages backend, Apple IDS identity services, and related call-history helpers.",
+      "disableGuidance": "Disable this if this Mac is coding-only and does not send or receive iMessage. Messages, iMessage, and related IDS features will stop. App Shortcuts registry is included so Messages extensions do not return.",
+      "systemImage": "message",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "messages-imessage",
+        "appintents-linkd"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 180,
+        "estimatedProcessReduction": 10
+      },
+      "order": 100
+    },
+    {
+      "id": "facetime",
+      "categoryID": "communication",
+      "title": "FaceTime & Calls",
+      "question": "Do you use FaceTime or Phone Continuity on this Mac?",
+      "description": "Provides CallKit, FaceTime signaling, and AV conference services.",
+      "disableGuidance": "Disable this if you never take FaceTime or Continuity phone calls on this Mac.",
+      "systemImage": "video",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "facetime-callkit"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 70,
         "estimatedProcessReduction": 3
       },
       "order": 200
     },
     {
-      "id": "airplay",
-      "categoryID": "connectivity",
-      "title": "AirPlay Receiver",
-      "question": "Do you stream content to this Mac with AirPlay?",
-      "description": "Allows nearby Apple devices to discover this Mac as an AirPlay audio and video destination.",
-      "disableGuidance": "Disable this if this Mac is never used as an AirPlay receiver or wireless presentation display.",
-      "systemImage": "airplayvideo",
+      "id": "mail",
+      "categoryID": "communication",
+      "title": "Apple Mail",
+      "question": "Do you use the Apple Mail app?",
+      "description": "Background mail daemon used by the system Mail application.",
+      "disableGuidance": "Disable this if you use another mail client exclusively.",
+      "systemImage": "envelope",
       "defaultEnabled": true,
       "disableServiceGroups": [
-        "airplay-receiver"
+        "mail"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 20,
+        "estimatedProcessReduction": 1
+      },
+      "order": 300
+    },
+    {
+      "id": "airdrop-continuity",
+      "categoryID": "continuity-sharing",
+      "title": "AirDrop & Continuity",
+      "question": "Do you use AirDrop, Handoff, Continuity Camera, or Universal Clipboard?",
+      "description": "Enables nearby sharing, Handoff, Continuity capture, and related device discovery.",
+      "disableGuidance": "Disable this if you do not share files with nearby Apple devices or use Handoff. AirDrop, Handoff, Continuity Camera, and Universal Clipboard will stop. Core Bluetooth radio remains available for keyboards and headphones.",
+      "systemImage": "square.and.arrow.up",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "continuity-sharing",
+        "continuity-remainder"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 150,
+        "estimatedProcessReduction": 8
+      },
+      "order": 100
+    },
+    {
+      "id": "bluetooth-user-pairing",
+      "categoryID": "continuity-sharing",
+      "title": "Bluetooth Pairing Assistant",
+      "question": "Do you pair new Bluetooth devices in System Settings on this Mac?",
+      "description": "Per-user Bluetooth cloud pairing and GUI pairing handshake support.",
+      "disableGuidance": "Disable this only on a fixed-peripheral machine. New Bluetooth device pairing in the GUI may hang. Keep enabled if you regularly pair headphones or keyboards.",
+      "systemImage": "wave.3.right",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "bluetooth-user"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 17,
+        "estimatedProcessReduction": 1
+      },
+      "order": 200
+    },
+    {
+      "id": "icloud-drive",
+      "categoryID": "icloud-store",
+      "title": "iCloud Drive",
+      "question": "Do you use iCloud Drive on this Mac?",
+      "description": "Syncs Desktop, Documents, and iCloud Drive containers through CloudDocs and File Provider.",
+      "disableGuidance": "Disable this if files stay local or use Git remotes only. iCloud Drive and related File Provider extensions will stop.",
+      "systemImage": "externaldrive.badge.icloud",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "icloud-drive"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 83,
+        "estimatedProcessReduction": 4
+      },
+      "order": 100
+    },
+    {
+      "id": "cloudkit",
+      "categoryID": "icloud-store",
+      "title": "CloudKit Hub",
+      "question": "Do Apple apps need CloudKit background sync on this Mac?",
+      "description": "Central CloudKit daemon used by many Apple apps for cloud records.",
+      "disableGuidance": "Disable this on a no-iCloud coding target. Apple apps that require CloudKit sync may stop updating cloud data.",
+      "systemImage": "cloud",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "cloudkit-hub"
       ],
       "impact": {
         "estimatedMemoryMB": 45,
         "estimatedProcessReduction": 2
       },
+      "order": 200
+    },
+    {
+      "id": "icloud-settings-sync",
+      "categoryID": "icloud-store",
+      "title": "iCloud Settings Sync",
+      "question": "Do you sync app preferences, Safari bookmarks, and related settings via iCloud?",
+      "description": "Syncs key-value defaults, settings, Safari bookmarks/history, and cloud feature gates.",
+      "disableGuidance": "Disable this if settings should stay local to this Mac.",
+      "systemImage": "arrow.triangle.2.circlepath.icloud",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "icloud-sync-tails"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 40,
+        "estimatedProcessReduction": 4
+      },
+      "order": 300
+    },
+    {
+      "id": "icloud-keychain",
+      "categoryID": "icloud-store",
+      "title": "iCloud Keychain Sync",
+      "question": "Do you sync passwords with iCloud Keychain on this Mac?",
+      "description": "Continuous protected cloud key synchronization for iCloud Keychain.",
+      "disableGuidance": "Disable this only if passwords are managed locally or with a third-party manager. Local keychain login still works.",
+      "systemImage": "key.icloud",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "icloud-keychain-sync"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 20,
+        "estimatedProcessReduction": 3
+      },
+      "order": 400
+    },
+    {
+      "id": "app-store",
+      "categoryID": "icloud-store",
+      "title": "Mac App Store",
+      "question": "Do you browse and update apps from the Mac App Store?",
+      "description": "App Store catalog, commerce, download, and related store daemon layer.",
+      "disableGuidance": "Disable this if you install software outside the Mac App Store. In-store browsing and update listing will stop. OS Software Update is a separate control.",
+      "systemImage": "bag",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "appstore-stage-a",
+        "appstore-stage-b"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 200,
+        "estimatedProcessReduction": 12
+      },
+      "order": 500
+    },
+    {
+      "id": "app-store-ads",
+      "categoryID": "icloud-store",
+      "title": "App Store Ads",
+      "question": "Do you want App Store promotional and ad privacy agents?",
+      "description": "Engagement, promoted content, and ad privacy daemons related to the App Store.",
+      "disableGuidance": "Disable this to remove App Store advertising and engagement background agents.",
+      "systemImage": "megaphone",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "appstore-ads"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 60,
+        "estimatedProcessReduction": 3
+      },
+      "order": 600
+    },
+    {
+      "id": "media-stores",
+      "categoryID": "icloud-store",
+      "title": "Music & Books Cloud",
+      "question": "Do you use Apple Music, iTunes cloud, or Books library sync?",
+      "description": "Background media store cloud daemons for Music and Books.",
+      "disableGuidance": "Disable this if you do not use Apple media store cloud libraries on this Mac.",
+      "systemImage": "music.note.list",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "media-stores"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 22,
+        "estimatedProcessReduction": 2
+      },
+      "order": 700
+    },
+    {
+      "id": "software-update",
+      "categoryID": "icloud-store",
+      "title": "Software Update Daemons",
+      "question": "Should macOS keep Software Update daemons running in the background?",
+      "description": "Checks for and prepares macOS and related software updates.",
+      "disableGuidance": "Disable this only on experimental machines. Automatic and manual softwareupdate flows may stop until re-enabled.",
+      "systemImage": "arrow.down.circle",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "software-update"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 39,
+        "estimatedProcessReduction": 3
+      },
+      "order": 800
+    },
+    {
+      "id": "content-caching",
+      "categoryID": "icloud-store",
+      "title": "Content Caching",
+      "question": "Do you run Content Caching for other Apple devices on your network?",
+      "description": "Local Apple content cache server and locator services.",
+      "disableGuidance": "Disable this if Content Caching is unused. Other devices will download directly from Apple.",
+      "systemImage": "server.rack",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "content-caching"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 56,
+        "estimatedProcessReduction": 5
+      },
+      "order": 900
+    },
+    {
+      "id": "photos-analysis",
+      "categoryID": "photos-media",
+      "title": "Photos Analysis",
+      "question": "Do you need Photos memories, face recognition, or media analysis?",
+      "description": "Analyzes the photo library for faces, objects, memories, and related ML features.",
+      "disableGuidance": "Disable this if Photos analysis features are not needed. Memories and face grouping will stop.",
+      "systemImage": "person.crop.rectangle.stack",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "photos-analysis"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 67,
+        "estimatedProcessReduction": 2
+      },
       "order": 100
     },
     {
-      "id": "icloud",
-      "categoryID": "connectivity",
-      "title": "iCloud Synchronization",
-      "question": "Do you synchronize files and application data with iCloud?",
-      "description": "Keeps iCloud Drive, CloudKit data, documents, and supported application state synchronized.",
-      "disableGuidance": "Disable this only on a Mac that does not use iCloud Drive, CloudKit applications, or Apple device synchronization.",
-      "systemImage": "icloud",
+      "id": "photos-library",
+      "categoryID": "photos-media",
+      "title": "Photos Library",
+      "question": "Do you use the Photos app on this Mac?",
+      "description": "Core Photos library daemon for opening and maintaining the photo library.",
+      "disableGuidance": "Disable this if Photos.app is not used. The library on disk remains but the daemon will not run.",
+      "systemImage": "photo",
       "defaultEnabled": true,
       "disableServiceGroups": [
-        "icloud-sync"
+        "photos-library"
       ],
       "impact": {
-        "estimatedMemoryMB": 160,
+        "estimatedMemoryMB": 10,
+        "estimatedProcessReduction": 1
+      },
+      "order": 200
+    },
+    {
+      "id": "camera",
+      "categoryID": "photos-media",
+      "title": "Camera Stack",
+      "question": "Do you use the built-in or USB camera on this Mac?",
+      "description": "Camera capture and Core Media IO assistant services.",
+      "disableGuidance": "Disable this on a no-camera coding target. Built-in and many USB camera capture paths will stop.",
+      "systemImage": "camera",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "camera-cmio"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 149,
+        "estimatedProcessReduction": 8
+      },
+      "order": 300
+    },
+    {
+      "id": "wallpaper-aerials",
+      "categoryID": "photos-media",
+      "title": "Dynamic Wallpapers",
+      "question": "Do you use aerial or dynamic video wallpapers?",
+      "description": "Background wallpaper export helpers used for dynamic wallpaper assets.",
+      "disableGuidance": "Disable this if you use a static desktop picture. Static wallpapers continue to work; aerial video wallpapers will not.",
+      "systemImage": "photo.tv",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "wallpaper-export"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 40,
+        "estimatedProcessReduction": 1
+      },
+      "order": 400
+    },
+    {
+      "id": "location",
+      "categoryID": "location-findmy",
+      "title": "Location Services",
+      "question": "Do applications need the location of this Mac?",
+      "description": "Core Location hub, permission agent, and related geo helpers.",
+      "disableGuidance": "Disable this if maps, weather location, and app geolocation are unnecessary. Some Wi‑Fi region helpers may degrade. Automatic time zone can be affected.",
+      "systemImage": "location",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "location-services",
+        "weather-maps-tails"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 114,
+        "estimatedProcessReduction": 6
+      },
+      "order": 100
+    },
+    {
+      "id": "find-my",
+      "categoryID": "location-findmy",
+      "title": "Find My",
+      "question": "Do you use Find My Mac or the Find My network?",
+      "description": "Device locate, offline finding, and Find My beacon services.",
+      "disableGuidance": "Disable this on an experimental machine if remote lock and offline finding are not required. Lost-device recovery features will stop.",
+      "systemImage": "location.magnifyingglass",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "find-my"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 72,
         "estimatedProcessReduction": 5
       },
       "order": 200
     },
     {
+      "id": "analytics",
+      "categoryID": "privacy-telemetry",
+      "title": "Analytics & Diagnostics",
+      "question": "Send diagnostic and usage analytics to Apple?",
+      "description": "Core analytics reporting hub and related diagnostic reporters.",
+      "disableGuidance": "Disable this to stop analytics upload agents. Unified logging remains available.",
+      "systemImage": "chart.bar",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "analytics-hub"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 36,
+        "estimatedProcessReduction": 4
+      },
+      "order": 100
+    },
+    {
+      "id": "telemetry-extra",
+      "categoryID": "privacy-telemetry",
+      "title": "Extra Telemetry",
+      "question": "Allow input, audio, USB, and systemstats telemetry daemons?",
+      "description": "Additional telemetry collectors not required for everyday development.",
+      "disableGuidance": "Disable this on a lean coding profile to reduce idle collectors.",
+      "systemImage": "chart.xyaxis.line",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "telemetry-tails"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 40,
+        "estimatedProcessReduction": 5
+      },
+      "order": 200
+    },
+    {
+      "id": "crash-reporter",
+      "categoryID": "privacy-telemetry",
+      "title": "Crash Reporter Dialogs",
+      "question": "Do you want “Application Quit Unexpectedly” crash dialogs?",
+      "description": "Intercepts crashes and can write diagnostic reports.",
+      "disableGuidance": "Disable this for fewer interruption dialogs. Keep enabled if you need local crash reports for native debugging.",
+      "systemImage": "exclamationmark.triangle",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "crash-reporter"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 15,
+        "estimatedProcessReduction": 2
+      },
+      "order": 300
+    },
+    {
+      "id": "homekit",
+      "categoryID": "consumer-apps",
+      "title": "HomeKit",
+      "question": "Do you use HomeKit or the Home app?",
+      "description": "Home automation hub, energy, events, and Thread commissioner services.",
+      "disableGuidance": "Disable this if you do not control HomeKit accessories from this Mac.",
+      "systemImage": "house",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "homekit"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 119,
+        "estimatedProcessReduction": 5
+      },
+      "order": 100
+    },
+    {
       "id": "screen-time",
-      "categoryID": "system-services",
+      "categoryID": "consumer-apps",
       "title": "Screen Time",
-      "question": "Do you use usage reports or application limits?",
-      "description": "Collects device usage statistics and enforces downtime, content restrictions, and application limits.",
-      "disableGuidance": "Disable this if you do not review Screen Time reports and do not use parental or application restrictions.",
+      "question": "Do you use Screen Time, Live Activities, or app usage limits?",
+      "description": "Tracks usage, Live Activities, social layer suggestions, and managed settings.",
+      "disableGuidance": "Disable this if you do not use Screen Time reports, Downtime, or Live Activities.",
       "systemImage": "hourglass",
       "defaultEnabled": true,
       "disableServiceGroups": [
         "screen-time"
       ],
       "impact": {
+        "estimatedMemoryMB": 80,
+        "estimatedProcessReduction": 6
+      },
+      "order": 200
+    },
+    {
+      "id": "focus",
+      "categoryID": "consumer-apps",
+      "title": "Focus Modes",
+      "question": "Do you use Focus or Do Not Disturb automation?",
+      "description": "Focus and Do Not Disturb policy server.",
+      "disableGuidance": "Disable this if Focus modes are unused.",
+      "systemImage": "moon.zzz",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "focus-dnd"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 31,
+        "estimatedProcessReduction": 1
+      },
+      "order": 300
+    },
+    {
+      "id": "reminders",
+      "categoryID": "consumer-apps",
+      "title": "Reminders",
+      "question": "Do you use the Reminders app?",
+      "description": "Background Reminders sync and list maintenance daemon.",
+      "disableGuidance": "Disable this if Reminders is unused.",
+      "systemImage": "checklist",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "reminders"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 20,
+        "estimatedProcessReduction": 1
+      },
+      "order": 400
+    },
+    {
+      "id": "contacts",
+      "categoryID": "consumer-apps",
+      "title": "Contacts & People",
+      "question": "Do you use Contacts, People suggestions, or Family circle services?",
+      "description": "Contacts database, AddressBook helpers, People, and Family circle agents.",
+      "disableGuidance": "Disable this if Contacts, People suggestions, and Family Sharing circle features are unused.",
+      "systemImage": "person.2",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "contacts-addressbook",
+        "people-family-calendar"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 90,
+        "estimatedProcessReduction": 8
+      },
+      "order": 500
+    },
+    {
+      "id": "wallet",
+      "categoryID": "consumer-apps",
+      "title": "Wallet & Apple Pay",
+      "question": "Do you use Wallet, Apple Pay, or passes on this Mac?",
+      "description": "FinanceKit, PassKit, NFC, and secure element related services.",
+      "disableGuidance": "Disable this if payments and passes are never used on this Mac.",
+      "systemImage": "creditcard",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "wallet-applepay"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 52,
+        "estimatedProcessReduction": 4
+      },
+      "order": 600
+    },
+    {
+      "id": "games",
+      "categoryID": "consumer-apps",
+      "title": "Game Center & Controllers",
+      "question": "Do you play games or use Game Controllers on this Mac?",
+      "description": "Game Center, game policy, controller, and sports session services.",
+      "disableGuidance": "Disable this on a coding-only Mac without games or controllers.",
+      "systemImage": "gamecontroller",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "game-stack"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 74,
+        "estimatedProcessReduction": 6
+      },
+      "order": 700
+    },
+    {
+      "id": "time-machine",
+      "categoryID": "consumer-apps",
+      "title": "Time Machine",
+      "question": "Do you use Time Machine backups?",
+      "description": "Time Machine backup engine, helper, and notification agent.",
+      "disableGuidance": "Disable this if no Time Machine destination is used.",
+      "systemImage": "clock.badge.checkmark",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "time-machine"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 14,
+        "estimatedProcessReduction": 3
+      },
+      "order": 800
+    },
+    {
+      "id": "notifications-core",
+      "categoryID": "consumer-apps",
+      "title": "Notification Center",
+      "question": "Do you need Notification Center banners and Apple Push?",
+      "description": "Core user notification servers and Apple Push Service.",
+      "disableGuidance": "Disable this only on aggressive profiles. Most banners and remote pushes will stop.",
+      "systemImage": "bell",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "notifications-core"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 123,
+        "estimatedProcessReduction": 4
+      },
+      "order": 900
+    },
+    {
+      "id": "notifications-extra",
+      "categoryID": "consumer-apps",
+      "title": "Extra Notification Agents",
+      "question": "Keep Software Update, Safari, iCloud, and USB notification agents?",
+      "description": "Peripheral notification delegates for updates, Safari web push, family, and USB alerts.",
+      "disableGuidance": "Disable this to remove secondary notification agents while leaving core system plumbing intact if Notification Center is still enabled.",
+      "systemImage": "bell.badge",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "notifications-peripheral"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 43,
+        "estimatedProcessReduction": 5
+      },
+      "order": 1000
+    },
+    {
+      "id": "education",
+      "categoryID": "consumer-apps",
+      "title": "Classroom & Assessment",
+      "question": "Do you use Schoolwork, Classroom, or assessment lockdown?",
+      "description": "Student and assessment agents for education environments.",
+      "disableGuidance": "Disable this on non-school machines.",
+      "systemImage": "graduationcap",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "education"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 40,
+        "estimatedProcessReduction": 2
+      },
+      "order": 1100
+    },
+    {
+      "id": "help-index",
+      "categoryID": "consumer-apps",
+      "title": "Help Indexer",
+      "question": "Allow background Help Center indexing?",
+      "description": "Indexes application help books for Help Viewer search.",
+      "disableGuidance": "Disable this if you do not use Help Viewer search.",
+      "systemImage": "questionmark.circle",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "help-indexer"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 76,
+        "estimatedProcessReduction": 1
+      },
+      "order": 1200
+    },
+    {
+      "id": "accessibility-tts",
+      "categoryID": "accessibility",
+      "title": "Spoken Content Voices",
+      "question": "Do you need system text-to-speech voices loaded in the background?",
+      "description": "Loads accessibility TTS voice assets and speech synthesizer plugins.",
+      "disableGuidance": "Disable this if Speak Selection, VoiceOver speech assets, and related TTS features are unused.",
+      "systemImage": "speaker.wave.2",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "accessibility-tts"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 185,
+        "estimatedProcessReduction": 6
+      },
+      "order": 100
+    },
+    {
+      "id": "hearing-accessibility",
+      "categoryID": "accessibility",
+      "title": "Hearing Accessibility",
+      "question": "Do you use Sound Recognition, Live Listen, or Background Sounds?",
+      "description": "Hearing accessibility daemon for sound recognition and related features.",
+      "disableGuidance": "Disable this if hearing accessibility features are unused.",
+      "systemImage": "ear",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "accessibility-hearing"
+      ],
+      "impact": {
         "estimatedMemoryMB": 35,
+        "estimatedProcessReduction": 1
+      },
+      "order": 200
+    },
+    {
+      "id": "accessibility-overlays",
+      "categoryID": "accessibility",
+      "title": "Accessibility Overlays",
+      "question": "Do you use Screen Zoom overlays or accessibility focus rings?",
+      "description": "Renders zoom lenses, focus rings, and related accessibility visuals.",
+      "disableGuidance": "Disable this if you do not use zoom overlays or high-contrast focus indicators. Keep enabled if Screen Zoom is required.",
+      "systemImage": "plus.magnifyingglass",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "accessibility-ui-overlays"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 122,
+        "estimatedProcessReduction": 2
+      },
+      "order": 300
+    },
+    {
+      "id": "xprotect",
+      "categoryID": "security-optional",
+      "title": "XProtect Scanning",
+      "question": "Keep background XProtect malware scanning enabled?",
+      "description": "YARA signature scanning and malware remediator jobs.",
+      "disableGuidance": "Disable this on power-user machines to stop background malware scans. Gatekeeper policy is a separate control.",
+      "systemImage": "shield.lefthalf.filled",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "xprotect-scanners"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 42,
+        "estimatedProcessReduction": 4
+      },
+      "order": 100
+    },
+    {
+      "id": "gatekeeper",
+      "categoryID": "security-optional",
+      "title": "Gatekeeper Policy",
+      "question": "Keep Gatekeeper application notarization policy enabled?",
+      "description": "Validates developer signatures and notarization before app execution.",
+      "disableGuidance": "Disable this only if you understand the security tradeoff. Unverified apps may launch without Gatekeeper blocks.",
+      "systemImage": "checkmark.seal",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "gatekeeper-syspolicy"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 52,
+        "estimatedProcessReduction": 1
+      },
+      "order": 200
+    },
+    {
+      "id": "enterprise-sso",
+      "categoryID": "system-maintenance",
+      "title": "Enterprise SSO",
+      "question": "Do you use Platform SSO or enterprise single sign-on?",
+      "description": "AppSSO and Platform SSO agents for managed identity providers.",
+      "disableGuidance": "Disable this on personal Macs that are not enrolled in enterprise SSO.",
+      "systemImage": "person.badge.key",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "enterprise-sso"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 68,
         "estimatedProcessReduction": 2
       },
       "order": 100
     },
     {
-      "id": "location",
-      "categoryID": "system-services",
-      "title": "Location Services",
-      "question": "Do applications need the location of this Mac?",
-      "description": "Determines the approximate location of this Mac for applications, time zones, Find My, and system suggestions.",
-      "disableGuidance": "Disable this only if maps, automatic time zones, Find My, and location-aware applications are unnecessary.",
-      "systemImage": "location",
+      "id": "mdm",
+      "categoryID": "system-maintenance",
+      "title": "Remote Management",
+      "question": "Is this Mac enrolled in MDM or Remote Management?",
+      "description": "MDM and remote management client services.",
+      "disableGuidance": "Disable this only on unenrolled machines. Managed profiles and remote management will not function.",
+      "systemImage": "laptopcomputer.and.arrow.down",
       "defaultEnabled": true,
       "disableServiceGroups": [
-        "location-services"
+        "mdm-remote-management"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 40,
+        "estimatedProcessReduction": 3
+      },
+      "order": 200
+    },
+    {
+      "id": "private-relay",
+      "categoryID": "system-maintenance",
+      "title": "iCloud Private Relay",
+      "question": "Do you use iCloud Private Relay?",
+      "description": "Network service proxy used by Private Relay and related privacy proxy paths.",
+      "disableGuidance": "Disable this if Private Relay is unused.",
+      "systemImage": "network",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "private-relay"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 40,
+        "estimatedProcessReduction": 1
+      },
+      "order": 300
+    },
+    {
+      "id": "captive-portal",
+      "categoryID": "system-maintenance",
+      "title": "Captive Portal Assistant",
+      "question": "Auto-detect hotel and airport Wi‑Fi login pages?",
+      "description": "Detects captive networks and presents login sheets.",
+      "disableGuidance": "Disable this on home or office networks. You can still open a browser manually for captive portals.",
+      "systemImage": "wifi",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "captive-portal"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 13,
+        "estimatedProcessReduction": 1
+      },
+      "order": 400
+    },
+    {
+      "id": "translation",
+      "categoryID": "system-maintenance",
+      "title": "System Translation",
+      "question": "Do you use system-wide translation features?",
+      "description": "On-device and system translation daemon.",
+      "disableGuidance": "Disable this if translation features are unused.",
+      "systemImage": "character.book.closed",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "translation"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 22,
+        "estimatedProcessReduction": 1
+      },
+      "order": 500
+    },
+    {
+      "id": "spellcheck",
+      "categoryID": "system-maintenance",
+      "title": "System Spell Check",
+      "question": "Do you use system-wide spell checking?",
+      "description": "AppleSpell system spelling and grammar service.",
+      "disableGuidance": "Disable this if editors provide their own spelling tools.",
+      "systemImage": "textformat.abc.dottedunderline",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "spellcheck"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 35,
+        "estimatedProcessReduction": 1
+      },
+      "order": 600
+    },
+    {
+      "id": "tal",
+      "categoryID": "system-maintenance",
+      "title": "Resume Windows After Login",
+      "question": "Restore open apps and windows after logout?",
+      "description": "Transparent Application Lifecycle agent for session restore.",
+      "disableGuidance": "Disable this for cleaner logins without restored windows.",
+      "systemImage": "rectangle.on.rectangle",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "app-lifecycle-tal"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 26,
+        "estimatedProcessReduction": 1
+      },
+      "order": 700
+    },
+    {
+      "id": "ios-finder",
+      "categoryID": "system-maintenance",
+      "title": "iPhone in Finder",
+      "question": "Show connected iPhone or iPad devices in Finder?",
+      "description": "Apple Media Products device discovery for Finder sidebar device entries.",
+      "disableGuidance": "Disable this if you do not sync devices through Finder. Xcode and usbmux-based tools continue to work.",
+      "systemImage": "iphone",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "ios-finder-discovery"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 11,
+        "estimatedProcessReduction": 1
+      },
+      "order": 800
+    },
+    {
+      "id": "image-capture",
+      "categoryID": "system-maintenance",
+      "title": "Image Capture Discovery",
+      "question": "Auto-discover scanners and cameras for Image Capture?",
+      "description": "Image Capture device discovery daemon.",
+      "disableGuidance": "Disable this if scanners and PTP cameras are unused.",
+      "systemImage": "scanner",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "image-capture"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 15,
+        "estimatedProcessReduction": 1
+      },
+      "order": 900
+    },
+    {
+      "id": "smartcards",
+      "categoryID": "system-maintenance",
+      "title": "Smart Cards",
+      "question": "Do you use smart cards or hardware tokens?",
+      "description": "CryptoTokenKit smart card host daemon.",
+      "disableGuidance": "Disable this if no smart cards are used.",
+      "systemImage": "creditcard.and.123",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "smartcards"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 46,
+        "estimatedProcessReduction": 2
+      },
+      "order": 1000
+    },
+    {
+      "id": "cellular",
+      "categoryID": "system-maintenance",
+      "title": "Cellular Stack",
+      "question": "Does this Mac need CoreTelephony / cellular services?",
+      "description": "CommCenter telephony stack used on cellular-capable Macs.",
+      "disableGuidance": "Disable this on Wi‑Fi-only MacBooks without cellular hardware.",
+      "systemImage": "antenna.radiowaves.left.and.right",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "cellular-commcenter"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 20,
+        "estimatedProcessReduction": 1
+      },
+      "order": 1100
+    },
+    {
+      "id": "network-symptoms",
+      "categoryID": "system-maintenance",
+      "title": "Network Diagnostics Analytics",
+      "question": "Keep network symptoms analytics enabled?",
+      "description": "Collects network quality and symptoms metrics.",
+      "disableGuidance": "Disable this to reduce network analytics collection. Basic connectivity remains.",
+      "systemImage": "waveform.path.ecg",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "network-symptoms"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 46,
+        "estimatedProcessReduction": 2
+      },
+      "order": 1200
+    },
+    {
+      "id": "wifi-agent",
+      "categoryID": "system-maintenance",
+      "title": "Wi‑Fi Menu Agent",
+      "question": "Keep the Wi‑Fi menu extras and hotspot assistant agent?",
+      "description": "User-level Wi‑Fi notifications and auto-hotspot related agent.",
+      "disableGuidance": "Disable this if the Wi‑Fi menu icon is hidden and auto-hotspot is unused. Core Wi‑Fi remains available.",
+      "systemImage": "wifi",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "wifi-menu-agent"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 48,
+        "estimatedProcessReduction": 1
+      },
+      "order": 1300
+    },
+    {
+      "id": "netbios",
+      "categoryID": "system-maintenance",
+      "title": "NetBIOS",
+      "question": "Do you need legacy NetBIOS name services?",
+      "description": "Legacy NetBIOS name resolution for older Windows networks.",
+      "disableGuidance": "Disable this on modern networks that do not use NetBIOS.",
+      "systemImage": "network",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "netbios"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 8,
+        "estimatedProcessReduction": 1
+      },
+      "order": 1400
+    },
+    {
+      "id": "kerberos",
+      "categoryID": "system-maintenance",
+      "title": "Kerberos & GSSAPI",
+      "question": "Do you join Active Directory or use Kerberos tickets?",
+      "description": "Kerberos digest, GSS credential, and gssd services.",
+      "disableGuidance": "Disable this on standalone personal Macs without directory accounts.",
+      "systemImage": "lock.rectangle.on.rectangle",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "kerberos-gss"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 34,
+        "estimatedProcessReduction": 3
+      },
+      "order": 1500
+    },
+    {
+      "id": "accessory-firmware",
+      "categoryID": "system-maintenance",
+      "title": "Accessory Firmware Updates",
+      "question": "Allow background firmware updates for Apple accessories?",
+      "description": "Accessory updater and UARP firmware services.",
+      "disableGuidance": "Disable this if accessory firmware is managed rarely. Re-enable before hardware service visits.",
+      "systemImage": "externaldrive.badge.timemachine",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "accessory-firmware"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 80,
+        "estimatedProcessReduction": 4
+      },
+      "order": 1600
+    },
+    {
+      "id": "hardware-repair",
+      "categoryID": "system-maintenance",
+      "title": "Repair Diagnostics",
+      "question": "Keep hardware repair verification agents running?",
+      "description": "Repair diagnostics and related verification helpers.",
+      "disableGuidance": "Disable this on coding machines that do not need background repair checks.",
+      "systemImage": "wrench.and.screwdriver",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "hardware-repair"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 20,
+        "estimatedProcessReduction": 2
+      },
+      "order": 1700
+    },
+    {
+      "id": "power-diagnostics",
+      "categoryID": "system-maintenance",
+      "title": "Power Diagnostics",
+      "question": "Collect detailed power and performance diagnostic logs?",
+      "description": "PerfPower diagnostic services separate from core power management.",
+      "disableGuidance": "Disable this to drop diagnostic collectors. Charging and thermal control remain.",
+      "systemImage": "battery.100",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "power-diagnostics"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 34,
+        "estimatedProcessReduction": 2
+      },
+      "order": 1800
+    },
+    {
+      "id": "clock-timers",
+      "categoryID": "system-maintenance",
+      "title": "Clock Timers",
+      "question": "Do you use Clock app timers and alarms?",
+      "description": "Mobile timer daemon used by Clock features.",
+      "disableGuidance": "Disable this if Clock timers are unused.",
+      "systemImage": "timer",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "clock-timers"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 15,
+        "estimatedProcessReduction": 1
+      },
+      "order": 1900
+    },
+    {
+      "id": "onboarding-feedback",
+      "categoryID": "system-maintenance",
+      "title": "Onboarding & Feedback",
+      "question": "Keep new-device outreach, eligibility, Feedback Assistant, and transparency agents?",
+      "description": "Onboarding, eligibility gates, Feedback Assistant, and software transparency helpers.",
+      "disableGuidance": "Disable this on a locked-down coding image.",
+      "systemImage": "bubble.left.and.bubble.right",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "onboarding-feedback"
       ],
       "impact": {
         "estimatedMemoryMB": 30,
+        "estimatedProcessReduction": 4
+      },
+      "order": 2000
+    },
+    {
+      "id": "login-item-banners",
+      "categoryID": "system-maintenance",
+      "title": "Login Item Banners",
+      "question": "Show banners when apps add background login items?",
+      "description": "Background Task Management agent and daemon for login-item notifications.",
+      "disableGuidance": "Disable this to suppress login-item addition banners and related telemetry.",
+      "systemImage": "list.bullet.rectangle",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "background-task-ui"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 18,
+        "estimatedProcessReduction": 2
+      },
+      "order": 2100
+    },
+    {
+      "id": "safari-helpers",
+      "categoryID": "system-maintenance",
+      "title": "Safari Background Helpers",
+      "question": "Do you use Safari and its background helpers?",
+      "description": "Safari platform support, Safe Browsing, and related background agents.",
+      "disableGuidance": "Disable this if you use another browser exclusively.",
+      "systemImage": "safari",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "safari-helpers"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 36,
+        "estimatedProcessReduction": 3
+      },
+      "order": 2200
+    },
+    {
+      "id": "passkeys",
+      "categoryID": "system-maintenance",
+      "title": "Passkeys & AutoFill",
+      "question": "Do you use Safari Passkeys or system AutoFill?",
+      "description": "Authentication Services agent for Passkeys and password AutoFill.",
+      "disableGuidance": "Disable this only if Safari Passkeys and AutoFill are never used. Third-party password managers can still work.",
+      "systemImage": "person.badge.key.fill",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "passkeys-autofill"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 15,
         "estimatedProcessReduction": 1
       },
-      "order": 200
+      "order": 2300
+    },
+    {
+      "id": "cursor-language-indicator",
+      "categoryID": "system-maintenance",
+      "title": "Cursor Language Indicator",
+      "question": "Do you need the floating language pill while typing?",
+      "description": "Shows a temporary language indicator near the text caret when switching layouts.",
+      "disableGuidance": "Disable this only on single-language keyboards. Multi-layout users should keep it enabled.",
+      "systemImage": "character.cursor.ibeam",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "cursor-language-pill"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 32,
+        "estimatedProcessReduction": 1
+      },
+      "order": 2400
+    },
+    {
+      "id": "quicklook",
+      "categoryID": "system-maintenance",
+      "title": "Quick Look",
+      "question": "Do you use Spacebar Quick Look previews in Finder?",
+      "description": "Quick Look UI helper and thumbnail agent services.",
+      "disableGuidance": "Disable this if previews are unused. Finder icon thumbnails may also be reduced depending on configuration.",
+      "systemImage": "eye",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "quicklook"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 80,
+        "estimatedProcessReduction": 2
+      },
+      "order": 2500
+    },
+    {
+      "id": "family-followup",
+      "categoryID": "system-maintenance",
+      "title": "Family Follow-Up Agents",
+      "question": "Keep Family Sharing follow-up agents?",
+      "description": "Idle Family Sharing follow-up and related leftover agents.",
+      "disableGuidance": "Disable this if Family Sharing follow-ups are unused.",
+      "systemImage": "figure.2.and.child.holdinghands",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "family-followup"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 10,
+        "estimatedProcessReduction": 1
+      },
+      "order": 2600
+    },
+    {
+      "id": "misc-trims",
+      "categoryID": "system-maintenance",
+      "title": "Legacy Maintenance Helpers",
+      "question": "Keep rarely used maintenance helpers such as warmd and IMK launch agent?",
+      "description": "Small legacy or low-value helpers validated as removable on coding targets.",
+      "disableGuidance": "Disable this for additional lean cleanup on coding machines.",
+      "systemImage": "wrench",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "misc-coding-trims"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 20,
+        "estimatedProcessReduction": 4
+      },
+      "order": 2700
+    },
+    {
+      "id": "apfs-volume-banners",
+      "categoryID": "system-maintenance",
+      "title": "Encrypted Volume Banners",
+      "question": "Show password banners for encrypted external APFS volumes?",
+      "description": "User agent that presents FileVault and encrypted volume notifications.",
+      "disableGuidance": "Disable this if you do not attach encrypted external volumes that need UI banners.",
+      "systemImage": "externaldrive.badge.person.crop",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "apfs-volume-ui"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 15,
+        "estimatedProcessReduction": 1
+      },
+      "order": 2800
+    },
+    {
+      "id": "automount",
+      "categoryID": "system-maintenance",
+      "title": "Network Automount",
+      "question": "Do you use transparent NFS or SMB automount under /net?",
+      "description": "Autofs daemon for automatic network share mounting.",
+      "disableGuidance": "Disable this if you mount shares manually in Finder. Manual SMB connections still work.",
+      "systemImage": "externaldrive.connected.to.line.below",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "automount"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 10,
+        "estimatedProcessReduction": 1
+      },
+      "order": 2900
+    },
+    {
+      "id": "appstore-nuclear-install",
+      "categoryID": "system-maintenance",
+      "title": "Install Coordination (Advanced)",
+      "question": "Disable install coordination and FairPlay install helpers?",
+      "description": "Nuclear install and DRM coordination layer used by Mac App Store installs.",
+      "disableGuidance": "Disable this only on experimental target machines after App Store daemons are already off. Coordinated App Store installs will fail.",
+      "systemImage": "shippingbox",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "appstore-stage-c"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 25,
+        "estimatedProcessReduction": 2
+      },
+      "order": 3000
     }
   ]
 }

@@ -165,6 +165,8 @@ private struct SystemTweakFeatureRow: View {
 
       Spacer(minLength: 8)
 
+      EstimatedMemoryPill(memoryMB: feature.impact.estimatedMemoryMB)
+
       Toggle("", isOn: keepEnabledBinding)
         .labelsHidden()
         .toggleStyle(.checkbox)
@@ -179,6 +181,29 @@ private struct SystemTweakFeatureRow: View {
       get: { choice == .keepEnabled },
       set: { choice = $0 ? .keepEnabled : .disable }
     )
+  }
+}
+
+private struct EstimatedMemoryPill: View {
+  let memoryMB: Int
+
+  var body: some View {
+    HStack(spacing: 5) {
+      Image(systemName: "memorychip")
+        .font(.system(size: 10, weight: .semibold))
+
+      Text("~\(memoryMB) MB")
+        .font(.caption.weight(.semibold).monospacedDigit())
+    }
+    .foregroundStyle(Color.accentColor)
+    .padding(.horizontal, 9)
+    .frame(height: 24)
+    .background(Color.accentColor.opacity(0.1), in: Capsule())
+    .fixedSize()
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel("Estimated memory freed when disabled")
+    .accessibilityValue("Approximately \(memoryMB) megabytes")
+    .help("Estimated memory freed when disabled")
   }
 }
 
