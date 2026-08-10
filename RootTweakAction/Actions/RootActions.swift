@@ -1,0 +1,204 @@
+import Darwin
+import Foundation
+
+struct RootActionContext {
+  let events: EventWriter
+  let commands: CommandRunner
+}
+
+enum RootActions {
+  static func execute(_ request: RootActionRequest, context: RootActionContext) throws -> (String, Bool, [String: String]) {
+    switch request {
+    case .identity:
+      return (
+        "Privileged execution is working",
+        false,
+        [
+          "uid": String(getuid()),
+          "effectiveUID": String(geteuid()),
+          "pid": String(getpid()),
+        ]
+      )
+
+    case .preflight:
+      return try preflight(context)
+
+    case .mountSystemVolume(let mountPath):
+      return try mountSystemVolume(mountPath, context)
+
+    case .unmountSystemVolume(let mountPath):
+      return try unmountSystemVolume(mountPath, context)
+
+    case .disableApplication(let mountPath, let source, let destination):
+      return try moveApplication(
+        action: "disabled",
+        mountPath: mountPath,
+        sourcePath: source,
+        destinationPath: destination,
+        context: context
+      )
+
+    case .restoreApplication(let mountPath, let source, let destination):
+      return try moveApplication(
+        action: "restored",
+        mountPath: mountPath,
+        sourcePath: source,
+        destinationPath: destination,
+        context: context
+      )
+
+    case .deleteApplication(let mountPath, let path):
+      return try deleteApplication(mountPath: mountPath, path: path, context: context)
+
+    case .createSnapshot(let mountPath):
+      return try createSnapshot(mountPath, context)
+    }
+  }
+
+  private static func preflight(_ context: RootActionContext) throws -> (String, Bool, [String: String]) {
+    context.events.progress(0.25, "Checking System Integrity Protection")
+    let sip = try context.commands.requireSuccess("/usr/bin/csrutil", ["status"])
+    context.events.progress(0.55, "Checking Authenticated Root")
+    let authenticatedRoot = try context.commands.requireSuccess(
+      "/usr/bin/csrutil", ["authenticated-root", "status"]
+    )
+
+    guard sip.standardOutput.localizedCaseInsensitiveContains("disabled") else {
+      throw RootActionError.prerequisitesNotMet(
+        "System Integrity Protection must be disabled from macOS Recovery."
+      )
+    }
+    guard authenticatedRoot.standardOutput.localizedCaseInsensitiveContains("disabled") else {
+      throw RootActionError.prerequisitesNotMet(
+        "Authenticated Root must be disabled from macOS Recovery."
+      )
+    }
+
+    context.events.progress(0.8, "Locating the base system volume")
+    let device = try SystemVolume.baseDevice(using: context.commands)
+    return (
+      "System requirements are satisfied",
+      false,
+      ["systemDevice": device]
+    )
+  }
+
+  private static func mountSystemVolume(
+    _ mountPath: String,
+    _ context: RootActionContext
+  ) throws -> (String, Bool, [String: String]) {
+    context.events.progress(0.15, "Locating the base system volume")
+    let device = try SystemVolume.baseDevice(using: context.commands)
+
+    let mounts = try context.commands.requireSuccess("/sbin/mount", [])
+    if mounts.standardOutput.contains(" on \(mountPath) ") {
+      return (
+        "System volume is already mounted",
+        false,
+        ["mountPath": mountPath, "systemDevice": device]
+      )
+    }
+
+    context.events.progress(0.4, "Creating the mount point")
+    _ = try context.commands.requireSuccess("/bin/mkdir", ["-p", mountPath])
+
+    context.events.progress(0.65, "Mounting \(device)")
+    _ = try context.commands.requireSuccess(
+      "/sbin/mount",
+      ["-t", "apfs", "-o", "nobrowse", device, mountPath]
+    )
+
+    return (
+      "Writable system volume was mounted",
+      true,
+      ["mountPath": mountPath, "systemDevice": device]
+    )
+  }
+
+  private static func unmountSystemVolume(
+    _ mountPath: String,
+    _ context: RootActionContext
+  ) throws -> (String, Bool, [String: String]) {
+    let mounts = try context.commands.requireSuccess("/sbin/mount", [])
+    guard mounts.standardOutput.contains(" on \(mountPath) ") else {
+      return ("System volume is already unmounted", false, ["mountPath": mountPath])
+    }
+
+    context.events.progress(0.5, "Unmounting the system volume")
+    _ = try context.commands.requireSuccess("/sbin/umount", [mountPath])
+    return ("System volume was unmounted", true, ["mountPath": mountPath])
+  }
+
+  private static func moveApplication(
+    action: String,
+    mountPath: String,
+    sourcePath: String,
+    destinationPath: String,
+    context: RootActionContext
+  ) throws -> (String, Bool, [String: String]) {
+    let source = SystemVolume.mountedPath(root: mountPath, systemPath: sourcePath)
+    let destination = SystemVolume.mountedPath(root: mountPath, systemPath: destinationPath)
+    let fileManager = FileManager.default
+
+    if !fileManager.fileExists(atPath: source), fileManager.fileExists(atPath: destination) {
+      return ("Application is already \(action)", false, ["path": destinationPath])
+    }
+    guard fileManager.fileExists(atPath: source) else {
+      throw RootActionError.operationFailed(
+        code: "application_not_found",
+        message: "Application does not exist at \(sourcePath)."
+      )
+    }
+    guard !fileManager.fileExists(atPath: destination) else {
+      throw RootActionError.operationFailed(
+        code: "destination_exists",
+        message: "Destination already exists at \(destinationPath)."
+      )
+    }
+
+    context.events.progress(0.3, "Preparing the destination directory")
+    let destinationDirectory = URL(fileURLWithPath: destination).deletingLastPathComponent().path
+    _ = try context.commands.requireSuccess("/bin/mkdir", ["-p", destinationDirectory])
+
+    context.events.progress(0.65, "Moving the application")
+    _ = try context.commands.requireSuccess("/bin/mv", [source, destination])
+    return ("Application was \(action)", true, ["path": destinationPath])
+  }
+
+  private static func deleteApplication(
+    mountPath: String,
+    path: String,
+    context: RootActionContext
+  ) throws -> (String, Bool, [String: String]) {
+    let mountedPath = SystemVolume.mountedPath(root: mountPath, systemPath: path)
+    guard FileManager.default.fileExists(atPath: mountedPath) else {
+      return ("Application is already absent", false, ["path": path])
+    }
+
+    context.events.progress(0.5, "Removing the application from the system volume")
+    _ = try context.commands.requireSuccess("/bin/rm", ["-rf", "--", mountedPath])
+    guard !FileManager.default.fileExists(atPath: mountedPath) else {
+      throw RootActionError.operationFailed(
+        code: "deletion_verification_failed",
+        message: "Application still exists after the delete operation."
+      )
+    }
+    return ("Application was deleted", true, ["path": path])
+  }
+
+  private static func createSnapshot(
+    _ mountPath: String,
+    _ context: RootActionContext
+  ) throws -> (String, Bool, [String: String]) {
+    context.events.progress(0.35, "Asking bless to create a bootable snapshot")
+    let output = try context.commands.requireSuccess(
+      "/usr/sbin/bless",
+      ["--mount", mountPath, "--create-snapshot"]
+    )
+    return (
+      "Bootable system snapshot was created",
+      true,
+      ["blessOutput": output.standardOutput]
+    )
+  }
+}

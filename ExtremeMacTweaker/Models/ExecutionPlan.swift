@@ -22,6 +22,7 @@ enum ExecutionStep: Identifiable, Sendable {
   case setLaunchService(id: String, enabled: Bool)
   case setSecurityFeature(id: String, enabled: Bool)
   case createSystemSnapshot
+  case unmountSystemVolume
 
   var id: String { description }
 
@@ -43,6 +44,8 @@ enum ExecutionStep: Identifiable, Sendable {
       "\(enabled ? "Enable" : "Disable") security feature \(id)"
     case .createSystemSnapshot:
       "Create a new bootable system snapshot"
+    case .unmountSystemVolume:
+      "Unmount the writable system volume"
     }
   }
 }

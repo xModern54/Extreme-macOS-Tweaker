@@ -1,10 +1,23 @@
 import Combine
 import Foundation
 
+enum OptimizationExecutionPhase: Equatable {
+  case idle
+  case authorizing
+  case running
+  case succeeded
+  case failed
+}
+
 @MainActor
 final class OptimizationStore: ObservableObject {
   @Published private(set) var pendingChanges: [OptimizationChange] = []
   @Published var isReviewPresented = false
+  @Published private(set) var executionPhase: OptimizationExecutionPhase = .idle
+  @Published private(set) var executionProgress = 0.0
+  @Published private(set) var executionMessage = ""
+  @Published private(set) var executionLog: [String] = []
+  @Published private(set) var executionError: String?
 
   private let persistenceURL: URL?
 
@@ -20,8 +33,81 @@ final class OptimizationStore: ObservableObject {
   }
 
   var pendingCount: Int { pendingChanges.count }
-  var canApply: Bool { !pendingChanges.isEmpty }
+  var canApply: Bool { !pendingChanges.isEmpty && !isExecuting }
   var executionPlan: ExecutionPlan { OptimizationInterpreter.compile(pendingChanges) }
+  var isExecuting: Bool { executionPhase == .authorizing || executionPhase == .running }
+
+  func presentReview() {
+    resetExecution()
+    isReviewPresented = true
+  }
+
+  func applyPendingChanges() async {
+    guard canApply else { return }
+
+    let plan = executionPlan
+    executionPhase = .authorizing
+    executionProgress = 0
+    executionMessage = "Waiting for administrator authorization"
+    executionLog = ["Waiting for administrator authorization"]
+    executionError = nil
+
+    do {
+      let session = try PrivilegedExecutionSession()
+      try await Task.detached(priority: .userInitiated) {
+        try session.authorize()
+      }.value
+
+      executionPhase = .running
+      executionMessage = "Authorization granted"
+      executionLog.append("Authorization granted")
+
+      let executor = OptimizationExecutor(session: session)
+      try await executor.execute(
+        plan: plan,
+        onStep: { [weak self] index, step in
+          guard let self else { return }
+          executionMessage = step.description
+          executionProgress = Double(index) / Double(max(plan.steps.count, 1))
+        },
+        onEvent: { [weak self] index, event in
+          guard let self else { return }
+          executionMessage = event.message
+          executionLog.append(event.message)
+
+          let stepFraction: Double
+          if event.type == .completed {
+            stepFraction = 1
+          } else {
+            stepFraction = event.fraction ?? 0
+          }
+          executionProgress = (
+            Double(index) + min(max(stepFraction, 0), 1)
+          ) / Double(max(plan.steps.count, 1))
+        }
+      )
+
+      clearPendingChanges()
+      executionProgress = 1
+      executionMessage = "Changes were applied successfully"
+      executionLog.append("Restart macOS to boot from the new system snapshot")
+      executionPhase = .succeeded
+    } catch {
+      executionError = error.localizedDescription
+      executionMessage = "Unable to apply changes"
+      executionLog.append(error.localizedDescription)
+      executionPhase = .failed
+    }
+  }
+
+  func resetExecution() {
+    guard !isExecuting else { return }
+    executionPhase = .idle
+    executionProgress = 0
+    executionMessage = ""
+    executionLog = []
+    executionError = nil
+  }
 
   func pendingSystemApplicationAction(for applicationID: String) -> SystemApplicationAction? {
     pendingChanges.lazy.compactMap { change -> SystemApplicationChange? in

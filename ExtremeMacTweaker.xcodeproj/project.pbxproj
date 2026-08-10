@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B1000000000000000000000D /* RootTweakAction in Embed Root Helper */ = {isa = PBXBuildFile; fileRef = B10000000000000000000001 /* RootTweakAction */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		A10000000000000000000001 /* Tweaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tweaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B10000000000000000000001 /* RootTweakAction */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = RootTweakAction; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +21,51 @@
 			path = ExtremeMacTweaker;
 			sourceTree = "<group>";
 		};
+		B10000000000000000000002 /* RootTweakAction */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RootTweakAction;
+			sourceTree = "<group>";
+		};
+		B10000000000000000000003 /* PrivilegedProtocol */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PrivilegedProtocol;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXContainerItemProxy section */
+		B1000000000000000000000C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1000000000000000000000A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B10000000000000000000007;
+			remoteInfo = RootTweakAction;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B1000000000000000000000A /* Embed Root Helper */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Helpers;
+			dstSubfolderSpec = 7;
+			files = (
+				B1000000000000000000000D /* RootTweakAction in Embed Root Helper */,
+			);
+			name = "Embed Root Helper";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A10000000000000000000003 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B10000000000000000000004 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +79,8 @@
 			isa = PBXGroup;
 			children = (
 				A10000000000000000000002 /* ExtremeMacTweaker */,
+				B10000000000000000000002 /* RootTweakAction */,
+				B10000000000000000000003 /* PrivilegedProtocol */,
 				A10000000000000000000005 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				A10000000000000000000001 /* Tweaker.app */,
+				B10000000000000000000001 /* RootTweakAction */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -55,13 +104,16 @@
 				A10000000000000000000008 /* Sources */,
 				A10000000000000000000003 /* Frameworks */,
 				A10000000000000000000009 /* Resources */,
+				B1000000000000000000000A /* Embed Root Helper */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B1000000000000000000000B /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				A10000000000000000000002 /* ExtremeMacTweaker */,
+				B10000000000000000000003 /* PrivilegedProtocol */,
 			);
 			name = ExtremeMacTweaker;
 			packageProductDependencies = (
@@ -69,6 +121,28 @@
 			productName = Tweaker;
 			productReference = A10000000000000000000001 /* Tweaker.app */;
 			productType = "com.apple.product-type.application";
+		};
+		B10000000000000000000007 /* RootTweakAction */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B10000000000000000000008 /* Build configuration list for PBXNativeTarget "RootTweakAction" */;
+			buildPhases = (
+				B10000000000000000000006 /* Sources */,
+				B10000000000000000000004 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B10000000000000000000002 /* RootTweakAction */,
+				B10000000000000000000003 /* PrivilegedProtocol */,
+			);
+			name = RootTweakAction;
+			packageProductDependencies = (
+			);
+			productName = RootTweakAction;
+			productReference = B10000000000000000000001 /* RootTweakAction */;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -81,6 +155,9 @@
 				LastUpgradeCheck = 2650;
 				TargetAttributes = {
 					A10000000000000000000006 = {
+						CreatedOnToolsVersion = 26.5;
+					};
+					B10000000000000000000007 = {
 						CreatedOnToolsVersion = 26.5;
 					};
 				};
@@ -100,6 +177,7 @@
 			projectRoot = "";
 			targets = (
 				A10000000000000000000006 /* ExtremeMacTweaker */,
+				B10000000000000000000007 /* RootTweakAction */,
 			);
 		};
 /* End PBXProject section */
@@ -122,7 +200,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B10000000000000000000006 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B1000000000000000000000B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B10000000000000000000007 /* RootTweakAction */;
+			targetProxy = B1000000000000000000000C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A1000000000000000000000C /* Debug */ = {
@@ -244,7 +337,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -263,6 +356,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_OBJC_BRIDGING_HEADER = ExtremeMacTweaker/Services/LegacyAuthorizationBridge.h;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -276,7 +370,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -295,6 +389,43 @@
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_OBJC_BRIDGING_HEADER = ExtremeMacTweaker/Services/LegacyAuthorizationBridge.h;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		B10000000000000000000009 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.extrememactweaker.RootTweakAction;
+				PRODUCT_NAME = RootTweakAction;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B1000000000000000000000E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.extrememactweaker.RootTweakAction;
+				PRODUCT_NAME = RootTweakAction;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -316,6 +447,15 @@
 			buildConfigurations = (
 				A1000000000000000000000C /* Debug */,
 				A1000000000000000000000D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B10000000000000000000008 /* Build configuration list for PBXNativeTarget "RootTweakAction" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B10000000000000000000009 /* Debug */,
+				B1000000000000000000000E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -6,18 +6,18 @@ enum OptimizationInterpreter {
       return ExecutionPlan(changes: [], steps: [])
     }
 
-    var operationSteps: [ExecutionStep] = []
-    var modifiesSystemVolume = false
+    var applicationSteps: [ExecutionStep] = []
+    var launchServiceSteps: [ExecutionStep] = []
+    var securitySteps: [ExecutionStep] = []
 
     for change in changes {
       switch change {
       case .systemApplication(let application):
-        modifiesSystemVolume = true
         let fileName = URL(fileURLWithPath: application.sourcePath).lastPathComponent
 
         switch application.action {
         case .disable:
-          operationSteps.append(
+          applicationSteps.append(
             .disableSystemApplication(
               sourcePath: application.sourcePath,
               destinationPath: SystemApplicationsScanner.disabledApplicationsDirectory
@@ -25,7 +25,7 @@ enum OptimizationInterpreter {
             )
           )
         case .restore:
-          operationSteps.append(
+          applicationSteps.append(
             .restoreSystemApplication(
               sourcePath: application.sourcePath,
               destinationPath: SystemApplicationsScanner.applicationsDirectory
@@ -33,28 +33,30 @@ enum OptimizationInterpreter {
             )
           )
         case .delete:
-          operationSteps.append(.deleteSystemApplication(path: application.sourcePath))
+          applicationSteps.append(.deleteSystemApplication(path: application.sourcePath))
         }
 
       case .launchService(let service):
-        operationSteps.append(
+        launchServiceSteps.append(
           .setLaunchService(id: service.serviceID, enabled: service.action == .enable)
         )
 
       case .securityFeature(let feature):
-        operationSteps.append(
+        securitySteps.append(
           .setSecurityFeature(id: feature.featureID, enabled: feature.action == .enable)
         )
       }
     }
 
     var steps: [ExecutionStep] = [.verifySystemRequirements]
-    if modifiesSystemVolume {
+    steps.append(contentsOf: launchServiceSteps)
+    steps.append(contentsOf: securitySteps)
+
+    if !applicationSteps.isEmpty {
       steps.append(.mountSystemVolume)
-    }
-    steps.append(contentsOf: operationSteps)
-    if modifiesSystemVolume {
+      steps.append(contentsOf: applicationSteps)
       steps.append(.createSystemSnapshot)
+      steps.append(.unmountSystemVolume)
     }
 
     return ExecutionPlan(changes: changes, steps: steps)
