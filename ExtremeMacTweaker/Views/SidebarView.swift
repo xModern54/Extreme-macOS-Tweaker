@@ -221,7 +221,7 @@ private struct SidebarRow: View {
 }
 
 #Preview {
-  @Previewable @State var selection: AppSection? = .tweaker
+  @Previewable @State var selection: AppSection? = .systemTweaker
 
   SidebarView(selection: $selection)
     .environmentObject(OptimizationStore())

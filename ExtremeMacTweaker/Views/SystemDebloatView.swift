@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct TweakerView: View {
+struct SystemDebloatView: View {
   var body: some View {
     Color.clear
   }
 }
 
 #Preview {
-  TweakerView()
+  SystemDebloatView()
     .frame(width: 820, height: 620)
 }

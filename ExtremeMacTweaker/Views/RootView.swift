@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct RootView: View {
-  @State private var selection: AppSection? = .tweaker
+  @State private var selection: AppSection? = .systemTweaker
 
   var body: some View {
     NavigationSplitView(columnVisibility: .constant(.all)) {
@@ -9,7 +9,7 @@ struct RootView: View {
         .navigationSplitViewColumnWidth(min: 200, ideal: 232, max: 272)
         .toolbar(removing: .sidebarToggle)
     } detail: {
-      DetailWorkspace(section: selection ?? .tweaker)
+      DetailWorkspace(section: selection ?? .systemTweaker)
     }
     .navigationSplitViewStyle(.balanced)
     .tint(.accentColor)
@@ -25,10 +25,14 @@ private struct DetailWorkspace: View {
         .ignoresSafeArea()
 
       switch section {
-      case .tweaker:
-        TweakerView()
+      case .systemTweaker:
+        SystemTweakerView()
       case .systemApps:
         SystemAppsView()
+      case .systemDebloat:
+        SystemDebloatView()
+      case .security:
+        SecurityView()
       }
     }
     .navigationTitle("Tweaker")
