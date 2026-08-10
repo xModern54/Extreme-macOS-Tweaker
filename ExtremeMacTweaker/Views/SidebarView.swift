@@ -109,6 +109,10 @@ private struct ApplyReviewView: View {
         }
       }
 
+      if optimizationStore.executionPlan.requiresReboot {
+        systemProtectionRequirements
+      }
+
       Section("Execution Plan") {
         ForEach(optimizationStore.executionPlan.steps) { step in
           Label(step.description, systemImage: "chevron.right")
@@ -116,6 +120,55 @@ private struct ApplyReviewView: View {
       }
     }
     .listStyle(.inset)
+  }
+
+  @ViewBuilder
+  private var systemProtectionRequirements: some View {
+    Section("Required System Protection Settings") {
+      switch optimizationStore.systemProtectionCheck {
+      case .notRequired, .checking:
+        HStack(spacing: 10) {
+          ProgressView().controlSize(.small)
+          Text("Checking system protection status…")
+            .foregroundStyle(.secondary)
+        }
+
+      case .checked(let status):
+        protectionStatusRow(
+          title: "System Integrity Protection",
+          isDisabled: status.systemIntegrityProtectionDisabled
+        )
+        protectionStatusRow(
+          title: "Authenticated Root",
+          isDisabled: status.authenticatedRootDisabled
+        )
+
+        if !status.requirementsSatisfied {
+          Label(
+            "Disable the required protections from macOS Recovery before applying these changes.",
+            systemImage: "exclamationmark.triangle.fill"
+          )
+          .foregroundStyle(.red)
+        }
+
+      case .failed(let message):
+        Label(message, systemImage: "exclamationmark.triangle.fill")
+          .foregroundStyle(.red)
+      }
+
+      Button("Check Again") {
+        Task { await optimizationStore.refreshSystemProtectionStatus() }
+      }
+      .disabled(optimizationStore.systemProtectionCheck == .checking)
+    }
+  }
+
+  private func protectionStatusRow(title: String, isDisabled: Bool) -> some View {
+    Label(
+      "\(title): \(isDisabled ? "Disabled" : "Enabled")",
+      systemImage: isDisabled ? "checkmark.circle.fill" : "xmark.octagon.fill"
+    )
+    .foregroundStyle(isDisabled ? Color.green : Color.red)
   }
 
   private var executionContent: some View {
@@ -141,7 +194,9 @@ private struct ApplyReviewView: View {
       {
         Label("A restart is required to load the new system snapshot.", systemImage: "restart")
           .foregroundStyle(.orange)
-      } else if let error = optimizationStore.executionError {
+      }
+
+      if let error = optimizationStore.executionError {
         Label(error, systemImage: "exclamationmark.triangle.fill")
           .foregroundStyle(.red)
       }
@@ -151,7 +206,7 @@ private struct ApplyReviewView: View {
   private var footer: some View {
     HStack {
       if !optimizationStore.isExecuting {
-        Button(optimizationStore.executionPhase == .idle ? "Cancel" : "Close") {
+        Button(optimizationStore.executionPhase == .idle ? "Cancel" : "Done") {
           dismiss()
         }
         .keyboardShortcut(.cancelAction)
@@ -164,14 +219,20 @@ private struct ApplyReviewView: View {
           Task { await optimizationStore.applyPendingChanges() }
         }
         .buttonStyle(.borderedProminent)
+        .disabled(!optimizationStore.canStartExecution)
       } else if optimizationStore.executionPhase == .failed {
         Button("Try Again") {
           Task { await optimizationStore.applyPendingChanges() }
         }
         .buttonStyle(.borderedProminent)
+        .disabled(!optimizationStore.canStartExecution)
       } else if optimizationStore.executionPhase == .succeeded {
-        Button("Done") { dismiss() }
-          .buttonStyle(.borderedProminent)
+        Button("Restart Now") {
+          Task { await optimizationStore.restartSystemWithoutReopeningApplications() }
+        }
+        .tint(.red)
+        .buttonStyle(.borderedProminent)
+        .disabled(optimizationStore.restartInProgress)
       }
     }
   }

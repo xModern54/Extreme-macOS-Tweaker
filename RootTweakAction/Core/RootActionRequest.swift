@@ -21,6 +21,7 @@ enum RootActionRequest {
     userID: uid_t,
     enabled: Bool
   )
+  case restartSystem
 
   var name: String {
     switch self {
@@ -33,6 +34,7 @@ enum RootActionRequest {
     case .deleteApplication: "delete-application"
     case .createSnapshot: "create-snapshot"
     case .setLaunchService: "set-launch-service"
+    case .restartSystem: "restart-system"
     }
   }
 
@@ -48,6 +50,7 @@ enum RootActionRequest {
     case .createSnapshot: "Creating a bootable system snapshot"
     case .setLaunchService(let label, _, _, let enabled):
       "\(enabled ? "Enabling" : "Disabling") \(label)"
+    case .restartSystem: "Restarting macOS"
     }
   }
 
@@ -102,6 +105,8 @@ enum RootActionRequest {
         userID: userID,
         enabled: enabled
       )
+    case "restart-system":
+      return .restartSystem
     default:
       throw RootActionError.invalidArguments("Unknown action: \(command)")
     }

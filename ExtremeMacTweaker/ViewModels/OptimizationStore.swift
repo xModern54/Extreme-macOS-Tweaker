@@ -25,6 +25,8 @@ final class OptimizationStore: ObservableObject {
   @Published private(set) var executionError: String?
   @Published private(set) var executionRequiresReboot = false
   @Published private(set) var appliedLaunchServiceStates: [String: Bool] = [:]
+  @Published private(set) var systemProtectionCheck: SystemProtectionCheckState = .notRequired
+  @Published private(set) var restartInProgress = false
 
   private let persistenceURL: URL?
   private let launchServiceStatesURL: URL?
@@ -45,6 +47,12 @@ final class OptimizationStore: ObservableObject {
 
   var pendingCount: Int { pendingChangeSummaries.count }
   var canApply: Bool { !pendingChanges.isEmpty && !isExecuting }
+  var canStartExecution: Bool {
+    guard canApply else { return false }
+    guard executionPlan.requiresReboot else { return true }
+    guard case .checked(let status) = systemProtectionCheck else { return false }
+    return status.requirementsSatisfied
+  }
   var executionPlan: ExecutionPlan { OptimizationInterpreter.compile(pendingChanges) }
   var isExecuting: Bool { executionPhase == .authorizing || executionPhase == .running }
   var pendingChangeSummaries: [PendingChangeSummary] {
@@ -72,11 +80,22 @@ final class OptimizationStore: ObservableObject {
 
   func presentReview() {
     resetExecution()
+    systemProtectionCheck = executionPlan.requiresReboot ? .checking : .notRequired
     isReviewPresented = true
+    Task { await refreshSystemProtectionStatus() }
+  }
+
+  func refreshSystemProtectionStatus() async {
+    guard executionPlan.requiresReboot else {
+      systemProtectionCheck = .notRequired
+      return
+    }
+    systemProtectionCheck = .checking
+    systemProtectionCheck = await SystemProtectionChecker.check()
   }
 
   func applyPendingChanges() async {
-    guard canApply else { return }
+    guard canStartExecution else { return }
 
     let plan = executionPlan
     executionRequiresReboot = plan.requiresReboot
@@ -145,6 +164,33 @@ final class OptimizationStore: ObservableObject {
     executionLog = []
     executionError = nil
     executionRequiresReboot = false
+    restartInProgress = false
+  }
+
+  func restartSystemWithoutReopeningApplications() async {
+    guard executionPhase == .succeeded, !restartInProgress else { return }
+    restartInProgress = true
+    executionMessage = "Waiting for administrator authorization to restart"
+
+    let loginWindowDefaults = UserDefaults(suiteName: "com.apple.loginwindow")
+    loginWindowDefaults?.set(false, forKey: "TALLogoutSavesState")
+    loginWindowDefaults?.set(false, forKey: "LoginwindowLaunchesRelaunchApps")
+    loginWindowDefaults?.synchronize()
+
+    do {
+      let session = try PrivilegedExecutionSession()
+      try await Task.detached(priority: .userInitiated) {
+        try session.authorize()
+      }.value
+      for try await event in session.events(arguments: ["restart-system"]) {
+        executionMessage = event.message
+      }
+    } catch {
+      restartInProgress = false
+      executionError = error.localizedDescription
+      executionMessage = "Unable to restart macOS"
+      executionLog.append(error.localizedDescription)
+    }
   }
 
   func pendingSystemApplicationAction(for applicationID: String) -> SystemApplicationAction? {

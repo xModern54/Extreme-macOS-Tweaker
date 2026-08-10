@@ -61,7 +61,18 @@ enum RootActions {
         enabled: enabled,
         context: context
       )
+
+    case .restartSystem:
+      return try restartSystem(context)
     }
+  }
+
+  private static func restartSystem(
+    _ context: RootActionContext
+  ) throws -> (String, Bool, [String: String]) {
+    context.events.progress(0.4, "Requesting a clean system restart")
+    _ = try context.commands.requireSuccess("/sbin/shutdown", ["-r", "now"])
+    return ("System restart was requested", true, [:])
   }
 
   private static func setLaunchService(
