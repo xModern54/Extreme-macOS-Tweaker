@@ -38,7 +38,12 @@ enum OptimizationInterpreter {
 
       case .launchService(let service):
         launchServiceSteps.append(
-          .setLaunchService(id: service.serviceID, enabled: service.action == .enable)
+          .setLaunchService(
+            id: service.serviceID,
+            label: service.label,
+            domain: service.domain,
+            enabled: service.action == .enable
+          )
         )
 
       case .securityFeature(let feature):
@@ -48,7 +53,10 @@ enum OptimizationInterpreter {
       }
     }
 
-    var steps: [ExecutionStep] = [.verifySystemRequirements]
+    var steps: [ExecutionStep] = []
+    if !applicationSteps.isEmpty {
+      steps.append(.verifySystemRequirements)
+    }
     steps.append(contentsOf: launchServiceSteps)
     steps.append(contentsOf: securitySteps)
 

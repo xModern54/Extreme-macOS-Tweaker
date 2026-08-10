@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SystemTweakerView: View {
   @EnvironmentObject private var catalogStore: TweakCatalogStore
+  @EnvironmentObject private var optimizationStore: OptimizationStore
   @State private var selectedFeatureID: String?
   @State private var choices: [String: SystemTweakChoice] = [:]
 
@@ -119,7 +120,14 @@ struct SystemTweakerView: View {
   }
 
   private func choice(for feature: TweakCatalogFeature) -> SystemTweakChoice {
-    choices[feature.id] ?? (feature.defaultEnabled ? .keepEnabled : .disable)
+    if let choice = choices[feature.id] {
+      return choice
+    }
+    let services = catalogStore.services(for: feature)
+    if let pendingAction = optimizationStore.pendingLaunchServiceAction(for: services) {
+      return pendingAction == .enable ? .keepEnabled : .disable
+    }
+    return feature.defaultEnabled ? .keepEnabled : .disable
   }
 
   private func binding(for feature: TweakCatalogFeature) -> Binding<SystemTweakChoice> {
@@ -128,6 +136,10 @@ struct SystemTweakerView: View {
       set: { newValue in
         choices[feature.id] = newValue
         selectedFeatureID = feature.id
+        optimizationStore.setLaunchServices(
+          catalogStore.services(for: feature),
+          enabled: newValue == .keepEnabled
+        )
       }
     )
   }
@@ -333,5 +345,6 @@ private enum SystemTweakChoice {
 #Preview {
   SystemTweakerView()
     .environmentObject(TweakCatalogStore())
+    .environmentObject(OptimizationStore())
     .frame(width: 900, height: 620)
 }

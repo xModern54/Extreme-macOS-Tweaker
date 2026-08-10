@@ -136,7 +136,9 @@ private struct ApplyReviewView: View {
       }
       .listStyle(.inset)
 
-      if optimizationStore.executionPhase == .succeeded {
+      if optimizationStore.executionPhase == .succeeded,
+        optimizationStore.executionRequiresReboot
+      {
         Label("A restart is required to load the new system snapshot.", systemImage: "restart")
           .foregroundStyle(.orange)
       } else if let error = optimizationStore.executionError {
@@ -187,13 +189,19 @@ private struct ApplyReviewView: View {
   private var headerSubtitle: String {
     switch optimizationStore.executionPhase {
     case .idle:
-      "The selected changes will modify the macOS system snapshot."
+      optimizationStore.executionPlan.requiresReboot
+        ? "The selected changes will modify the macOS system snapshot."
+        : "The selected launchd services will be updated with administrator privileges."
     case .authorizing:
       "Tweaker needs administrator privileges to continue."
     case .running:
-      "Do not quit Tweaker while the system snapshot is being modified."
+      optimizationStore.executionRequiresReboot
+        ? "Do not quit Tweaker while the system snapshot is being modified."
+        : "Do not quit Tweaker while launchd services are being updated."
     case .succeeded:
-      "The new bootable snapshot has been created successfully."
+      optimizationStore.executionRequiresReboot
+        ? "The new bootable snapshot has been created successfully."
+        : "The launchd service changes were applied successfully."
     case .failed:
       "The operation stopped before all changes were applied."
     }

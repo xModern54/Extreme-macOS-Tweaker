@@ -41,6 +41,8 @@ struct LaunchServiceChange: Codable, Hashable, Sendable {
   }
 
   let serviceID: String
+  let label: String
+  let domain: TweakCatalogService.Domain
   let action: Action
 }
 
@@ -72,7 +74,7 @@ enum OptimizationChange: Codable, Hashable, Identifiable, Sendable {
     case .systemApplication(let change):
       "\(change.action.title) \(change.name)"
     case .launchService(let change):
-      "\(change.action == .enable ? "Enable" : "Disable") \(change.serviceID)"
+      "\(change.action == .enable ? "Enable" : "Disable") \(change.label)"
     case .securityFeature(let change):
       "\(change.action == .enable ? "Enable" : "Disable") \(change.featureID)"
     }

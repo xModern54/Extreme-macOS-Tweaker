@@ -4,6 +4,7 @@ import Foundation
 final class OptimizationExecutor {
   private let session: PrivilegedExecutionSession
   private let mountPath = "/Volumes/SystemRW"
+  private let userID = getuid()
 
   init(session: PrivilegedExecutionSession) {
     self.session = session
@@ -64,7 +65,15 @@ final class OptimizationExecutor {
       ["create-snapshot", "--mount-path", mountPath]
     case .unmountSystemVolume:
       ["unmount-system-volume", "--mount-path", mountPath]
-    case .setLaunchService, .setSecurityFeature:
+    case .setLaunchService(_, let label, let domain, let enabled):
+      [
+        "set-launch-service",
+        "--label", label,
+        "--domain", domain.rawValue,
+        "--user-id", String(userID),
+        "--enabled", String(enabled),
+      ]
+    case .setSecurityFeature:
       throw PrivilegedExecutionError.unsupportedStep(step.description)
     }
   }

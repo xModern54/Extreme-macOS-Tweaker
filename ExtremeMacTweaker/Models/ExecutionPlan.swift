@@ -19,7 +19,12 @@ enum ExecutionStep: Identifiable, Sendable {
   case disableSystemApplication(sourcePath: String, destinationPath: String)
   case restoreSystemApplication(sourcePath: String, destinationPath: String)
   case deleteSystemApplication(path: String)
-  case setLaunchService(id: String, enabled: Bool)
+  case setLaunchService(
+    id: String,
+    label: String,
+    domain: TweakCatalogService.Domain,
+    enabled: Bool
+  )
   case setSecurityFeature(id: String, enabled: Bool)
   case createSystemSnapshot
   case unmountSystemVolume
@@ -38,8 +43,8 @@ enum ExecutionStep: Identifiable, Sendable {
       "Restore \(URL(fileURLWithPath: source).deletingPathExtension().lastPathComponent)"
     case .deleteSystemApplication(let path):
       "Delete \(URL(fileURLWithPath: path).deletingPathExtension().lastPathComponent)"
-    case .setLaunchService(let id, let enabled):
-      "\(enabled ? "Enable" : "Disable") service \(id)"
+    case .setLaunchService(_, let label, _, let enabled):
+      "\(enabled ? "Enable" : "Disable") service \(label)"
     case .setSecurityFeature(let id, let enabled):
       "\(enabled ? "Enable" : "Disable") security feature \(id)"
     case .createSystemSnapshot:

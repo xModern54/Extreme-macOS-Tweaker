@@ -1,6 +1,12 @@
 import Foundation
 
 enum RootActionRequest {
+  enum LaunchServiceDomain: String {
+    case system
+    case user
+    case gui
+  }
+
   case identity
   case preflight
   case mountSystemVolume(mountPath: String)
@@ -9,6 +15,12 @@ enum RootActionRequest {
   case restoreApplication(mountPath: String, sourcePath: String, destinationPath: String)
   case deleteApplication(mountPath: String, path: String)
   case createSnapshot(mountPath: String)
+  case setLaunchService(
+    label: String,
+    domain: LaunchServiceDomain,
+    userID: uid_t,
+    enabled: Bool
+  )
 
   var name: String {
     switch self {
@@ -20,6 +32,7 @@ enum RootActionRequest {
     case .restoreApplication: "restore-application"
     case .deleteApplication: "delete-application"
     case .createSnapshot: "create-snapshot"
+    case .setLaunchService: "set-launch-service"
     }
   }
 
@@ -33,6 +46,8 @@ enum RootActionRequest {
     case .restoreApplication(_, let source, _): "Restoring \(appName(source))"
     case .deleteApplication(_, let path): "Deleting \(appName(path))"
     case .createSnapshot: "Creating a bootable system snapshot"
+    case .setLaunchService(let label, _, _, let enabled):
+      "\(enabled ? "Enabling" : "Disabling") \(label)"
     }
   }
 
@@ -68,6 +83,25 @@ enum RootActionRequest {
       )
     case "create-snapshot":
       return .createSnapshot(mountPath: try required("mount-path", in: options))
+    case "set-launch-service":
+      let domainValue = try required("domain", in: options)
+      guard let domain = LaunchServiceDomain(rawValue: domainValue) else {
+        throw RootActionError.invalidArguments("Invalid launch service domain: \(domainValue)")
+      }
+      let userIDValue = try required("user-id", in: options)
+      guard let userID = uid_t(userIDValue) else {
+        throw RootActionError.invalidArguments("Invalid user ID: \(userIDValue)")
+      }
+      let enabledValue = try required("enabled", in: options)
+      guard let enabled = Bool(enabledValue) else {
+        throw RootActionError.invalidArguments("Invalid enabled value: \(enabledValue)")
+      }
+      return .setLaunchService(
+        label: try required("label", in: options),
+        domain: domain,
+        userID: userID,
+        enabled: enabled
+      )
     default:
       throw RootActionError.invalidArguments("Unknown action: \(command)")
     }

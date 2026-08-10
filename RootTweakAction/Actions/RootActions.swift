@@ -52,6 +52,83 @@ enum RootActions {
 
     case .createSnapshot(let mountPath):
       return try createSnapshot(mountPath, context)
+
+    case .setLaunchService(let label, let domain, let userID, let enabled):
+      return try setLaunchService(
+        label: label,
+        domain: domain,
+        userID: userID,
+        enabled: enabled,
+        context: context
+      )
+    }
+  }
+
+  private static func setLaunchService(
+    label: String,
+    domain: RootActionRequest.LaunchServiceDomain,
+    userID: uid_t,
+    enabled: Bool,
+    context: RootActionContext
+  ) throws -> (String, Bool, [String: String]) {
+    let allowedCharacters = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "._-"))
+    guard
+      !label.isEmpty,
+      label.count <= 255,
+      label.unicodeScalars.allSatisfy(allowedCharacters.contains)
+    else {
+      throw RootActionError.invalidArguments("Invalid launch service label: \(label)")
+    }
+
+    let domainTarget = switch domain {
+    case .system: "system"
+    case .user: "user/\(userID)"
+    case .gui: "gui/\(userID)"
+    }
+    let serviceTarget = "\(domainTarget)/\(label)"
+    let launchctl = "/bin/launchctl"
+
+    context.events.progress(0.2, "Checking the current launchd override")
+    let disabledServices = try context.commands.requireSuccess(
+      launchctl, ["print-disabled", domainTarget]
+    )
+    let wasDisabled = disabledOverride(for: label, in: disabledServices.standardOutput)
+    let shouldDisable = !enabled
+
+    context.events.progress(0.5, "Updating the persistent launchd override")
+    _ = try context.commands.requireSuccess(
+      launchctl, [enabled ? "enable" : "disable", serviceTarget]
+    )
+
+    var wasLoaded = false
+    if shouldDisable {
+      let serviceState = try context.commands.run(launchctl, ["print", serviceTarget])
+      wasLoaded = serviceState.exitCode == 0
+      if wasLoaded {
+        context.events.progress(0.8, "Stopping the running launchd service")
+        _ = try context.commands.requireSuccess(launchctl, ["bootout", serviceTarget])
+      }
+    }
+
+    let changed = wasDisabled != shouldDisable || wasLoaded
+    return (
+      "Launch service was \(enabled ? "enabled" : "disabled")",
+      changed,
+      [
+        "label": label,
+        "domain": domain.rawValue,
+        "serviceTarget": serviceTarget,
+        "enabled": String(enabled),
+        "stopped": String(wasLoaded),
+      ]
+    )
+  }
+
+  private static func disabledOverride(for label: String, in output: String) -> Bool {
+    let quotedLabel = "\"\(label)\""
+    return output.split(separator: "\n").contains { line in
+      line.contains(quotedLabel)
+        && (line.contains("=> disabled") || line.contains("=> true"))
     }
   }
 

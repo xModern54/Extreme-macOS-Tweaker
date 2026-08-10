@@ -18,6 +18,7 @@ final class OptimizationStore: ObservableObject {
   @Published private(set) var executionMessage = ""
   @Published private(set) var executionLog: [String] = []
   @Published private(set) var executionError: String?
+  @Published private(set) var executionRequiresReboot = false
 
   private let persistenceURL: URL?
 
@@ -46,6 +47,7 @@ final class OptimizationStore: ObservableObject {
     guard canApply else { return }
 
     let plan = executionPlan
+    executionRequiresReboot = plan.requiresReboot
     executionPhase = .authorizing
     executionProgress = 0
     executionMessage = "Waiting for administrator authorization"
@@ -90,7 +92,9 @@ final class OptimizationStore: ObservableObject {
       clearPendingChanges()
       executionProgress = 1
       executionMessage = "Changes were applied successfully"
-      executionLog.append("Restart macOS to boot from the new system snapshot")
+      if plan.requiresReboot {
+        executionLog.append("Restart macOS to boot from the new system snapshot")
+      }
       executionPhase = .succeeded
     } catch {
       executionError = error.localizedDescription
@@ -107,6 +111,7 @@ final class OptimizationStore: ObservableObject {
     executionMessage = ""
     executionLog = []
     executionError = nil
+    executionRequiresReboot = false
   }
 
   func pendingSystemApplicationAction(for applicationID: String) -> SystemApplicationAction? {
@@ -135,6 +140,43 @@ final class OptimizationStore: ObservableObject {
     }
   }
 
+  func setLaunchServices(_ services: [TweakCatalogService], enabled: Bool) {
+    let action: LaunchServiceChange.Action = enabled ? .enable : .disable
+    for service in services {
+      upsert(
+        .launchService(
+          LaunchServiceChange(
+            serviceID: service.id,
+            label: service.label,
+            domain: service.domain,
+            action: action
+          )
+        ),
+        persist: false
+      )
+    }
+    persistPendingChanges()
+  }
+
+  func pendingLaunchServiceAction(
+    for services: [TweakCatalogService]
+  ) -> LaunchServiceChange.Action? {
+    let serviceIDs = Set(services.map(\.id))
+    guard !serviceIDs.isEmpty else { return nil }
+
+    let actions = pendingChanges.compactMap { change -> LaunchServiceChange.Action? in
+      guard
+        case .launchService(let service) = change,
+        serviceIDs.contains(service.serviceID)
+      else {
+        return nil
+      }
+      return service.action
+    }
+    guard actions.count == serviceIDs.count, let first = actions.first else { return nil }
+    return actions.allSatisfy { $0 == first } ? first : nil
+  }
+
   func removeChange(withID id: String) {
     pendingChanges.removeAll { $0.id == id }
     persistPendingChanges()
@@ -145,13 +187,15 @@ final class OptimizationStore: ObservableObject {
     persistPendingChanges()
   }
 
-  private func upsert(_ change: OptimizationChange) {
+  private func upsert(_ change: OptimizationChange, persist: Bool = true) {
     if let index = pendingChanges.firstIndex(where: { $0.id == change.id }) {
       pendingChanges[index] = change
     } else {
       pendingChanges.append(change)
     }
-    persistPendingChanges()
+    if persist {
+      persistPendingChanges()
+    }
   }
 
   private func restorePendingChanges() {
