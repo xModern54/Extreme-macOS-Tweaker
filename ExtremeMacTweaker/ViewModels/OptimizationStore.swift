@@ -28,6 +28,8 @@ final class OptimizationStore: ObservableObject {
   @Published private(set) var systemProtectionCheck: SystemProtectionCheckState = .notRequired
   @Published private(set) var restartInProgress = false
   @Published private(set) var observedLaunchServiceStates: [String: LaunchServiceRuntimeState] = [:]
+  @Published private(set) var observedSecurityProtectionStates: [String: Bool] = [:]
+  @Published private(set) var gatekeeperConfirmationRequired = false
 
   private let persistenceURL: URL?
   private let launchServiceStatesURL: URL?
@@ -116,6 +118,7 @@ final class OptimizationStore: ObservableObject {
     executionMessage = "Waiting for administrator authorization"
     executionLog = ["Waiting for administrator authorization"]
     executionError = nil
+    gatekeeperConfirmationRequired = false
 
     do {
       let session = try PrivilegedExecutionSession()
@@ -139,6 +142,9 @@ final class OptimizationStore: ObservableObject {
           guard let self else { return }
           executionMessage = event.message
           executionLog.append(event.message)
+          if event.result?.values["requiresConfirmation"] == "true" {
+            gatekeeperConfirmationRequired = true
+          }
 
           let stepFraction: Double
           if event.type == .completed {
@@ -155,7 +161,9 @@ final class OptimizationStore: ObservableObject {
       recordAppliedLaunchServiceChanges(plan.changes)
       clearPendingChanges()
       executionProgress = 1
-      executionMessage = "Changes were applied successfully"
+      executionMessage = gatekeeperConfirmationRequired
+        ? "Confirmation is required in Privacy & Security"
+        : "Changes were applied successfully"
       if plan.requiresReboot {
         executionLog.append("Restart macOS to boot from the new system snapshot")
       }
@@ -176,6 +184,7 @@ final class OptimizationStore: ObservableObject {
     executionLog = []
     executionError = nil
     executionRequiresReboot = false
+    gatekeeperConfirmationRequired = false
     restartInProgress = false
   }
 
@@ -229,6 +238,37 @@ final class OptimizationStore: ObservableObject {
     } else {
       upsert(change)
     }
+  }
+
+  func securityProtectionIsEnabled(_ protection: SecurityProtection) -> Bool {
+    if let pending = pendingChanges.lazy.compactMap({ change -> SecurityFeatureChange? in
+      guard case .securityFeature(let feature) = change else { return nil }
+      return feature
+    }).first(where: { $0.featureID == protection.id }) {
+      return pending.action == .enable
+    }
+    return observedSecurityProtectionStates[protection.id] ?? true
+  }
+
+  func setSecurityProtection(_ protection: SecurityProtection, enabled: Bool) {
+    let observedEnabled = observedSecurityProtectionStates[protection.id] ?? true
+    if enabled == observedEnabled {
+      removeChange(withID: "security-feature:\(protection.id)")
+      return
+    }
+
+    upsert(
+      .securityFeature(
+        SecurityFeatureChange(
+          featureID: protection.id,
+          action: enabled ? .enable : .disable
+        )
+      )
+    )
+  }
+
+  func refreshSecurityProtectionStates() async {
+    observedSecurityProtectionStates = await SecurityProtectionStateScanner.scan(userID: getuid())
   }
 
   func isSystemComponentSelected(_ componentID: String) -> Bool {
@@ -400,7 +440,13 @@ final class OptimizationStore: ObservableObject {
     else {
       return
     }
-    pendingChanges = decoded
+    pendingChanges = decoded.filter { change in
+      guard case .launchService(let service) = change else { return true }
+      return service.featureID != "xprotect" && service.featureID != "gatekeeper"
+    }
+    if pendingChanges.count != decoded.count {
+      persistPendingChanges()
+    }
   }
 
   private func recordAppliedLaunchServiceChanges(_ changes: [OptimizationChange]) {

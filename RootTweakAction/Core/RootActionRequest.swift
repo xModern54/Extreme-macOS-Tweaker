@@ -23,6 +23,7 @@ enum RootActionRequest {
     enabled: Bool
   )
   case removeSystemComponent(id: String)
+  case setSecurityProtection(id: String, userID: uid_t, enabled: Bool)
   case restartSystem
 
   var name: String {
@@ -38,6 +39,7 @@ enum RootActionRequest {
     case .createSnapshot: "create-snapshot"
     case .setLaunchService: "set-launch-service"
     case .removeSystemComponent: "remove-system-component"
+    case .setSecurityProtection: "set-security-protection"
     case .restartSystem: "restart-system"
     }
   }
@@ -57,6 +59,9 @@ enum RootActionRequest {
       "\(enabled ? "Enabling" : "Disabling") \(label)"
     case .removeSystemComponent(let id):
       "Removing \(SystemDebloatCatalog.component(withID: id)?.title ?? "system component")"
+    case .setSecurityProtection(let id, _, let enabled):
+      "\(enabled ? "Enabling" : "Disabling") "
+        + (SecurityProtectionCatalog.protection(withID: id)?.title ?? "security protection")
     case .restartSystem: "Restarting macOS"
     }
   }
@@ -115,6 +120,20 @@ enum RootActionRequest {
       )
     case "remove-system-component":
       return .removeSystemComponent(id: try required("id", in: options))
+    case "set-security-protection":
+      let userIDValue = try required("user-id", in: options)
+      guard let userID = uid_t(userIDValue) else {
+        throw RootActionError.invalidArguments("Invalid user ID: \(userIDValue)")
+      }
+      let enabledValue = try required("enabled", in: options)
+      guard let enabled = Bool(enabledValue) else {
+        throw RootActionError.invalidArguments("Invalid enabled value: \(enabledValue)")
+      }
+      return .setSecurityProtection(
+        id: try required("id", in: options),
+        userID: userID,
+        enabled: enabled
+      )
     case "restart-system":
       return .restartSystem
     default:

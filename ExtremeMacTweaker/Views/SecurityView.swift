@@ -1,12 +1,319 @@
 import SwiftUI
 
 struct SecurityView: View {
+  @EnvironmentObject private var optimizationStore: OptimizationStore
+  @State private var selectedProtectionID = SecurityProtectionCatalog.protections.first?.id
+
+  private var protections: [SecurityProtection] {
+    SecurityProtectionCatalog.protections
+  }
+
+  private var selectedProtection: SecurityProtection? {
+    protections.first(where: { $0.id == selectedProtectionID }) ?? protections.first
+  }
+
   var body: some View {
-    Color.clear
+    Group {
+      if let selectedProtection {
+        workspace(selectedProtection: selectedProtection)
+      } else {
+        ContentUnavailableView("No Protection Controls", systemImage: "shield.slash")
+      }
+    }
+    .task {
+      while !Task.isCancelled {
+        await optimizationStore.refreshSecurityProtectionStates()
+        try? await Task.sleep(nanoseconds: 5_000_000_000)
+      }
+    }
+    .onChange(of: optimizationStore.executionPhase) { _, phase in
+      guard phase == .succeeded else { return }
+      Task { await optimizationStore.refreshSecurityProtectionStates() }
+    }
+  }
+
+  private func workspace(selectedProtection: SecurityProtection) -> some View {
+    GeometryReader { geometry in
+      let inspectorWidth = min(280, max(225, geometry.size.width * 0.36))
+
+      HStack(spacing: 0) {
+        protectionBrowser
+          .frame(
+            width: max(0, geometry.size.width - inspectorWidth - 1),
+            height: geometry.size.height
+          )
+
+        Divider()
+
+        SecurityProtectionInspector(
+          protection: selectedProtection,
+          isEnabled: optimizationStore.securityProtectionIsEnabled(selectedProtection)
+        )
+        .frame(width: inspectorWidth, height: geometry.size.height)
+      }
+    }
+  }
+
+  private var protectionBrowser: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      VStack(alignment: .leading, spacing: 6) {
+        Text("Security")
+          .font(.title2.weight(.semibold))
+
+        Text("Choose which macOS protection systems remain active.")
+          .font(.subheadline)
+          .foregroundStyle(.secondary)
+      }
+      .padding(.horizontal, 24)
+      .padding(.top, 20)
+      .padding(.bottom, 16)
+
+      Divider()
+
+      ScrollView {
+        VStack(alignment: .leading, spacing: 16) {
+          securityWarning
+
+          VStack(alignment: .leading, spacing: 9) {
+            Text("Protection Systems")
+              .font(.caption.weight(.semibold))
+              .foregroundStyle(.secondary)
+              .textCase(.uppercase)
+
+            VStack(spacing: 0) {
+              ForEach(Array(protections.enumerated()), id: \.element.id) { index, protection in
+                SecurityProtectionRow(
+                  protection: protection,
+                  isEnabled: binding(for: protection),
+                  isSelected: selectedProtectionID == protection.id
+                )
+                .contentShape(Rectangle())
+                .onTapGesture { selectedProtectionID = protection.id }
+
+                if index < protections.count - 1 {
+                  Divider().padding(.leading, 58)
+                }
+              }
+            }
+            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+            .overlay {
+              RoundedRectangle(cornerRadius: 10)
+                .stroke(.separator.opacity(0.45), lineWidth: 1)
+            }
+          }
+        }
+        .padding(20)
+      }
+    }
+  }
+
+  private var securityWarning: some View {
+    HStack(alignment: .top, spacing: 10) {
+      Image(systemName: "exclamationmark.shield.fill")
+        .foregroundStyle(.red)
+
+      VStack(alignment: .leading, spacing: 3) {
+        Text("Disabling these protections reduces macOS security.")
+          .font(.subheadline.weight(.medium))
+        Text("Only disable a protection if you understand which trust and malware checks it provides.")
+          .font(.caption)
+          .foregroundStyle(.secondary)
+          .fixedSize(horizontal: false, vertical: true)
+      }
+    }
+    .padding(12)
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .background(Color.red.opacity(0.07), in: RoundedRectangle(cornerRadius: 10))
+    .overlay {
+      RoundedRectangle(cornerRadius: 10)
+        .stroke(Color.red.opacity(0.2), lineWidth: 1)
+    }
+  }
+
+  private func binding(for protection: SecurityProtection) -> Binding<Bool> {
+    Binding(
+      get: { optimizationStore.securityProtectionIsEnabled(protection) },
+      set: { enabled in
+        selectedProtectionID = protection.id
+        optimizationStore.setSecurityProtection(protection, enabled: enabled)
+      }
+    )
+  }
+}
+
+private struct SecurityProtectionRow: View {
+  let protection: SecurityProtection
+  @Binding var isEnabled: Bool
+  let isSelected: Bool
+
+  var body: some View {
+    HStack(spacing: 12) {
+      Image(systemName: protection.systemImage)
+        .font(.system(size: 17, weight: .medium))
+        .foregroundStyle(isSelected ? Color.white : statusColor)
+        .frame(width: 34, height: 34)
+        .background(
+          isSelected ? statusColor : statusColor.opacity(0.1),
+          in: RoundedRectangle(cornerRadius: 8)
+        )
+
+      VStack(alignment: .leading, spacing: 3) {
+        Text(protection.title)
+          .font(.body.weight(.medium))
+
+        Text(isEnabled ? "Enabled" : disabledStatus)
+          .font(.caption.weight(.medium))
+          .foregroundStyle(statusColor)
+      }
+
+      Spacer(minLength: 8)
+
+      Toggle("", isOn: $isEnabled)
+        .labelsHidden()
+        .toggleStyle(.checkbox)
+    }
+    .padding(.horizontal, 12)
+    .padding(.vertical, 10)
+    .background(isSelected ? statusColor.opacity(0.07) : Color.clear)
+  }
+
+  private var statusColor: Color { isEnabled ? .green : .red }
+
+  private var disabledStatus: String {
+    protection.kind == .gatekeeper ? "Applications from Anywhere" : "Disabled"
+  }
+}
+
+private struct SecurityProtectionInspector: View {
+  let protection: SecurityProtection
+  let isEnabled: Bool
+
+  var body: some View {
+    GeometryReader { geometry in
+      ScrollView {
+        VStack(alignment: .leading, spacing: 18) {
+          inspectorHeader
+          behaviorSection
+          requirementSection
+          implementationSection
+        }
+        .frame(width: max(0, geometry.size.width - 32), alignment: .leading)
+        .padding(16)
+      }
+    }
+    .background(Color(nsColor: .controlBackgroundColor).opacity(0.72))
+  }
+
+  private var inspectorHeader: some View {
+    VStack(alignment: .leading, spacing: 10) {
+      HStack(alignment: .top, spacing: 12) {
+        Image(systemName: protection.systemImage)
+          .font(.system(size: 22, weight: .medium))
+          .foregroundStyle(statusColor)
+          .frame(width: 42, height: 42)
+          .background(statusColor.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+
+        VStack(alignment: .leading, spacing: 4) {
+          Text(protection.title)
+            .font(.headline)
+
+          Text(statusText)
+            .font(.caption.weight(.medium))
+            .foregroundStyle(statusColor)
+        }
+      }
+
+      Text(protection.question)
+        .font(.subheadline.weight(.medium))
+        .fixedSize(horizontal: false, vertical: true)
+
+      Text(protection.summary)
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+  }
+
+  private var behaviorSection: some View {
+    VStack(alignment: .leading, spacing: 8) {
+      sectionTitle(isEnabled ? "Protection Active" : "Protection Disabled")
+
+      Text(isEnabled ? enabledDescription : protection.disableConsequence)
+        .font(.subheadline)
+        .foregroundStyle(isEnabled ? Color.secondary : Color.red)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+  }
+
+  @ViewBuilder
+  private var requirementSection: some View {
+    if protection.requiresSIPDisabledToDisable {
+      VStack(alignment: .leading, spacing: 8) {
+        sectionTitle("Requirement")
+        Label("Disabling requires System Integrity Protection to be off.", systemImage: "lock.open")
+          .font(.caption)
+          .foregroundStyle(.orange)
+          .fixedSize(horizontal: false, vertical: true)
+      }
+    }
+  }
+
+  private var implementationSection: some View {
+    VStack(alignment: .leading, spacing: 9) {
+      sectionTitle(protection.services.isEmpty ? "System Control" : "Related Services")
+
+      if protection.services.isEmpty {
+        Text("spctl --global-\(isEnabled ? "enable" : "disable")")
+          .font(.caption.monospaced())
+          .foregroundStyle(.secondary)
+          .textSelection(.enabled)
+      } else {
+        ForEach(protection.services) { service in
+          HStack(alignment: .firstTextBaseline, spacing: 6) {
+            Circle()
+              .fill(statusColor)
+              .frame(width: 6, height: 6)
+            VStack(alignment: .leading, spacing: 1) {
+              Text(service.label)
+                .font(.caption2.monospaced())
+                .foregroundStyle(.secondary)
+                .textSelection(.enabled)
+                .lineLimit(1)
+                .minimumScaleFactor(0.65)
+              Text(service.domain.rawValue)
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private var statusColor: Color { isEnabled ? .green : .red }
+
+  private var statusText: String {
+    if isEnabled { return "Enabled" }
+    return protection.kind == .gatekeeper ? "Applications from Anywhere" : "Disabled"
+  }
+
+  private var enabledDescription: String {
+    switch protection.kind {
+    case .gatekeeper: "Downloaded applications are assessed before they are opened."
+    case .launchServices: "The related background protection services are allowed to run."
+    }
+  }
+
+  private func sectionTitle(_ title: String) -> some View {
+    Text(title)
+      .font(.caption.weight(.semibold))
+      .foregroundStyle(.secondary)
+      .textCase(.uppercase)
   }
 }
 
 #Preview {
   SecurityView()
-    .frame(width: 820, height: 620)
+    .environmentObject(OptimizationStore())
+    .frame(width: 900, height: 620)
 }

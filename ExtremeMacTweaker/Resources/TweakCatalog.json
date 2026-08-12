@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.10.1",
+  "catalogVersion": "2026.08.12.1",
   "compatibility": {
     "minimumMacOSMajor": 15,
     "maximumMacOSMajor": 27,
@@ -69,12 +69,6 @@
       "title": "Accessibility",
       "systemImage": "figure.stand",
       "order": 1000
-    },
-    {
-      "id": "security-optional",
-      "title": "Optional Security",
-      "systemImage": "lock.shield",
-      "order": 1100
     },
     {
       "id": "system-maintenance",
@@ -1315,48 +1309,6 @@
       "kind": "xpcService"
     },
     {
-      "id": "xprotectd",
-      "label": "com.apple.security.xprotectd",
-      "domain": "system",
-      "kind": "daemon"
-    },
-    {
-      "id": "xprotect-daemon-scan",
-      "label": "com.apple.XProtect.daemon.scan",
-      "domain": "system",
-      "kind": "daemon"
-    },
-    {
-      "id": "xprotect-daemon-scan-startup",
-      "label": "com.apple.XProtect.daemon.scan.startup",
-      "domain": "system",
-      "kind": "daemon"
-    },
-    {
-      "id": "xprotect-plugin-system",
-      "label": "com.apple.XprotectFramework.PluginService",
-      "domain": "system",
-      "kind": "daemon"
-    },
-    {
-      "id": "xprotect-agent-scan",
-      "label": "com.apple.XProtect.agent.scan",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
-      "id": "xprotect-agent-scan-startup",
-      "label": "com.apple.XProtect.agent.scan.startup",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
-      "id": "syspolicyd",
-      "label": "com.apple.security.syspolicy",
-      "domain": "system",
-      "kind": "daemon"
-    },
-    {
       "id": "email-maild",
       "label": "com.apple.email.maild",
       "domain": "gui",
@@ -2113,23 +2065,6 @@
         "appleh16camerad",
         "vdc-assistant",
         "uvc-assistant"
-      ]
-    },
-    {
-      "id": "xprotect-scanners",
-      "services": [
-        "xprotectd",
-        "xprotect-daemon-scan",
-        "xprotect-daemon-scan-startup",
-        "xprotect-plugin-system",
-        "xprotect-agent-scan",
-        "xprotect-agent-scan-startup"
-      ]
-    },
-    {
-      "id": "gatekeeper-syspolicy",
-      "services": [
-        "syspolicyd"
       ]
     },
     {
@@ -3166,42 +3101,6 @@
         "estimatedProcessReduction": 2
       },
       "order": 300
-    },
-    {
-      "id": "xprotect",
-      "categoryID": "security-optional",
-      "title": "XProtect Scanning",
-      "question": "Keep background XProtect malware scanning enabled?",
-      "description": "YARA signature scanning and malware remediator jobs.",
-      "disableGuidance": "Disable this on power-user machines to stop background malware scans. Gatekeeper policy is a separate control.",
-      "systemImage": "shield.lefthalf.filled",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "xprotect-scanners"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 42,
-        "estimatedProcessReduction": 4
-      },
-      "order": 100
-    },
-    {
-      "id": "gatekeeper",
-      "categoryID": "security-optional",
-      "title": "Gatekeeper Policy",
-      "question": "Keep Gatekeeper application notarization policy enabled?",
-      "description": "Validates developer signatures and notarization before app execution.",
-      "disableGuidance": "Disable this only if you understand the security tradeoff. Unverified apps may launch without Gatekeeper blocks.",
-      "systemImage": "checkmark.seal",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "gatekeeper-syspolicy"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 52,
-        "estimatedProcessReduction": 1
-      },
-      "order": 200
     },
     {
       "id": "enterprise-sso",

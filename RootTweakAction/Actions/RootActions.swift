@@ -68,8 +68,121 @@ enum RootActions {
     case .removeSystemComponent(let id):
       return try removeSystemComponent(id: id, context: context)
 
+    case .setSecurityProtection(let id, let userID, let enabled):
+      return try setSecurityProtection(
+        id: id,
+        userID: userID,
+        enabled: enabled,
+        context: context
+      )
+
     case .restartSystem:
       return try restartSystem(context)
+    }
+  }
+
+  private static func setSecurityProtection(
+    id: String,
+    userID: uid_t,
+    enabled: Bool,
+    context: RootActionContext
+  ) throws -> (String, Bool, [String: String]) {
+    guard let protection = SecurityProtectionCatalog.protection(withID: id) else {
+      throw RootActionError.invalidArguments("Unknown security protection: \(id)")
+    }
+
+    switch protection.kind {
+    case .gatekeeper:
+      context.events.progress(0.35, "Updating the global Gatekeeper policy")
+      _ = try context.commands.requireSuccess(
+        "/usr/sbin/spctl",
+        [enabled ? "--global-enable" : "--global-disable"]
+      )
+
+      context.events.progress(0.75, "Verifying the Gatekeeper policy")
+      let status = try context.commands.run("/usr/sbin/spctl", ["--status"])
+      guard status.exitCode == 0 || status.exitCode == 1 else {
+        throw RootActionError.commandFailed(status)
+      }
+      let isEnabled = status.standardOutput.localizedCaseInsensitiveContains("enabled")
+      if !enabled, isEnabled {
+        return (
+          "Confirm Allow applications from anywhere in Privacy & Security",
+          true,
+          [
+            "protectionID": protection.id,
+            "enabled": "false",
+            "requiresConfirmation": "true",
+          ]
+        )
+      }
+      guard isEnabled == enabled else {
+        throw RootActionError.operationFailed(
+          code: "gatekeeper_verification_failed",
+          message: "Gatekeeper did not change to the requested state."
+        )
+      }
+      return (
+        "Gatekeeper was \(enabled ? "enabled" : "disabled")",
+        true,
+        [
+          "protectionID": protection.id,
+          "enabled": String(enabled),
+          "requiresConfirmation": "false",
+        ]
+      )
+
+    case .launchServices:
+      var changed = false
+      for (index, service) in protection.services.enumerated() {
+        context.events.progress(
+          0.1 + 0.8 * Double(index) / Double(max(protection.services.count, 1)),
+          "\(enabled ? "Enabling" : "Disabling") \(service.label)"
+        )
+        let domain: RootActionRequest.LaunchServiceDomain = switch service.domain {
+        case .system: .system
+        case .user: .user
+        case .gui: .gui
+        }
+        let result = try setLaunchService(
+          label: service.label,
+          domain: domain,
+          userID: userID,
+          enabled: enabled,
+          context: context,
+          reportsProgress: false
+        )
+        changed = changed || result.1
+
+        if enabled,
+          let plistPath = service.launchdPlistPath,
+          FileManager.default.fileExists(atPath: plistPath)
+        {
+          let domainTarget = switch domain {
+          case .system: "system"
+          case .user: "user/\(userID)"
+          case .gui: "gui/\(userID)"
+          }
+          let serviceTarget = "\(domainTarget)/\(service.label)"
+          let state = try context.commands.run("/bin/launchctl", ["print", serviceTarget])
+          if state.exitCode != 0 {
+            _ = try context.commands.requireSuccess(
+              "/bin/launchctl",
+              ["bootstrap", domainTarget, plistPath]
+            )
+            changed = true
+          }
+        }
+      }
+      return (
+        "\(protection.title) was \(enabled ? "enabled" : "disabled")",
+        changed,
+        [
+          "protectionID": protection.id,
+          "enabled": String(enabled),
+          "services": String(protection.services.count),
+        ]
+      )
     }
   }
 
@@ -146,7 +259,8 @@ enum RootActions {
     domain: RootActionRequest.LaunchServiceDomain,
     userID: uid_t,
     enabled: Bool,
-    context: RootActionContext
+    context: RootActionContext,
+    reportsProgress: Bool = true
   ) throws -> (String, Bool, [String: String]) {
     let allowedCharacters = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "._-"))
     guard
@@ -165,14 +279,18 @@ enum RootActions {
     let serviceTarget = "\(domainTarget)/\(label)"
     let launchctl = "/bin/launchctl"
 
-    context.events.progress(0.2, "Checking the current launchd override")
+    if reportsProgress {
+      context.events.progress(0.2, "Checking the current launchd override")
+    }
     let disabledServices = try context.commands.requireSuccess(
       launchctl, ["print-disabled", domainTarget]
     )
     let wasDisabled = disabledOverride(for: label, in: disabledServices.standardOutput)
     let shouldDisable = !enabled
 
-    context.events.progress(0.5, "Updating the persistent launchd override")
+    if reportsProgress {
+      context.events.progress(0.5, "Updating the persistent launchd override")
+    }
     _ = try context.commands.requireSuccess(
       launchctl, [enabled ? "enable" : "disable", serviceTarget]
     )
@@ -182,7 +300,9 @@ enum RootActions {
       let serviceState = try context.commands.run(launchctl, ["print", serviceTarget])
       wasLoaded = serviceState.exitCode == 0
       if wasLoaded {
-        context.events.progress(0.8, "Stopping the running launchd service")
+        if reportsProgress {
+          context.events.progress(0.8, "Stopping the running launchd service")
+        }
         _ = try context.commands.requireSuccess(launchctl, ["bootout", serviceTarget])
       }
     }

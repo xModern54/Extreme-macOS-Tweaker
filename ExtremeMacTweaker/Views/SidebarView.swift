@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct SidebarView: View {
@@ -200,6 +201,16 @@ private struct ApplyReviewView: View {
           .foregroundStyle(.orange)
       }
 
+      if optimizationStore.executionPhase == .succeeded,
+        optimizationStore.gatekeeperConfirmationRequired
+      {
+        Label(
+          "macOS requires confirmation in Privacy & Security before applications from anywhere are allowed.",
+          systemImage: "hand.tap"
+        )
+        .foregroundStyle(.orange)
+      }
+
       if let error = optimizationStore.executionError {
         Label(error, systemImage: "exclamationmark.triangle.fill")
           .foregroundStyle(.red)
@@ -230,7 +241,16 @@ private struct ApplyReviewView: View {
         }
         .buttonStyle(.borderedProminent)
         .disabled(!optimizationStore.canStartExecution)
-      } else if optimizationStore.executionPhase == .succeeded {
+      } else if optimizationStore.executionPhase == .succeeded,
+        optimizationStore.gatekeeperConfirmationRequired
+      {
+        Button("Open Privacy & Security") {
+          openPrivacyAndSecuritySettings()
+        }
+        .buttonStyle(.borderedProminent)
+      } else if optimizationStore.executionPhase == .succeeded,
+        optimizationStore.executionRequiresReboot
+      {
         Button("Restart Now") {
           Task { await optimizationStore.restartSystemWithoutReopeningApplications() }
         }
@@ -241,12 +261,20 @@ private struct ApplyReviewView: View {
     }
   }
 
+  private func openPrivacyAndSecuritySettings() {
+    guard let url = URL(
+      string: "x-apple.systempreferences:com.apple.settings.PrivacySecurity.extension"
+    ) else { return }
+    NSWorkspace.shared.open(url)
+  }
+
   private var headerTitle: String {
     switch optimizationStore.executionPhase {
     case .idle: "Review Changes"
     case .authorizing: "Administrator Authorization"
     case .running: "Applying Changes"
-    case .succeeded: "Changes Applied"
+    case .succeeded:
+      optimizationStore.gatekeeperConfirmationRequired ? "Confirmation Required" : "Changes Applied"
     case .failed: "Apply Failed"
     }
   }
@@ -256,17 +284,21 @@ private struct ApplyReviewView: View {
     case .idle:
       optimizationStore.executionPlan.requiresReboot
         ? "The selected changes will modify the macOS system snapshot."
-        : "The selected launchd services will be updated with administrator privileges."
+        : "The selected system settings will be updated with administrator privileges."
     case .authorizing:
       "Tweaker needs administrator privileges to continue."
     case .running:
       optimizationStore.executionRequiresReboot
         ? "Do not quit Tweaker while the system snapshot is being modified."
-        : "Do not quit Tweaker while launchd services are being updated."
+        : "Do not quit Tweaker while system settings are being updated."
     case .succeeded:
-      optimizationStore.executionRequiresReboot
-        ? "The new bootable snapshot has been created successfully."
-        : "The launchd service changes were applied successfully."
+      if optimizationStore.gatekeeperConfirmationRequired {
+        "Finish allowing applications from anywhere in macOS System Settings."
+      } else if optimizationStore.executionRequiresReboot {
+        "The new bootable snapshot has been created successfully."
+      } else {
+        "The selected system settings were updated successfully."
+      }
     case .failed:
       "The operation stopped before all changes were applied."
     }

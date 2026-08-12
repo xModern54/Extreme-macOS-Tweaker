@@ -14,6 +14,8 @@ struct ExecutionPlan: Sendable {
         service.action == .disable
       case .securityFeature(let feature):
         feature.action == .disable
+          && (SecurityProtectionCatalog.protection(withID: feature.featureID)?
+            .requiresSIPDisabledToDisable ?? true)
       case .systemComponent:
         true
       }
@@ -73,7 +75,8 @@ enum ExecutionStep: Identifiable, Sendable {
     case .setLaunchService(_, let label, _, let enabled):
       "\(enabled ? "Enable" : "Disable") service \(label)"
     case .setSecurityFeature(let id, let enabled):
-      "\(enabled ? "Enable" : "Disable") security feature \(id)"
+      "\(enabled ? "Enable" : "Disable") "
+        + (SecurityProtectionCatalog.protection(withID: id)?.title ?? id)
     case .removeSystemComponent(_, let title):
       "Remove \(title)"
     case .createSystemSnapshot:
