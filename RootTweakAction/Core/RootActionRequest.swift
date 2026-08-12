@@ -22,6 +22,7 @@ enum RootActionRequest {
     userID: uid_t,
     enabled: Bool
   )
+  case removeSystemComponent(id: String)
   case restartSystem
 
   var name: String {
@@ -36,6 +37,7 @@ enum RootActionRequest {
     case .deleteApplication: "delete-application"
     case .createSnapshot: "create-snapshot"
     case .setLaunchService: "set-launch-service"
+    case .removeSystemComponent: "remove-system-component"
     case .restartSystem: "restart-system"
     }
   }
@@ -53,6 +55,8 @@ enum RootActionRequest {
     case .createSnapshot: "Creating a bootable system snapshot"
     case .setLaunchService(let label, _, _, let enabled):
       "\(enabled ? "Enabling" : "Disabling") \(label)"
+    case .removeSystemComponent(let id):
+      "Removing \(SystemDebloatCatalog.component(withID: id)?.title ?? "system component")"
     case .restartSystem: "Restarting macOS"
     }
   }
@@ -109,6 +113,8 @@ enum RootActionRequest {
         userID: userID,
         enabled: enabled
       )
+    case "remove-system-component":
+      return .removeSystemComponent(id: try required("id", in: options))
     case "restart-system":
       return .restartSystem
     default:

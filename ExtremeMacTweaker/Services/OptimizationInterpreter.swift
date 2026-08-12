@@ -9,6 +9,7 @@ enum OptimizationInterpreter {
     var applicationSteps: [ExecutionStep] = []
     var launchServiceSteps: [ExecutionStep] = []
     var securitySteps: [ExecutionStep] = []
+    var componentSteps: [ExecutionStep] = []
 
     for change in changes {
       switch change {
@@ -50,13 +51,18 @@ enum OptimizationInterpreter {
         securitySteps.append(
           .setSecurityFeature(id: feature.featureID, enabled: feature.action == .enable)
         )
+
+      case .systemComponent(let component):
+        componentSteps.append(
+          .removeSystemComponent(id: component.componentID, title: component.title)
+        )
       }
     }
 
     var steps: [ExecutionStep] = []
     if !applicationSteps.isEmpty {
       steps.append(.verifySystemRequirements)
-    } else if launchServiceSteps.contains(where: { step in
+    } else if !componentSteps.isEmpty || launchServiceSteps.contains(where: { step in
       if case .setLaunchService(_, _, _, let enabled) = step { return !enabled }
       return false
     }) {
@@ -64,6 +70,7 @@ enum OptimizationInterpreter {
     }
     steps.append(contentsOf: launchServiceSteps)
     steps.append(contentsOf: securitySteps)
+    steps.append(contentsOf: componentSteps)
 
     if !applicationSteps.isEmpty {
       steps.append(.mountSystemVolume)

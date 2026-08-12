@@ -231,6 +231,24 @@ final class OptimizationStore: ObservableObject {
     }
   }
 
+  func isSystemComponentSelected(_ componentID: String) -> Bool {
+    pendingChanges.contains { change in
+      guard case .systemComponent(let component) = change else { return false }
+      return component.componentID == componentID
+    }
+  }
+
+  func setSystemComponent(_ component: SystemDebloatComponent, selected: Bool) {
+    let change = OptimizationChange.systemComponent(
+      SystemComponentChange(componentID: component.id, title: component.title)
+    )
+    if selected {
+      upsert(change)
+    } else {
+      removeChange(withID: change.id)
+    }
+  }
+
   func setLaunchServices(
     _ services: [TweakCatalogService],
     enabled: Bool,

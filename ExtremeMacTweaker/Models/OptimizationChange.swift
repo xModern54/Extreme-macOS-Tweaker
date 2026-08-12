@@ -58,16 +58,23 @@ struct SecurityFeatureChange: Codable, Hashable, Sendable {
   let action: Action
 }
 
+struct SystemComponentChange: Codable, Hashable, Sendable {
+  let componentID: String
+  let title: String
+}
+
 enum OptimizationChange: Codable, Hashable, Identifiable, Sendable {
   case systemApplication(SystemApplicationChange)
   case launchService(LaunchServiceChange)
   case securityFeature(SecurityFeatureChange)
+  case systemComponent(SystemComponentChange)
 
   var id: String {
     switch self {
     case .systemApplication(let change): "system-app:\(change.applicationID)"
     case .launchService(let change): "launch-service:\(change.serviceID)"
     case .securityFeature(let change): "security-feature:\(change.featureID)"
+    case .systemComponent(let change): "system-component:\(change.componentID)"
     }
   }
 
@@ -79,6 +86,8 @@ enum OptimizationChange: Codable, Hashable, Identifiable, Sendable {
       "\(change.action == .enable ? "Enable" : "Disable") \(change.label)"
     case .securityFeature(let change):
       "\(change.action == .enable ? "Enable" : "Disable") \(change.featureID)"
+    case .systemComponent(let change):
+      "Remove \(change.title)"
     }
   }
 }

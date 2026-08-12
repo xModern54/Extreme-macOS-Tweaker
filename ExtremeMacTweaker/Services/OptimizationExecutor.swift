@@ -77,6 +77,8 @@ final class OptimizationExecutor {
       ]
     case .setSecurityFeature:
       throw PrivilegedExecutionError.unsupportedStep(step.description)
+    case .removeSystemComponent(let id, _):
+      ["remove-system-component", "--id", id]
     }
   }
 

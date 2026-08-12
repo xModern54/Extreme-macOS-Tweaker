@@ -14,6 +14,8 @@ struct ExecutionPlan: Sendable {
         service.action == .disable
       case .securityFeature(let feature):
         feature.action == .disable
+      case .systemComponent:
+        true
       }
     }
   }
@@ -48,6 +50,7 @@ enum ExecutionStep: Identifiable, Sendable {
     enabled: Bool
   )
   case setSecurityFeature(id: String, enabled: Bool)
+  case removeSystemComponent(id: String, title: String)
   case createSystemSnapshot
   case unmountSystemVolume
 
@@ -71,6 +74,8 @@ enum ExecutionStep: Identifiable, Sendable {
       "\(enabled ? "Enable" : "Disable") service \(label)"
     case .setSecurityFeature(let id, let enabled):
       "\(enabled ? "Enable" : "Disable") security feature \(id)"
+    case .removeSystemComponent(_, let title):
+      "Remove \(title)"
     case .createSystemSnapshot:
       "Create a new bootable system snapshot"
     case .unmountSystemVolume:

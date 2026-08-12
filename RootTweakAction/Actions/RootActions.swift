@@ -65,9 +65,59 @@ enum RootActions {
         context: context
       )
 
+    case .removeSystemComponent(let id):
+      return try removeSystemComponent(id: id, context: context)
+
     case .restartSystem:
       return try restartSystem(context)
     }
+  }
+
+  private static func removeSystemComponent(
+    id: String,
+    context: RootActionContext
+  ) throws -> (String, Bool, [String: String]) {
+    guard let component = SystemDebloatCatalog.component(withID: id) else {
+      throw RootActionError.invalidArguments("Unknown system component: \(id)")
+    }
+    guard component.paths.allSatisfy(SystemDebloatCatalog.isAllowedAssetPath) else {
+      throw RootActionError.operationFailed(
+        code: "unsafe_component_path",
+        message: "The component catalog contains a path outside the allowed asset root."
+      )
+    }
+
+    let existingPaths = component.paths.filter {
+      FileManager.default.fileExists(atPath: $0)
+    }
+    guard !existingPaths.isEmpty else {
+      return (
+        "\(component.title) is already absent",
+        false,
+        ["componentID": component.id, "removedPaths": "0"]
+      )
+    }
+
+    for (index, path) in existingPaths.enumerated() {
+      let fraction = 0.15 + 0.7 * Double(index) / Double(max(existingPaths.count, 1))
+      context.events.progress(fraction, "Removing \(URL(fileURLWithPath: path).lastPathComponent)")
+      _ = try context.commands.requireSuccess("/bin/rm", ["-rf", "--", path])
+      guard !FileManager.default.fileExists(atPath: path) else {
+        throw RootActionError.operationFailed(
+          code: "deletion_verification_failed",
+          message: "A component asset still exists after the delete operation."
+        )
+      }
+    }
+
+    return (
+      "\(component.title) was removed",
+      true,
+      [
+        "componentID": component.id,
+        "removedPaths": String(existingPaths.count),
+      ]
+    )
   }
 
   private static func restartSystem(
