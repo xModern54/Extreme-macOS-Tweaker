@@ -4,6 +4,7 @@ struct SystemTweakerView: View {
   @EnvironmentObject private var catalogStore: TweakCatalogStore
   @EnvironmentObject private var optimizationStore: OptimizationStore
   @State private var selectedFeatureID: String?
+  @State private var areIconsPrepared = false
 
   private var categories: [TweakCatalogCategory] {
     catalogStore.catalog?.categories.sorted { $0.order < $1.order } ?? []
@@ -19,7 +20,7 @@ struct SystemTweakerView: View {
 
   var body: some View {
     Group {
-      if let selectedFeature {
+      if let selectedFeature, areIconsPrepared {
         workspace(selectedFeature: selectedFeature)
       } else if let error = catalogStore.loadingError {
         ContentUnavailableView(
@@ -41,6 +42,16 @@ struct SystemTweakerView: View {
       reconcileLegacyPendingChanges()
     }
     .task(id: catalogStore.catalog?.catalogVersion) {
+      areIconsPrepared = false
+      if let catalog = catalogStore.catalog {
+        let symbolNames = Set(
+          catalog.categories.map(\.systemImage) + catalog.features.map(\.systemImage)
+        )
+        await IconCache.shared.preloadSystemSymbols(named: Array(symbolNames))
+        guard !Task.isCancelled else { return }
+        areIconsPrepared = true
+      }
+
       while !Task.isCancelled {
         await optimizationStore.refreshLaunchServiceStates(
           catalogStore.catalog?.services ?? []
@@ -96,7 +107,11 @@ struct SystemTweakerView: View {
 
             if !categoryFeatures.isEmpty {
               VStack(alignment: .leading, spacing: 9) {
-                Label(category.localizedTitle, systemImage: category.systemImage)
+                Label {
+                  Text(category.localizedTitle)
+                } icon: {
+                  CachedSystemSymbol(name: category.systemImage)
+                }
                   .font(.caption.weight(.semibold))
                   .foregroundStyle(.secondary)
                   .textCase(.uppercase)
@@ -181,7 +196,7 @@ private struct SystemTweakFeatureRow: View {
 
   var body: some View {
     HStack(spacing: 12) {
-      Image(systemName: feature.systemImage)
+      CachedSystemSymbol(name: feature.systemImage)
         .font(.system(size: 17, weight: .medium))
         .foregroundStyle(isSelected ? Color.white : Color.accentColor)
         .frame(width: 32, height: 32)
@@ -263,7 +278,7 @@ private struct SystemTweakInspector: View {
   private var inspectorHeader: some View {
     VStack(alignment: .leading, spacing: 10) {
       HStack(alignment: .top, spacing: 12) {
-        Image(systemName: feature.systemImage)
+        CachedSystemSymbol(name: feature.systemImage)
           .font(.system(size: 22, weight: .medium))
           .foregroundStyle(Color.accentColor)
           .frame(width: 42, height: 42)
@@ -379,6 +394,18 @@ private struct SystemTweakInspector: View {
 private enum SystemTweakChoice {
   case keepEnabled
   case disable
+}
+
+private struct CachedSystemSymbol: View {
+  let name: String
+
+  var body: some View {
+    if let image = IconCache.shared.cachedSystemSymbol(named: name) {
+      Image(nsImage: image)
+    } else {
+      Image(systemName: name)
+    }
+  }
 }
 
 #Preview {

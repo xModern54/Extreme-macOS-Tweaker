@@ -15,9 +15,16 @@ final class SystemAppsViewModel: ObservableObject {
     hasLoaded = true
 
     do {
-      applications = try await Task.detached(priority: .userInitiated) {
+      let discoveredApplications = try await Task.detached(priority: .userInitiated) {
         try SystemApplicationsScanner.discoverApplications()
       }.value
+
+      await IconCache.shared.preloadApplicationIcons(
+        forPaths: discoveredApplications.map(\.url.path)
+      )
+      guard !Task.isCancelled else { return }
+
+      applications = discoveredApplications
       isLoading = false
 
       await calculateSizes()

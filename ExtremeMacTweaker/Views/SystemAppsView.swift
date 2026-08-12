@@ -180,11 +180,9 @@ private struct SystemApplicationActions: View {
 private struct SystemApplicationIcon: View {
   let path: String
 
-  @State private var icon: NSImage?
-
   var body: some View {
     Group {
-      if let icon {
+      if let icon = IconCache.shared.cachedApplicationIcon(forPath: path) {
         Image(nsImage: icon)
           .resizable()
           .scaledToFit()
@@ -199,9 +197,6 @@ private struct SystemApplicationIcon: View {
       }
     }
     .frame(width: 72, height: 72)
-    .task(id: path) {
-      icon = NSWorkspace.shared.icon(forFile: path)
-    }
   }
 }
 
