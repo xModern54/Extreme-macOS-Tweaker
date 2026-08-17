@@ -13,11 +13,11 @@ struct HostMetrics: Sendable {
   }
 
   var formattedMemory: String {
-    Self.gigabytes(memoryBytes, fractionDigits: 0)
+    Self.gigabytes(memoryBytes)
   }
 
   var formattedUsedMemory: String {
-    Self.gigabytes(usedMemoryBytes, fractionDigits: 1)
+    Self.gigabytes(usedMemoryBytes)
   }
 
   var formattedProcessCount: String {
@@ -28,14 +28,14 @@ struct HostMetrics: Sendable {
     threadCount.formatted()
   }
 
-  private static func gigabytes(_ bytes: UInt64, fractionDigits: Int) -> String {
+  private static func gigabytes(_ bytes: UInt64) -> String {
     let formatter = NumberFormatter()
     formatter.locale = .current
     formatter.numberStyle = .decimal
-    formatter.minimumFractionDigits = 0
-    formatter.maximumFractionDigits = fractionDigits
+    formatter.minimumFractionDigits = 2
+    formatter.maximumFractionDigits = 2
     let value = Double(bytes) / 1_073_741_824
-    let number = formatter.string(from: NSNumber(value: value)) ?? "0"
+    let number = formatter.string(from: NSNumber(value: value)) ?? "0.00"
     return "\(number) GB"
   }
 }
