@@ -59,13 +59,24 @@ enum OptimizationInterpreter {
       }
     }
 
+    let requiresSIPCheck =
+      !componentSteps.isEmpty
+      || launchServiceSteps.contains { step in
+        if case .setLaunchService(_, _, _, let enabled) = step { return !enabled }
+        return false
+      }
+      || securitySteps.contains { step in
+        guard case .setSecurityFeature(let id, let enabled) = step, !enabled else {
+          return false
+        }
+        return SecurityProtectionCatalog.protection(withID: id)?.requiresSIPDisabledToDisable
+          ?? true
+      }
+
     var steps: [ExecutionStep] = []
     if !applicationSteps.isEmpty {
       steps.append(.verifySystemRequirements)
-    } else if !componentSteps.isEmpty || launchServiceSteps.contains(where: { step in
-      if case .setLaunchService(_, _, _, let enabled) = step { return !enabled }
-      return false
-    }) {
+    } else if requiresSIPCheck {
       steps.append(.verifySystemIntegrityProtection)
     }
     steps.append(contentsOf: launchServiceSteps)

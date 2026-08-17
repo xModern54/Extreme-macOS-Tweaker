@@ -37,17 +37,17 @@ enum SecurityProtectionStateScanner {
 
     for (domain, domainServices) in servicesByDomain {
       let target = domainTarget(domain, userID: userID)
-      guard
-        let disabledOutput = commandOutput("/bin/launchctl", ["print-disabled", target]),
-        let domainOutput = commandOutput("/bin/launchctl", ["print", target])
-      else {
+      guard let disabledOutput = commandOutput("/bin/launchctl", ["print-disabled", target]) else {
         continue
       }
 
       let disabledLabels = parseDisabledLabels(disabledOutput)
-      let loadedLabels = parseLoadedLabels(domainOutput)
       states.append(contentsOf: domainServices.map { service in
-        !disabledLabels.contains(service.label) || loadedLabels.contains(service.label)
+        let loaded = commandOutput(
+          "/bin/launchctl",
+          ["print", "\(target)/\(service.label)"]
+        ) != nil
+        return !disabledLabels.contains(service.label) || loaded
       })
     }
     return states
@@ -95,13 +95,4 @@ enum SecurityProtectionStateScanner {
     })
   }
 
-  private static func parseLoadedLabels(_ output: String) -> Set<String> {
-    Set(output.split(separator: "\n").compactMap { line in
-      let fields = line.split(whereSeparator: \.isWhitespace)
-      guard fields.count >= 3, Int32(fields[0]) != nil, let label = fields.last else {
-        return nil
-      }
-      return label.contains(".") ? String(label) : nil
-    })
-  }
 }

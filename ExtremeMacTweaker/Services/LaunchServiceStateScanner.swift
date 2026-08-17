@@ -25,20 +25,17 @@ enum LaunchServiceStateScanner {
         case .user: "user/\(userID)"
         case .gui: "gui/\(userID)"
         }
-        guard
-          let disabledOutput = commandOutput(["print-disabled", target]),
-          let domainOutput = commandOutput(["print", target])
-        else {
+        guard let disabledOutput = commandOutput(["print-disabled", target]) else {
           continue
         }
 
         let disabledLabels = parseDisabledLabels(disabledOutput)
-        let loadedServices = parseLoadedServices(domainOutput)
         for service in domainServices {
-          let processID = loadedServices[service.label]
+          let printOutput = commandOutput(["print", "\(target)/\(service.label)"])
+          let processID = printOutput.flatMap(parseProcessID)
           states[service.id] = LaunchServiceRuntimeState(
             isPersistentlyDisabled: disabledLabels.contains(service.label),
-            isLoaded: processID != nil,
+            isLoaded: printOutput != nil,
             isRunning: (processID ?? 0) > 0
           )
         }
@@ -74,20 +71,19 @@ enum LaunchServiceStateScanner {
     })
   }
 
-  private static func parseLoadedServices(_ output: String) -> [String: Int32] {
-    var services: [String: Int32] = [:]
+  private static func parseProcessID(_ output: String) -> Int32? {
     for line in output.split(separator: "\n") {
-      let fields = line.split(whereSeparator: \.isWhitespace)
-      guard
-        fields.count >= 3,
-        let processID = Int32(fields[0]),
-        let label = fields.last,
-        label.contains(".")
+      let trimmed = line.trimmingCharacters(in: .whitespaces)
+      guard trimmed.range(of: #"^pid\s*="#, options: [.regularExpression, .caseInsensitive]) != nil
       else {
         continue
       }
-      services[String(label)] = processID
+      let value = trimmed.split(separator: "=", maxSplits: 1).last?
+        .trimmingCharacters(in: .whitespaces)
+      if let value, let processID = Int32(value) {
+        return processID
+      }
     }
-    return services
+    return nil
   }
 }

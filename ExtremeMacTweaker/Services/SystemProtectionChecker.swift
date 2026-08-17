@@ -27,10 +27,10 @@ enum SystemProtectionChecker {
         )
         return .checked(
           SystemProtectionStatus(
-            systemIntegrityProtectionDisabled: sip.localizedCaseInsensitiveContains("disabled"),
-            authenticatedRootDisabled: authenticatedRoot.localizedCaseInsensitiveContains(
-              "disabled"
-            )
+            systemIntegrityProtectionDisabled:
+              SystemProtectionOutputParser.systemIntegrityProtectionAllowsModifications(sip),
+            authenticatedRootDisabled:
+              SystemProtectionOutputParser.authenticatedRootIsDisabled(authenticatedRoot)
           )
         )
       } catch {

@@ -76,8 +76,8 @@ enum RootActions {
         context: context
       )
 
-    case .restartSystem:
-      return try restartSystem(context)
+    case .restartSystem(let userID):
+      return try restartSystem(userID: userID, context)
     }
   }
 
@@ -234,11 +234,84 @@ enum RootActions {
   }
 
   private static func restartSystem(
+    userID: uid_t,
     _ context: RootActionContext
   ) throws -> (String, Bool, [String: String]) {
-    context.events.progress(0.4, "Requesting a clean system restart")
+    context.events.progress(0.25, "Clearing saved windows so the next login is clean")
+    try prepareCleanLogin(userID: userID, context: context)
+
+    context.events.progress(0.7, "Requesting a clean system restart")
     _ = try context.commands.requireSuccess("/sbin/shutdown", ["-r", "now"])
-    return ("System restart was requested", true, [:])
+    return ("System restart was requested", true, ["userID": String(userID)])
+  }
+
+  private static func prepareCleanLogin(userID: uid_t, context: RootActionContext) throws {
+    let defaults = "/usr/bin/defaults"
+    let systemLoginWindow = "/Library/Preferences/com.apple.loginwindow"
+    _ = try context.commands.requireSuccess(
+      defaults,
+      ["write", systemLoginWindow, "LoginwindowLaunchesRelaunchApps", "-bool", "false"]
+    )
+    _ = try context.commands.requireSuccess(
+      defaults,
+      ["write", systemLoginWindow, "TALLogoutSavesState", "-bool", "false"]
+    )
+
+    _ = try context.commands.run(
+      "/bin/launchctl",
+      [
+        "asuser", String(userID), defaults, "write", "com.apple.loginwindow",
+        "TALLogoutSavesState", "-bool", "false",
+      ]
+    )
+    _ = try context.commands.run(
+      "/bin/launchctl",
+      [
+        "asuser", String(userID), defaults, "write", "com.apple.loginwindow",
+        "LoginwindowLaunchesRelaunchApps", "-bool", "false",
+      ]
+    )
+
+    guard let home = homeDirectory(for: userID) else {
+      _ = try context.commands.run("/usr/bin/killall", ["cfprefsd"])
+      return
+    }
+
+    let userLoginWindow = home
+      .appendingPathComponent("Library/Preferences/com.apple.loginwindow")
+      .path
+    _ = try context.commands.run(
+      defaults,
+      ["write", userLoginWindow, "TALLogoutSavesState", "-bool", "false"]
+    )
+    _ = try context.commands.run(
+      defaults,
+      ["write", userLoginWindow, "LoginwindowLaunchesRelaunchApps", "-bool", "false"]
+    )
+    if let owner = userName(for: userID) {
+      _ = try context.commands.run("/usr/sbin/chown", [owner, userLoginWindow + ".plist"])
+    }
+
+    let savedState = home.appendingPathComponent("Library/Saved Application State").path
+    if FileManager.default.fileExists(atPath: savedState) {
+      _ = try context.commands.requireSuccess("/bin/rm", ["-rf", "--", savedState])
+    }
+
+    _ = try context.commands.run("/usr/bin/killall", ["cfprefsd"])
+  }
+
+  private static func userName(for userID: uid_t) -> String? {
+    guard let password = getpwuid(userID), let name = password.pointee.pw_name else {
+      return nil
+    }
+    return String(cString: name)
+  }
+
+  private static func homeDirectory(for userID: uid_t) -> URL? {
+    guard let password = getpwuid(userID), let directory = password.pointee.pw_dir else {
+      return nil
+    }
+    return URL(fileURLWithPath: String(cString: directory), isDirectory: true)
   }
 
   private static func checkSystemIntegrityProtection(
@@ -246,7 +319,9 @@ enum RootActions {
   ) throws -> (String, Bool, [String: String]) {
     context.events.progress(0.5, "Checking System Integrity Protection")
     let sip = try context.commands.requireSuccess("/usr/bin/csrutil", ["status"])
-    guard sip.standardOutput.localizedCaseInsensitiveContains("disabled") else {
+    guard SystemProtectionOutputParser.systemIntegrityProtectionAllowsModifications(
+      sip.standardOutput
+    ) else {
       throw RootActionError.prerequisitesNotMet(
         "System Integrity Protection must be disabled from macOS Recovery."
       )
@@ -296,6 +371,7 @@ enum RootActions {
     )
 
     var wasLoaded = false
+    var started = false
     if shouldDisable {
       let serviceState = try context.commands.run(launchctl, ["print", serviceTarget])
       wasLoaded = serviceState.exitCode == 0
@@ -305,9 +381,20 @@ enum RootActions {
         }
         _ = try context.commands.requireSuccess(launchctl, ["bootout", serviceTarget])
       }
+    } else {
+      if reportsProgress {
+        context.events.progress(0.8, "Starting the launchd service")
+      }
+      started = try startLaunchService(
+        label: label,
+        domain: domain,
+        domainTarget: domainTarget,
+        serviceTarget: serviceTarget,
+        context: context
+      )
     }
 
-    let changed = wasDisabled != shouldDisable || wasLoaded
+    let changed = wasDisabled != shouldDisable || wasLoaded || started
     return (
       "Launch service was \(enabled ? "enabled" : "disabled")",
       changed,
@@ -317,8 +404,91 @@ enum RootActions {
         "serviceTarget": serviceTarget,
         "enabled": String(enabled),
         "stopped": String(wasLoaded),
+        "started": String(started),
       ]
     )
+  }
+
+  private static func startLaunchService(
+    label: String,
+    domain: RootActionRequest.LaunchServiceDomain,
+    domainTarget: String,
+    serviceTarget: String,
+    context: RootActionContext
+  ) throws -> Bool {
+    let launchctl = "/bin/launchctl"
+    let loaded = try context.commands.run(launchctl, ["print", serviceTarget])
+    if loaded.exitCode == 0 {
+      return false
+    }
+
+    if let plistPath = findLaunchdPlist(label: label, domain: domain) {
+      _ = try context.commands.requireSuccess(
+        launchctl,
+        ["bootstrap", domainTarget, plistPath]
+      )
+      return true
+    }
+
+    let kickstart = try context.commands.run(launchctl, ["kickstart", "-k", serviceTarget])
+    return kickstart.exitCode == 0
+  }
+
+  private static func findLaunchdPlist(
+    label: String,
+    domain: RootActionRequest.LaunchServiceDomain
+  ) -> String? {
+    let roots: [String] = switch domain {
+    case .system:
+      [
+        "/System/Library/LaunchDaemons",
+        "/Library/LaunchDaemons",
+        "/Library/Apple/System/Library/LaunchDaemons",
+      ]
+    case .user, .gui:
+      [
+        "/System/Library/LaunchAgents",
+        "/Library/LaunchAgents",
+        "/Library/Apple/System/Library/LaunchAgents",
+      ]
+    }
+
+    for root in roots {
+      let candidate = URL(fileURLWithPath: root)
+        .appendingPathComponent("\(label).plist").path
+      if FileManager.default.fileExists(atPath: candidate) {
+        return candidate
+      }
+    }
+
+    for root in roots {
+      let rootURL = URL(fileURLWithPath: root, isDirectory: true)
+      guard
+        let items = try? FileManager.default.contentsOfDirectory(
+          at: rootURL,
+          includingPropertiesForKeys: nil
+        )
+      else {
+        continue
+      }
+      for item in items where item.pathExtension == "plist" {
+        if plistLabel(at: item.path) == label {
+          return item.path
+        }
+      }
+    }
+    return nil
+  }
+
+  private static func plistLabel(at path: String) -> String? {
+    guard
+      let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
+      let plist = try? PropertyListSerialization.propertyList(from: data, format: nil)
+        as? [String: Any]
+    else {
+      return nil
+    }
+    return plist["Label"] as? String
   }
 
   private static func disabledOverride(for label: String, in output: String) -> Bool {
@@ -337,12 +507,16 @@ enum RootActions {
       "/usr/bin/csrutil", ["authenticated-root", "status"]
     )
 
-    guard sip.standardOutput.localizedCaseInsensitiveContains("disabled") else {
+    guard SystemProtectionOutputParser.systemIntegrityProtectionAllowsModifications(
+      sip.standardOutput
+    ) else {
       throw RootActionError.prerequisitesNotMet(
         "System Integrity Protection must be disabled from macOS Recovery."
       )
     }
-    guard authenticatedRoot.standardOutput.localizedCaseInsensitiveContains("disabled") else {
+    guard SystemProtectionOutputParser.authenticatedRootIsDisabled(
+      authenticatedRoot.standardOutput
+    ) else {
       throw RootActionError.prerequisitesNotMet(
         "Authenticated Root must be disabled from macOS Recovery."
       )
@@ -361,6 +535,7 @@ enum RootActions {
     _ mountPath: String,
     _ context: RootActionContext
   ) throws -> (String, Bool, [String: String]) {
+    let mountPath = try SystemVolume.validatedMountPath(mountPath)
     context.events.progress(0.15, "Locating the base system volume")
     let device = try SystemVolume.baseDevice(using: context.commands)
 
@@ -393,6 +568,7 @@ enum RootActions {
     _ mountPath: String,
     _ context: RootActionContext
   ) throws -> (String, Bool, [String: String]) {
+    let mountPath = try SystemVolume.validatedMountPath(mountPath)
     let mounts = try context.commands.requireSuccess("/sbin/mount", [])
     guard mounts.standardOutput.contains(" on \(mountPath) ") else {
       return ("System volume is already unmounted", false, ["mountPath": mountPath])
@@ -410,8 +586,8 @@ enum RootActions {
     destinationPath: String,
     context: RootActionContext
   ) throws -> (String, Bool, [String: String]) {
-    let source = SystemVolume.mountedPath(root: mountPath, systemPath: sourcePath)
-    let destination = SystemVolume.mountedPath(root: mountPath, systemPath: destinationPath)
+    let source = try SystemVolume.mountedPath(root: mountPath, systemPath: sourcePath)
+    let destination = try SystemVolume.mountedPath(root: mountPath, systemPath: destinationPath)
     let fileManager = FileManager.default
 
     if !fileManager.fileExists(atPath: source), fileManager.fileExists(atPath: destination) {
@@ -444,7 +620,7 @@ enum RootActions {
     path: String,
     context: RootActionContext
   ) throws -> (String, Bool, [String: String]) {
-    let mountedPath = SystemVolume.mountedPath(root: mountPath, systemPath: path)
+    let mountedPath = try SystemVolume.mountedPath(root: mountPath, systemPath: path)
     guard FileManager.default.fileExists(atPath: mountedPath) else {
       return ("Application is already absent", false, ["path": path])
     }
@@ -464,6 +640,7 @@ enum RootActions {
     _ mountPath: String,
     _ context: RootActionContext
   ) throws -> (String, Bool, [String: String]) {
+    let mountPath = try SystemVolume.validatedMountPath(mountPath)
     context.events.progress(0.35, "Asking bless to create a bootable snapshot")
     let output = try context.commands.requireSuccess(
       "/usr/sbin/bless",

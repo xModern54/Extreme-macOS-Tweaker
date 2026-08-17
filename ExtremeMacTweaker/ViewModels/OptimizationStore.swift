@@ -33,6 +33,7 @@ final class OptimizationStore: ObservableObject {
 
   private let persistenceURL: URL?
   private let launchServiceStatesURL: URL?
+  private var privilegedSession: PrivilegedExecutionSession?
 
   init() {
     let applicationSupport = FileManager.default.urls(
@@ -119,6 +120,7 @@ final class OptimizationStore: ObservableObject {
     executionLog = ["Waiting for administrator authorization"]
     executionError = nil
     gatekeeperConfirmationRequired = false
+    privilegedSession = nil
 
     do {
       let session = try PrivilegedExecutionSession()
@@ -165,6 +167,7 @@ final class OptimizationStore: ObservableObject {
         ? "Confirmation is required in Privacy & Security"
         : "Changes were applied successfully"
       if plan.requiresReboot {
+        privilegedSession = session
         executionLog.append("Restart macOS to boot from the new system snapshot")
       }
       executionPhase = .succeeded
@@ -186,24 +189,25 @@ final class OptimizationStore: ObservableObject {
     executionRequiresReboot = false
     gatekeeperConfirmationRequired = false
     restartInProgress = false
+    privilegedSession = nil
   }
 
   func restartSystemWithoutReopeningApplications() async {
     guard executionPhase == .succeeded, !restartInProgress else { return }
-    restartInProgress = true
-    executionMessage = "Waiting for administrator authorization to restart"
+    guard let session = privilegedSession else {
+      executionError = "The administrator authorization from Apply is no longer available."
+      executionMessage = "Unable to restart macOS"
+      executionLog.append(executionError ?? "")
+      return
+    }
 
-    let loginWindowDefaults = UserDefaults(suiteName: "com.apple.loginwindow")
-    loginWindowDefaults?.set(false, forKey: "TALLogoutSavesState")
-    loginWindowDefaults?.set(false, forKey: "LoginwindowLaunchesRelaunchApps")
-    loginWindowDefaults?.synchronize()
+    restartInProgress = true
+    executionMessage = "Restarting macOS without restoring windows"
 
     do {
-      let session = try PrivilegedExecutionSession()
-      try await Task.detached(priority: .userInitiated) {
-        try session.authorize()
-      }.value
-      for try await event in session.events(arguments: ["restart-system"]) {
+      for try await event in session.events(
+        arguments: ["restart-system", "--user-id", String(getuid())]
+      ) {
         executionMessage = event.message
       }
     } catch {
