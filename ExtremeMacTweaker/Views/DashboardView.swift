@@ -30,10 +30,10 @@ struct DashboardView: View {
             DashboardSplitStatTile(
               title: "Runtime",
               systemImage: "waveform.path.ecg",
-              primary: .init(value: "384", label: "Processes"),
+              primary: .init(value: "11.6 GB", label: "Used"),
               secondary: [
+                .init(value: "384", label: "Processes"),
                 .init(value: "1,842", label: "Threads"),
-                .init(value: "11.6 GB", label: "Used"),
               ]
             )
           }
