@@ -9,15 +9,13 @@ enum HostMetricsScanner {
   }
 
   private static func collect() -> HostMetrics {
-    let activity = processAndThreadCounts()
-
     return HostMetrics(
       processorName: processorName(),
       coreCount: sysctlInt("hw.physicalcpu") ?? ProcessInfo.processInfo.processorCount,
       memoryBytes: ProcessInfo.processInfo.physicalMemory,
       usedMemoryBytes: usedMemoryBytes(),
-      processCount: activity.processes,
-      threadCount: activity.threads
+      processCount: processCount(),
+      threadCount: machThreadCount() ?? fallbackThreadCount()
     )
   }
 
@@ -71,29 +69,52 @@ enum HostMetricsScanner {
     return usedPages * pageSize
   }
 
-  private static func processAndThreadCounts() -> (processes: Int, threads: Int) {
-    let bufferSize = proc_listpids(UInt32(PROC_ALL_PIDS), 0, nil, 0)
-    guard bufferSize > 0 else { return (0, 0) }
+  private static func processCount() -> Int {
+    livePIDs().count
+  }
 
-    var pids = [pid_t](repeating: 0, count: Int(bufferSize) / MemoryLayout<pid_t>.stride)
-    let written = proc_listpids(UInt32(PROC_ALL_PIDS), 0, &pids, bufferSize)
-    guard written > 0 else { return (0, 0) }
+  private static func machThreadCount() -> Int? {
+    var pset: processor_set_name_t = 0
+    guard processor_set_default(mach_host_self(), &pset) == KERN_SUCCESS else {
+      return nil
+    }
+    defer { mach_port_deallocate(mach_task_self_, pset) }
 
-    let livePIDs = pids.prefix(Int(written) / MemoryLayout<pid_t>.stride).filter { $0 > 0 }
+    var info = processor_set_load_info()
+    var count = mach_msg_type_number_t(
+      MemoryLayout<processor_set_load_info>.stride / MemoryLayout<natural_t>.stride
+    )
+    let status = withUnsafeMutablePointer(to: &info) { pointer in
+      pointer.withMemoryRebound(to: integer_t.self, capacity: Int(count)) { rebound in
+        processor_set_statistics(pset, PROCESSOR_SET_LOAD_INFO, rebound, &count)
+      }
+    }
+    guard status == KERN_SUCCESS else { return nil }
+    return Int(info.thread_count)
+  }
+
+  private static func fallbackThreadCount() -> Int {
     let infoSize = Int32(MemoryLayout<proc_taskinfo>.stride)
-    var threads = 0
-
-    for pid in livePIDs {
+    return livePIDs().reduce(into: 0) { total, pid in
       var info = proc_taskinfo()
       let result = withUnsafeMutablePointer(to: &info) { pointer in
         proc_pidinfo(pid, PROC_PIDTASKINFO, 0, pointer, infoSize)
       }
       if result == infoSize {
-        threads += Int(info.pti_threadnum)
+        total += Int(info.pti_threadnum)
       }
     }
+  }
 
-    return (livePIDs.count, threads)
+  private static func livePIDs() -> [pid_t] {
+    let bufferSize = proc_listpids(UInt32(PROC_ALL_PIDS), 0, nil, 0)
+    guard bufferSize > 0 else { return [] }
+
+    var pids = [pid_t](repeating: 0, count: Int(bufferSize) / MemoryLayout<pid_t>.stride)
+    let written = proc_listpids(UInt32(PROC_ALL_PIDS), 0, &pids, bufferSize)
+    guard written > 0 else { return [] }
+
+    return pids.prefix(Int(written) / MemoryLayout<pid_t>.stride).filter { $0 > 0 }
   }
 
   private static func sysctlString(_ name: String) -> String? {
