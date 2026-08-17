@@ -322,6 +322,30 @@ final class OptimizationStore: ObservableObject {
     persistPendingChanges()
   }
 
+  func appliedTweakProgress(catalog: TweakCatalog?, store: TweakCatalogStore) -> (applied: Int, total: Int) {
+    guard let catalog else { return (0, 0) }
+    let features = catalog.features
+    let applied = features.count { feature in
+      !launchServicesAreCurrentlyEnabled(
+        store.services(for: feature),
+        defaultEnabled: feature.defaultEnabled
+      )
+    }
+    return (applied, features.count)
+  }
+
+  func launchServicesAreCurrentlyEnabled(
+    _ services: [TweakCatalogService],
+    defaultEnabled: Bool
+  ) -> Bool {
+    guard !services.isEmpty else { return defaultEnabled }
+    return services.contains { service in
+      observedLaunchServiceStates[service.id]?.isEffectivelyActive
+        ?? appliedLaunchServiceStates[service.id]
+        ?? defaultEnabled
+    }
+  }
+
   func launchServicesAreEnabled(
     _ services: [TweakCatalogService],
     defaultEnabled: Bool

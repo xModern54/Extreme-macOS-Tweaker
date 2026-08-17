@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct DashboardView: View {
+  @EnvironmentObject private var optimizationStore: OptimizationStore
+  @EnvironmentObject private var catalogStore: TweakCatalogStore
   @StateObject private var hostMetrics = HostMetricsStore()
 
   private let metricColumns = [
@@ -69,6 +71,12 @@ struct DashboardView: View {
     .task {
       await hostMetrics.startUpdating()
     }
+    .task(id: catalogStore.catalog?.catalogVersion) {
+      while !Task.isCancelled {
+        await optimizationStore.refreshLaunchServiceStates(catalogStore.catalog?.services ?? [])
+        try? await Task.sleep(nanoseconds: 5_000_000_000)
+      }
+    }
   }
 
   private var metrics: HostMetrics? {
@@ -90,7 +98,15 @@ struct DashboardView: View {
   }
 
   private var optimizationCard: some View {
-    DashboardPanel {
+    let progress = optimizationStore.appliedTweakProgress(
+      catalog: catalogStore.catalog,
+      store: catalogStore
+    )
+    let percent = progress.total == 0
+      ? 0
+      : Int((Double(progress.applied) / Double(progress.total) * 100).rounded())
+
+    return DashboardPanel {
       VStack(alignment: .leading, spacing: 14) {
         HStack(alignment: .top, spacing: 12) {
           Image(systemName: "gauge.with.needle")
@@ -105,25 +121,44 @@ struct DashboardView: View {
               .foregroundStyle(.secondary)
               .textCase(.uppercase)
 
-            Text("Balanced")
+            Text(optimizationRankTitle(for: percent))
               .font(.title3.weight(.semibold))
           }
 
           Spacer(minLength: 8)
 
-          Text("68%")
+          Text("\(percent)%")
             .font(.title.weight(.semibold).monospacedDigit())
             .foregroundStyle(Color.accentColor)
         }
 
-        DashboardProgressBar(progress: 0.68)
+        DashboardProgressBar(progress: progress.total == 0 ? 0 : Double(progress.applied) / Double(progress.total))
 
-        Text("48 of 126 catalog services are currently disabled.")
+        Text("\(progress.applied) of \(progress.total) tweaks are applied.")
           .font(.subheadline)
           .foregroundStyle(.secondary)
           .fixedSize(horizontal: false, vertical: true)
       }
       .padding(16)
+    }
+  }
+
+  private func optimizationRankTitle(for percent: Int) -> String {
+    switch percent {
+    case ..<5:
+      "Apple Soyboy"
+    case ..<20:
+      "Vanilla Enjoyer"
+    case ..<40:
+      "Casual Tweaker"
+    case ..<60:
+      "Power User"
+    case ..<80:
+      "Service Slayer"
+    case ..<95:
+      "Extreme"
+    default:
+      "Ultimate"
     }
   }
 
@@ -286,5 +321,7 @@ private struct DashboardProgressBar: View {
 
 #Preview {
   DashboardView()
+    .environmentObject(OptimizationStore())
+    .environmentObject(TweakCatalogStore())
     .frame(width: 688, height: 592)
 }
