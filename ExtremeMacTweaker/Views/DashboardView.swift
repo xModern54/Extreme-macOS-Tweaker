@@ -17,24 +17,17 @@ struct DashboardView: View {
           optimizationCard
 
           dashboardSection("Hardware") {
-            LazyVGrid(columns: metricColumns, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
               DashboardMetricTile(
-                title: "Processors",
-                value: "12",
-                detail: "Performance and efficiency cores",
+                title: "Processor",
+                value: "Apple M4 Pro",
+                detail: "This Mac",
                 systemImage: "cpu"
               )
-              DashboardMetricTile(
-                title: "Threads",
-                value: "24",
-                detail: "Logical processors available",
-                systemImage: "circle.grid.3x3"
-              )
-              DashboardMetricTile(
-                title: "Architecture",
-                value: "arm64",
-                detail: "Apple Silicon",
-                systemImage: "memorychip"
+
+              DashboardActivityTile(
+                processCount: 384,
+                threadCount: 1_842
               )
             }
           }
@@ -248,6 +241,54 @@ private struct DashboardMetricTile: View {
       RoundedRectangle(cornerRadius: 10)
         .stroke(.separator.opacity(0.45), lineWidth: 1)
     }
+  }
+}
+
+private struct DashboardActivityTile: View {
+  let processCount: Int
+  let threadCount: Int
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 10) {
+      HStack(spacing: 8) {
+        Image(systemName: "waveform.path.ecg")
+          .font(.system(size: 12, weight: .semibold))
+          .foregroundStyle(Color.accentColor)
+          .frame(width: 24, height: 24)
+          .background(Color.accentColor.opacity(0.1), in: RoundedRectangle(cornerRadius: 6))
+
+        Text("Activity")
+          .font(.caption.weight(.semibold))
+          .foregroundStyle(.secondary)
+          .textCase(.uppercase)
+      }
+
+      HStack(alignment: .top, spacing: 0) {
+        activityValue(processCount, label: "Processes")
+        activityValue(threadCount, label: "Threads")
+      }
+    }
+    .padding(14)
+    .frame(maxWidth: .infinity, minHeight: 118, alignment: .topLeading)
+    .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+    .overlay {
+      RoundedRectangle(cornerRadius: 10)
+        .stroke(.separator.opacity(0.45), lineWidth: 1)
+    }
+  }
+
+  private func activityValue(_ value: Int, label: String) -> some View {
+    VStack(alignment: .leading, spacing: 3) {
+      Text(value.formatted())
+        .font(.title2.weight(.semibold).monospacedDigit())
+        .lineLimit(1)
+        .minimumScaleFactor(0.7)
+
+      Text(label)
+        .font(.caption)
+        .foregroundStyle(.secondary)
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
