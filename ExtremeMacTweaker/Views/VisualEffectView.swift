@@ -8,6 +8,8 @@ struct VisualEffectView: NSViewRepresentable {
 
   func makeNSView(context: Context) -> NSVisualEffectView {
     let view = NSVisualEffectView()
+    view.translatesAutoresizingMaskIntoConstraints = true
+    view.autoresizingMask = [.width, .height]
     configure(view)
     return view
   }

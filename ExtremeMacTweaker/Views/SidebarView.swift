@@ -6,56 +6,56 @@ struct SidebarView: View {
   @EnvironmentObject private var optimizationStore: OptimizationStore
 
   var body: some View {
-    ZStack {
+    VStack(spacing: 0) {
+      Color.clear
+        .frame(height: 28)
+
+      List(selection: $selection) {
+        Section("Features") {
+          ForEach(AppSection.allCases) { section in
+            SidebarRow(section: section)
+              .tag(section)
+          }
+        }
+      }
+      .listStyle(.sidebar)
+      .scrollContentBackground(.hidden)
+      .environment(\.defaultMinListRowHeight, 34)
+
+      Divider()
+        .opacity(0.45)
+
+      VStack(alignment: .leading, spacing: 10) {
+        HStack(spacing: 8) {
+          Image(systemName: "checkmark.circle")
+            .foregroundStyle(.secondary)
+
+          Text(pendingChangesLabel)
+            .font(.caption)
+            .foregroundStyle(.secondary)
+
+          Spacer(minLength: 0)
+        }
+
+        Button(action: applyChanges) {
+          Label("Apply", systemImage: "checkmark.circle.fill")
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .controlSize(.large)
+        .disabled(!optimizationStore.canApply)
+        .help("Review and apply pending changes")
+      }
+      .padding(14)
+    }
+    .background {
       VisualEffectView(
         material: .sidebar,
         blendingMode: .behindWindow,
         state: .followsWindowActiveState
       )
       .ignoresSafeArea()
-
-      VStack(spacing: 0) {
-        List(selection: $selection) {
-          Section("Features") {
-            ForEach(AppSection.allCases) { section in
-              NavigationLink(value: section) {
-                SidebarRow(section: section)
-              }
-            }
-          }
-        }
-        .listStyle(.sidebar)
-        .scrollContentBackground(.hidden)
-        .environment(\.defaultMinListRowHeight, 34)
-
-        Divider()
-          .opacity(0.65)
-
-        VStack(alignment: .leading, spacing: 10) {
-          HStack(spacing: 8) {
-            Image(systemName: "checkmark.circle")
-              .foregroundStyle(.secondary)
-
-            Text(pendingChangesLabel)
-              .font(.caption)
-              .foregroundStyle(.secondary)
-
-            Spacer(minLength: 0)
-          }
-
-          Button(action: applyChanges) {
-            Label("Apply", systemImage: "checkmark.circle.fill")
-              .frame(maxWidth: .infinity)
-          }
-          .buttonStyle(.borderedProminent)
-          .controlSize(.large)
-          .disabled(!optimizationStore.canApply)
-          .help("Review and apply pending changes")
-        }
-        .padding(14)
-      }
     }
-    .navigationTitle("")
     .sheet(isPresented: $optimizationStore.isReviewPresented) {
       ApplyReviewView()
         .environmentObject(optimizationStore)

@@ -4,14 +4,17 @@ struct RootView: View {
   @State private var selection: AppSection? = .systemTweaker
 
   var body: some View {
-    NavigationSplitView(columnVisibility: .constant(.all)) {
+    HStack(spacing: 0) {
       SidebarView(selection: $selection)
-        .navigationSplitViewColumnWidth(min: 200, ideal: 232, max: 272)
-        .toolbar(removing: .sidebarToggle)
-    } detail: {
+        .frame(width: 232)
+
+      Divider()
+
       DetailWorkspace(section: selection ?? .systemTweaker)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-    .navigationSplitViewStyle(.balanced)
+    .ignoresSafeArea()
+    .containerBackground(.clear, for: .window)
     .tint(.accentColor)
   }
 }
@@ -35,7 +38,6 @@ private struct DetailWorkspace: View {
         SecurityView()
       }
     }
-    .toolbar(removing: .title)
   }
 }
 

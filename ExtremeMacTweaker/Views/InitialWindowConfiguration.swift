@@ -38,6 +38,9 @@ private final class InitialWindowConfigurationView: NSView {
     window.backgroundColor = .clear
     window.titlebarAppearsTransparent = true
     window.titleVisibility = .hidden
+    window.titlebarSeparatorStyle = .none
+    window.isMovableByWindowBackground = true
+    window.styleMask.insert(.fullSizeContentView)
 
     DispatchQueue.main.async { [weak window] in
       guard let window else { return }
