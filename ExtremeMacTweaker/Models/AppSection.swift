@@ -1,6 +1,7 @@
 import SwiftUI
 
 enum AppSection: String, CaseIterable, Identifiable {
+  case dashboard
   case systemTweaker
   case systemApps
   case systemDebloat
@@ -8,8 +9,14 @@ enum AppSection: String, CaseIterable, Identifiable {
 
   var id: Self { self }
 
+  static var featureCases: [AppSection] {
+    [.systemTweaker, .systemApps, .systemDebloat, .security]
+  }
+
   var title: String {
     switch self {
+    case .dashboard:
+      "Dashboard"
     case .systemTweaker:
       "System Tweaker"
     case .systemApps:
@@ -23,6 +30,8 @@ enum AppSection: String, CaseIterable, Identifiable {
 
   var systemImage: String {
     switch self {
+    case .dashboard:
+      "gauge.with.needle"
     case .systemTweaker:
       "slider.horizontal.3"
     case .systemApps:

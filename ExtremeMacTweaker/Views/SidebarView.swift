@@ -11,8 +11,11 @@ struct SidebarView: View {
         .frame(height: 28)
 
       List(selection: $selection) {
+        SidebarRow(section: .dashboard)
+          .tag(AppSection.dashboard)
+
         Section("Features") {
-          ForEach(AppSection.allCases) { section in
+          ForEach(AppSection.featureCases) { section in
             SidebarRow(section: section)
               .tag(section)
           }
@@ -328,7 +331,7 @@ private struct SidebarRow: View {
 }
 
 #Preview {
-  @Previewable @State var selection: AppSection? = .systemTweaker
+  @Previewable @State var selection: AppSection? = .dashboard
 
   SidebarView(selection: $selection)
     .environmentObject(OptimizationStore())

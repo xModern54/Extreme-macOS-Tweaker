@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct RootView: View {
-  @State private var selection: AppSection? = .systemTweaker
+  @State private var selection: AppSection? = .dashboard
 
   var body: some View {
     HStack(spacing: 0) {
@@ -14,7 +14,7 @@ struct RootView: View {
             .ignoresSafeArea()
         }
 
-      DetailWorkspace(section: selection ?? .systemTweaker)
+      DetailWorkspace(section: selection ?? .dashboard)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     .ignoresSafeArea()
@@ -32,6 +32,8 @@ private struct DetailWorkspace: View {
         .ignoresSafeArea()
 
       switch section {
+      case .dashboard:
+        DashboardView()
       case .systemTweaker:
         SystemTweakerView()
       case .systemApps:
