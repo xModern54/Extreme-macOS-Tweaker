@@ -14,10 +14,6 @@ enum AppSection: String, CaseIterable, Identifiable {
     [.systemTweaker, .systemApps, .systemDebloat, .security]
   }
 
-  static var helpCases: [AppSection] {
-    [.recoveryGuide]
-  }
-
   var title: String {
     switch self {
     case .dashboard:

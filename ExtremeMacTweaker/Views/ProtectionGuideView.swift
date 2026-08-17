@@ -71,11 +71,12 @@ struct ProtectionGuideView: View {
           .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
 
         VStack(alignment: .leading, spacing: 4) {
-          Text("Do this in macOS Recovery, not in the normal desktop.")
+          Text("Do not do this on a Mac that holds sensitive data.")
             .font(.subheadline.weight(.semibold))
-          Text("Tweaker cannot change the system volume while these two locks are on.")
+          Text("Use a clean system you are still setting up. Disabling these locks and turning services off can break things or cause conflicts.")
             .font(.caption)
             .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
         }
       }
       .padding(14)

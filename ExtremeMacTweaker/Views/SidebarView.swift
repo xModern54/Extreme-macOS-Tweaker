@@ -27,13 +27,6 @@ struct SidebarView: View {
               .tag(section)
           }
         }
-
-        Section("Help") {
-          ForEach(AppSection.helpCases) { section in
-            SidebarRow(section: section)
-              .tag(section)
-          }
-        }
       }
       .listStyle(.sidebar)
       .scrollContentBackground(.hidden)
@@ -175,7 +168,7 @@ private struct ApplyReviewView: View {
             )
             .foregroundStyle(.red)
 
-            Button("Learn how to disable") {
+            Button("Help") {
               optimizationStore.presentRecoveryGuide()
             }
             .buttonStyle(.link)
@@ -243,7 +236,7 @@ private struct ApplyReviewView: View {
             .foregroundStyle(.red)
 
           if isProtectionError(error) {
-            Button("Learn how to disable") {
+            Button("Help") {
               optimizationStore.presentRecoveryGuide()
             }
             .buttonStyle(.link)
