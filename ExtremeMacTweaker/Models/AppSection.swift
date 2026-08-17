@@ -6,11 +6,16 @@ enum AppSection: String, CaseIterable, Identifiable {
   case systemApps
   case systemDebloat
   case security
+  case recoveryGuide
 
   var id: Self { self }
 
   static var featureCases: [AppSection] {
     [.systemTweaker, .systemApps, .systemDebloat, .security]
+  }
+
+  static var helpCases: [AppSection] {
+    [.recoveryGuide]
   }
 
   var title: String {
@@ -25,6 +30,8 @@ enum AppSection: String, CaseIterable, Identifiable {
       "System Debloat"
     case .security:
       "Security"
+    case .recoveryGuide:
+      "Disable SIP"
     }
   }
 
@@ -40,6 +47,8 @@ enum AppSection: String, CaseIterable, Identifiable {
       "shippingbox"
     case .security:
       "shield.lefthalf.filled"
+    case .recoveryGuide:
+      "lock.open"
     }
   }
 }

@@ -27,6 +27,13 @@ struct SidebarView: View {
               .tag(section)
           }
         }
+
+        Section("Help") {
+          ForEach(AppSection.helpCases) { section in
+            SidebarRow(section: section)
+              .tag(section)
+          }
+        }
       }
       .listStyle(.sidebar)
       .scrollContentBackground(.hidden)
@@ -161,11 +168,18 @@ private struct ApplyReviewView: View {
         }
 
         if !optimizationStore.canStartExecution {
-          Label(
-            "Disable the required protections from macOS Recovery before applying these changes.",
-            systemImage: "exclamationmark.triangle.fill"
-          )
-          .foregroundStyle(.red)
+          VStack(alignment: .leading, spacing: 8) {
+            Label(
+              "SIP or Authenticated Root is still on. Tweaker cannot apply these changes yet.",
+              systemImage: "exclamationmark.triangle.fill"
+            )
+            .foregroundStyle(.red)
+
+            Button("Learn how to disable") {
+              optimizationStore.presentRecoveryGuide()
+            }
+            .buttonStyle(.link)
+          }
         }
 
       case .failed(let message):
@@ -224,8 +238,17 @@ private struct ApplyReviewView: View {
       }
 
       if let error = optimizationStore.executionError {
-        Label(error, systemImage: "exclamationmark.triangle.fill")
-          .foregroundStyle(.red)
+        VStack(alignment: .leading, spacing: 8) {
+          Label(error, systemImage: "exclamationmark.triangle.fill")
+            .foregroundStyle(.red)
+
+          if isProtectionError(error) {
+            Button("Learn how to disable") {
+              optimizationStore.presentRecoveryGuide()
+            }
+            .buttonStyle(.link)
+          }
+        }
       }
     }
   }
@@ -271,6 +294,12 @@ private struct ApplyReviewView: View {
         .disabled(optimizationStore.restartInProgress)
       }
     }
+  }
+
+  private func isProtectionError(_ message: String) -> Bool {
+    let lowercased = message.lowercased()
+    return lowercased.contains("system integrity protection")
+      || lowercased.contains("authenticated root")
   }
 
   private func openPrivacyAndSecuritySettings() {

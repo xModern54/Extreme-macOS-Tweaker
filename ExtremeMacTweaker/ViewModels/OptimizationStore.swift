@@ -18,6 +18,7 @@ struct PendingChangeSummary: Identifiable {
 final class OptimizationStore: ObservableObject {
   @Published private(set) var pendingChanges: [OptimizationChange] = []
   @Published var isReviewPresented = false
+  @Published var shouldOpenRecoveryGuide = false
   @Published private(set) var executionPhase: OptimizationExecutionPhase = .idle
   @Published private(set) var executionProgress = 0.0
   @Published private(set) var executionMessage = ""
@@ -98,6 +99,11 @@ final class OptimizationStore: ObservableObject {
     systemProtectionCheck = executionPlan.requiresSystemProtectionCheck ? .checking : .notRequired
     isReviewPresented = true
     Task { await refreshSystemProtectionStatus() }
+  }
+
+  func presentRecoveryGuide() {
+    isReviewPresented = false
+    shouldOpenRecoveryGuide = true
   }
 
   func refreshSystemProtectionStatus() async {

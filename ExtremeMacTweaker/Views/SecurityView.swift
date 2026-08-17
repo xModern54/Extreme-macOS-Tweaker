@@ -164,6 +164,7 @@ private struct SecurityProtectionRow: View {
 private struct SecurityProtectionInspector: View {
   let protection: SecurityProtection
   let isEnabled: Bool
+  @EnvironmentObject private var optimizationStore: OptimizationStore
 
   var body: some View {
     GeometryReader { geometry in
@@ -231,6 +232,12 @@ private struct SecurityProtectionInspector: View {
           .font(.caption)
           .foregroundStyle(.orange)
           .fixedSize(horizontal: false, vertical: true)
+
+        Button("Learn how to disable") {
+          optimizationStore.presentRecoveryGuide()
+        }
+        .buttonStyle(.link)
+        .font(.caption)
       }
     }
   }

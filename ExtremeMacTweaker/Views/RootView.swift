@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct RootView: View {
+  @EnvironmentObject private var optimizationStore: OptimizationStore
   @State private var selection: AppSection? = .dashboard
 
   var body: some View {
@@ -20,6 +21,11 @@ struct RootView: View {
     .ignoresSafeArea()
     .containerBackground(.clear, for: .window)
     .tint(Color(nsColor: .controlAccentColor))
+    .onChange(of: optimizationStore.shouldOpenRecoveryGuide) { _, shouldOpen in
+      guard shouldOpen else { return }
+      selection = .recoveryGuide
+      optimizationStore.shouldOpenRecoveryGuide = false
+    }
   }
 }
 
@@ -42,6 +48,8 @@ private struct DetailWorkspace: View {
         SystemDebloatView()
       case .security:
         SecurityView()
+      case .recoveryGuide:
+        ProtectionGuideView()
       }
     }
   }
