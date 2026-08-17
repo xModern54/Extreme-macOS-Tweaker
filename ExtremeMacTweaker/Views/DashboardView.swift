@@ -17,14 +17,10 @@ struct DashboardView: View {
           optimizationCard
 
           HStack(alignment: .top, spacing: 12) {
-            DashboardStatGroupTile(
-              title: "Specs",
-              systemImage: "cpu",
-              items: [
-                .init(value: "Apple M4 Pro", label: "Processor"),
-                .init(value: "14", label: "Cores"),
-                .init(value: "24 GB", label: "Memory"),
-              ]
+            DashboardSpecsTile(
+              processor: "Apple M4 Pro",
+              cores: "14",
+              memory: "24 GB"
             )
 
             DashboardStatGroupTile(
@@ -188,6 +184,76 @@ private struct DashboardMetricTile: View {
   }
 }
 
+private struct DashboardCardHeader: View {
+  let title: String
+  let systemImage: String
+
+  var body: some View {
+    HStack(spacing: 8) {
+      Image(systemName: systemImage)
+        .font(.system(size: 12, weight: .semibold))
+        .foregroundStyle(Color.accentColor)
+        .frame(width: 24, height: 24)
+        .background(Color.accentColor.opacity(0.1), in: RoundedRectangle(cornerRadius: 6))
+
+      Text(title)
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(.secondary)
+        .textCase(.uppercase)
+    }
+  }
+}
+
+private struct DashboardSpecsTile: View {
+  let processor: String
+  let cores: String
+  let memory: String
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 10) {
+      DashboardCardHeader(title: "Specs", systemImage: "cpu")
+
+      VStack(alignment: .leading, spacing: 3) {
+        Text(processor)
+          .font(.title2.weight(.semibold))
+          .lineLimit(1)
+          .minimumScaleFactor(0.7)
+
+        Text("Processor")
+          .font(.caption)
+          .foregroundStyle(.secondary)
+      }
+
+      HStack(alignment: .top, spacing: 12) {
+        labeledValue(cores, label: "Cores")
+        labeledValue(memory, label: "Memory")
+      }
+    }
+    .padding(14)
+    .frame(maxWidth: .infinity, minHeight: 118, alignment: .topLeading)
+    .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+    .overlay {
+      RoundedRectangle(cornerRadius: 10)
+        .stroke(.separator.opacity(0.45), lineWidth: 1)
+    }
+  }
+
+  private func labeledValue(_ value: String, label: String) -> some View {
+    VStack(alignment: .leading, spacing: 3) {
+      Text(value)
+        .font(.title2.weight(.semibold).monospacedDigit())
+        .lineLimit(1)
+        .minimumScaleFactor(0.7)
+        .frame(maxWidth: .infinity, alignment: .leading)
+
+      Text(label)
+        .font(.caption)
+        .foregroundStyle(.secondary)
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+  }
+}
+
 private struct DashboardStatGroupTile: View {
   struct Item: Identifiable {
     let value: String
@@ -201,26 +267,16 @@ private struct DashboardStatGroupTile: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 10) {
-      HStack(spacing: 8) {
-        Image(systemName: systemImage)
-          .font(.system(size: 12, weight: .semibold))
-          .foregroundStyle(Color.accentColor)
-          .frame(width: 24, height: 24)
-          .background(Color.accentColor.opacity(0.1), in: RoundedRectangle(cornerRadius: 6))
+      DashboardCardHeader(title: title, systemImage: systemImage)
 
-        Text(title)
-          .font(.caption.weight(.semibold))
-          .foregroundStyle(.secondary)
-          .textCase(.uppercase)
-      }
-
-      HStack(alignment: .top, spacing: 0) {
+      HStack(alignment: .top, spacing: 10) {
         ForEach(items) { item in
           VStack(alignment: .leading, spacing: 3) {
             Text(item.value)
               .font(.title2.weight(.semibold).monospacedDigit())
               .lineLimit(1)
-              .minimumScaleFactor(0.65)
+              .minimumScaleFactor(0.6)
+              .frame(maxWidth: .infinity, alignment: .leading)
 
             Text(item.label)
               .font(.caption)
