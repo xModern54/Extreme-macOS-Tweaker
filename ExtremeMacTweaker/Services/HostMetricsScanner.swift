@@ -9,13 +9,15 @@ enum HostMetricsScanner {
   }
 
   private static func collect() -> HostMetrics {
+    let memory = memorySnapshot()
+
     return HostMetrics(
       processorName: processorName(),
       coreCount: sysctlInt("hw.physicalcpu") ?? ProcessInfo.processInfo.processorCount,
-      memoryBytes: ProcessInfo.processInfo.physicalMemory,
-      usedMemoryBytes: usedMemoryBytes(),
+      memoryBytes: memory.total,
+      usedMemoryBytes: memory.occupied,
       processCount: processCount(),
-      threadCount: machThreadCount() ?? fallbackThreadCount()
+      threadCount: machThreadCount() ?? 0
     )
   }
 
@@ -49,24 +51,47 @@ enum HostMetricsScanner {
       .joined(separator: " ")
   }
 
-  private static func usedMemoryBytes() -> UInt64 {
-    var stats = vm_statistics64()
-    var count = mach_msg_type_number_t(
+  private static func memorySnapshot() -> (total: UInt64, occupied: UInt64) {
+    let host = mach_host_self()
+
+    var basic = host_basic_info()
+    var basicCount = mach_msg_type_number_t(
+      MemoryLayout<host_basic_info_data_t>.stride / MemoryLayout<integer_t>.stride
+    )
+    let basicStatus = withUnsafeMutablePointer(to: &basic) { pointer in
+      pointer.withMemoryRebound(to: integer_t.self, capacity: Int(basicCount)) { rebound in
+        host_info(host, HOST_BASIC_INFO, rebound, &basicCount)
+      }
+    }
+    let total = basicStatus == KERN_SUCCESS
+      ? basic.max_mem
+      : ProcessInfo.processInfo.physicalMemory
+
+    var vm = vm_statistics64()
+    var vmCount = mach_msg_type_number_t(
       MemoryLayout<vm_statistics64_data_t>.stride / MemoryLayout<integer_t>.stride
     )
-    let status = withUnsafeMutablePointer(to: &stats) { pointer in
-      pointer.withMemoryRebound(to: integer_t.self, capacity: Int(count)) { rebound in
-        host_statistics64(mach_host_self(), HOST_VM_INFO64, rebound, &count)
+    let vmStatus = withUnsafeMutablePointer(to: &vm) { pointer in
+      pointer.withMemoryRebound(to: integer_t.self, capacity: Int(vmCount)) { rebound in
+        host_statistics64(host, HOST_VM_INFO64, rebound, &vmCount)
       }
     }
 
-    guard status == KERN_SUCCESS else { return 0 }
+    var pageSize: vm_size_t = 0
+    if host_page_size(host, &pageSize) != KERN_SUCCESS || pageSize == 0 {
+      pageSize = vm_page_size
+    }
 
-    let pageSize = UInt64(vm_page_size)
-    let usedPages = UInt64(stats.internal_page_count)
-      + UInt64(stats.wire_count)
-      + UInt64(stats.compressor_page_count)
-    return usedPages * pageSize
+    guard vmStatus == KERN_SUCCESS else {
+      return (total, 0)
+    }
+
+    let freePages = vm.free_count >= vm.speculative_count
+      ? UInt64(vm.free_count - vm.speculative_count)
+      : 0
+    let reallyFreeBytes = freePages * UInt64(pageSize)
+    let occupied = total > reallyFreeBytes ? total - reallyFreeBytes : 0
+    return (total, occupied)
   }
 
   private static func processCount() -> Int {
@@ -74,36 +99,27 @@ enum HostMetricsScanner {
   }
 
   private static func machThreadCount() -> Int? {
-    var pset: processor_set_name_t = 0
-    guard processor_set_default(mach_host_self(), &pset) == KERN_SUCCESS else {
-      return nil
-    }
-    defer { mach_port_deallocate(mach_task_self_, pset) }
-
+    var pset = processor_set_name_t(MACH_PORT_NULL)
     var info = processor_set_load_info()
     var count = mach_msg_type_number_t(
       MemoryLayout<processor_set_load_info>.stride / MemoryLayout<natural_t>.stride
     )
-    let status = withUnsafeMutablePointer(to: &info) { pointer in
-      pointer.withMemoryRebound(to: integer_t.self, capacity: Int(count)) { rebound in
-        processor_set_statistics(pset, PROCESSOR_SET_LOAD_INFO, rebound, &count)
+
+    var status = processor_set_default(mach_host_self(), &pset)
+    if status == KERN_SUCCESS {
+      status = withUnsafeMutablePointer(to: &info) { pointer in
+        pointer.withMemoryRebound(to: integer_t.self, capacity: Int(count)) { rebound in
+          processor_set_statistics(pset, PROCESSOR_SET_LOAD_INFO, rebound, &count)
+        }
       }
     }
+
+    if pset != MACH_PORT_NULL {
+      mach_port_deallocate(mach_task_self_, pset)
+    }
+
     guard status == KERN_SUCCESS else { return nil }
     return Int(info.thread_count)
-  }
-
-  private static func fallbackThreadCount() -> Int {
-    let infoSize = Int32(MemoryLayout<proc_taskinfo>.stride)
-    return livePIDs().reduce(into: 0) { total, pid in
-      var info = proc_taskinfo()
-      let result = withUnsafeMutablePointer(to: &info) { pointer in
-        proc_pidinfo(pid, PROC_PIDTASKINFO, 0, pointer, infoSize)
-      }
-      if result == infoSize {
-        total += Int(info.pti_threadnum)
-      }
-    }
   }
 
   private static func livePIDs() -> [pid_t] {
