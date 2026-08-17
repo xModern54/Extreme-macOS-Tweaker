@@ -109,8 +109,8 @@ struct SecurityView: View {
 
   private var securityWarning: some View {
     HStack(alignment: .top, spacing: 10) {
-      Image(systemName: "exclamationmark.shield.fill")
-        .foregroundStyle(.red)
+      Image(systemName: "exclamationmark.triangle.fill")
+        .foregroundStyle(.orange)
 
       VStack(alignment: .leading, spacing: 3) {
         Text("Disabling these protections reduces macOS security.")
@@ -123,10 +123,10 @@ struct SecurityView: View {
     }
     .padding(12)
     .frame(maxWidth: .infinity, alignment: .leading)
-    .background(Color.red.opacity(0.07), in: RoundedRectangle(cornerRadius: 10))
+    .background(Color.orange.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
     .overlay {
       RoundedRectangle(cornerRadius: 10)
-        .stroke(Color.red.opacity(0.2), lineWidth: 1)
+        .stroke(Color.orange.opacity(0.22), lineWidth: 1)
     }
   }
 
@@ -150,23 +150,26 @@ private struct SecurityProtectionRow: View {
     HStack(spacing: 12) {
       Image(systemName: protection.systemImage)
         .font(.system(size: 17, weight: .medium))
-        .foregroundStyle(isSelected ? Color.white : statusColor)
-        .frame(width: 34, height: 34)
+        .foregroundStyle(isSelected ? Color.white : Color.accentColor)
+        .frame(width: 32, height: 32)
         .background(
-          isSelected ? statusColor : statusColor.opacity(0.1),
+          isSelected ? Color.accentColor : Color.accentColor.opacity(0.1),
           in: RoundedRectangle(cornerRadius: 8)
         )
 
-      VStack(alignment: .leading, spacing: 3) {
-        Text(protection.title)
-          .font(.body.weight(.medium))
-
-        Text(isEnabled ? "Enabled" : disabledStatus)
-          .font(.caption.weight(.medium))
-          .foregroundStyle(statusColor)
-      }
+      Text(protection.title)
+        .font(.body.weight(.medium))
+        .lineLimit(1)
 
       Spacer(minLength: 8)
+
+      Text(statusLabel)
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(Color.accentColor)
+        .padding(.horizontal, 9)
+        .frame(height: 24)
+        .background(Color.accentColor.opacity(0.1), in: Capsule())
+        .fixedSize()
 
       Toggle("", isOn: $isEnabled)
         .labelsHidden()
@@ -174,13 +177,12 @@ private struct SecurityProtectionRow: View {
     }
     .padding(.horizontal, 12)
     .padding(.vertical, 10)
-    .background(isSelected ? statusColor.opacity(0.07) : Color.clear)
+    .background(isSelected ? Color.accentColor.opacity(0.08) : Color.clear)
   }
 
-  private var statusColor: Color { isEnabled ? .green : .red }
-
-  private var disabledStatus: String {
-    protection.kind == .gatekeeper ? "Applications from Anywhere" : "Disabled"
+  private var statusLabel: String {
+    if isEnabled { return "Enabled" }
+    return protection.kind == .gatekeeper ? "From Anywhere" : "Disabled"
   }
 }
 
@@ -209,9 +211,9 @@ private struct SecurityProtectionInspector: View {
       HStack(alignment: .top, spacing: 12) {
         Image(systemName: protection.systemImage)
           .font(.system(size: 22, weight: .medium))
-          .foregroundStyle(statusColor)
+          .foregroundStyle(Color.accentColor)
           .frame(width: 42, height: 42)
-          .background(statusColor.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+          .background(Color.accentColor.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
 
         VStack(alignment: .leading, spacing: 4) {
           Text(protection.title)
@@ -219,7 +221,7 @@ private struct SecurityProtectionInspector: View {
 
           Text(statusText)
             .font(.caption.weight(.medium))
-            .foregroundStyle(statusColor)
+            .foregroundStyle(isEnabled ? Color.secondary : Color.orange)
         }
       }
 
@@ -236,11 +238,11 @@ private struct SecurityProtectionInspector: View {
 
   private var behaviorSection: some View {
     VStack(alignment: .leading, spacing: 8) {
-      sectionTitle(isEnabled ? "Protection Active" : "Protection Disabled")
+      sectionTitle(isEnabled ? "Protection Active" : "When Disabled")
 
       Text(isEnabled ? enabledDescription : protection.disableConsequence)
         .font(.subheadline)
-        .foregroundStyle(isEnabled ? Color.secondary : Color.red)
+        .foregroundStyle(.secondary)
         .fixedSize(horizontal: false, vertical: true)
     }
   }
@@ -271,7 +273,7 @@ private struct SecurityProtectionInspector: View {
         ForEach(protection.services) { service in
           HStack(alignment: .firstTextBaseline, spacing: 6) {
             Circle()
-              .fill(statusColor)
+              .fill(isEnabled ? Color.accentColor : Color.secondary.opacity(0.45))
               .frame(width: 6, height: 6)
             VStack(alignment: .leading, spacing: 1) {
               Text(service.label)
@@ -289,8 +291,6 @@ private struct SecurityProtectionInspector: View {
       }
     }
   }
-
-  private var statusColor: Color { isEnabled ? .green : .red }
 
   private var statusText: String {
     if isEnabled { return "Enabled" }
