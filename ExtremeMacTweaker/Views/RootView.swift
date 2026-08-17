@@ -35,8 +35,7 @@ private struct DetailWorkspace: View {
         SecurityView()
       }
     }
-    .navigationTitle("Tweaker")
-    .toolbarTitleDisplayMode(.inline)
+    .toolbar(removing: .title)
   }
 }
 
