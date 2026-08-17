@@ -15,6 +15,7 @@ struct SecurityProtection: Identifiable, Hashable, Sendable {
   let kind: Kind
   let services: [SecurityProtectionService]
   let requiresSIPDisabledToDisable: Bool
+  let confirmsBeforeDisable: Bool
 }
 
 struct SecurityProtectionService: Identifiable, Hashable, Sendable {
@@ -41,14 +42,15 @@ enum SecurityProtectionCatalog {
       systemImage: "checkmark.seal",
       kind: .gatekeeper,
       services: [],
-      requiresSIPDisabledToDisable: false
+      requiresSIPDisabledToDisable: false,
+      confirmsBeforeDisable: false
     ),
     SecurityProtection(
       id: "xprotect",
-      title: "XProtect",
-      question: "Keep built-in malware scanning enabled?",
-      summary: "Runs Apple's signature scanner and malware-remediation jobs in the background.",
-      disableConsequence: "macOS will stop scanning for and remediating malware with XProtect.",
+      title: "XProtect Antivirus",
+      question: "Keep Apple's built-in malware scanner running?",
+      summary: "Background signature scans and malware cleanup jobs.",
+      disableConsequence: "XProtect will stop scanning for and remediating known malware.",
       systemImage: "shield.lefthalf.filled",
       kind: .launchServices,
       services: [
@@ -95,14 +97,15 @@ enum SecurityProtectionCatalog {
           "/Library/Apple/System/Library/LaunchAgents/com.apple.XprotectFramework.PluginService.plist"
         ),
       ],
-      requiresSIPDisabledToDisable: true
+      requiresSIPDisabledToDisable: true,
+      confirmsBeforeDisable: false
     ),
     SecurityProtection(
       id: "system-policy",
-      title: "System Policy (syspolicyd)",
-      question: "Keep syspolicyd application policy services enabled?",
-      summary: "Provides system policy, execution assessment, signature, revocation, and extension policy services.",
-      disableConsequence: "System policy validation and several application trust decisions will no longer be available.",
+      title: "Unknown App Protection",
+      question: "Keep the unknown-app and quarantine prompts?",
+      summary: "syspolicyd. The service behind \"Are you sure you want to open this app?\" and quarantine checks.",
+      disableConsequence: "syspolicyd is stopped. macOS will no longer ask before opening a downloaded or unsigned app.",
       systemImage: "lock.shield",
       kind: .launchServices,
       services: [
@@ -113,7 +116,8 @@ enum SecurityProtectionCatalog {
           "/System/Library/LaunchDaemons/com.apple.security.syspolicy.plist"
         )
       ],
-      requiresSIPDisabledToDisable: true
+      requiresSIPDisabledToDisable: true,
+      confirmsBeforeDisable: true
     ),
   ]
 

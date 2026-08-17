@@ -3,6 +3,7 @@ import SwiftUI
 struct SecurityView: View {
   @EnvironmentObject private var optimizationStore: OptimizationStore
   @State private var selectedProtectionID = SecurityProtectionCatalog.protections.first?.id
+  @State private var disableConfirmation: SecurityProtection?
 
   private var protections: [SecurityProtection] {
     SecurityProtectionCatalog.protections
@@ -29,6 +30,27 @@ struct SecurityView: View {
     .onChange(of: optimizationStore.executionPhase) { _, phase in
       guard phase == .succeeded else { return }
       Task { await optimizationStore.refreshSecurityProtectionStates() }
+    }
+    .alert(
+      "Disable \(disableConfirmation?.title ?? "this protection")?",
+      isPresented: Binding(
+        get: { disableConfirmation != nil },
+        set: { if !$0 { disableConfirmation = nil } }
+      )
+    ) {
+      Button("Disable", role: .destructive) {
+        if let protection = disableConfirmation {
+          optimizationStore.setSecurityProtection(protection, enabled: false)
+        }
+        disableConfirmation = nil
+      }
+      Button("Cancel", role: .cancel) {
+        disableConfirmation = nil
+      }
+    } message: {
+      Text(
+        "This stops syspolicyd, the service that asks if you are sure you want to open an app and enforces quarantine. Power users only."
+      )
     }
   }
 
@@ -110,6 +132,13 @@ struct SecurityView: View {
       get: { optimizationStore.securityProtectionIsEnabled(protection) },
       set: { enabled in
         selectedProtectionID = protection.id
+        if !enabled,
+          protection.confirmsBeforeDisable,
+          optimizationStore.securityProtectionIsEnabled(protection)
+        {
+          disableConfirmation = protection
+          return
+        }
         optimizationStore.setSecurityProtection(protection, enabled: enabled)
       }
     )
@@ -171,7 +200,6 @@ private struct SecurityProtectionInspector: View {
         VStack(alignment: .leading, spacing: 18) {
           inspectorHeader
           behaviorSection
-          requirementSection
           implementationSection
         }
         .frame(width: max(0, geometry.size.width - 32), alignment: .leading)
@@ -219,19 +247,6 @@ private struct SecurityProtectionInspector: View {
         .font(.subheadline)
         .foregroundStyle(.secondary)
         .fixedSize(horizontal: false, vertical: true)
-    }
-  }
-
-  @ViewBuilder
-  private var requirementSection: some View {
-    if protection.requiresSIPDisabledToDisable {
-      VStack(alignment: .leading, spacing: 8) {
-        sectionTitle("Requirement")
-        Label("Disabling requires System Integrity Protection to be off.", systemImage: "lock.open")
-          .font(.caption)
-          .foregroundStyle(.orange)
-          .fixedSize(horizontal: false, vertical: true)
-      }
     }
   }
 
