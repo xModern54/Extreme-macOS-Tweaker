@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct DashboardView: View {
+  @StateObject private var hostMetrics = HostMetricsStore()
+
   private let metricColumns = [
     GridItem(.flexible(), spacing: 12),
     GridItem(.flexible(), spacing: 12),
@@ -20,20 +22,20 @@ struct DashboardView: View {
             DashboardSplitStatTile(
               title: "Specs",
               systemImage: "cpu",
-              primary: .init(value: "Apple M4 Pro", label: "Processor"),
+              primary: .init(value: metrics?.processorName ?? "—", label: "Processor"),
               secondary: [
-                .init(value: "14", label: "Cores"),
-                .init(value: "24 GB", label: "Memory"),
+                .init(value: metrics?.formattedCoreCount ?? "—", label: "Cores"),
+                .init(value: metrics?.formattedMemory ?? "—", label: "Memory"),
               ]
             )
 
             DashboardSplitStatTile(
               title: "Runtime",
               systemImage: "waveform.path.ecg",
-              primary: .init(value: "11.6 GB", label: "Used"),
+              primary: .init(value: metrics?.formattedUsedMemory ?? "—", label: "Used"),
               secondary: [
-                .init(value: "384", label: "Processes"),
-                .init(value: "1,842", label: "Threads"),
+                .init(value: metrics?.formattedProcessCount ?? "—", label: "Processes"),
+                .init(value: metrics?.formattedThreadCount ?? "—", label: "Threads"),
               ]
             )
           }
@@ -64,6 +66,13 @@ struct DashboardView: View {
         .padding(20)
       }
     }
+    .task {
+      await hostMetrics.startUpdating()
+    }
+  }
+
+  private var metrics: HostMetrics? {
+    hostMetrics.metrics
   }
 
   private var header: some View {
