@@ -318,14 +318,10 @@ private struct ApplyReviewView: View {
 
 private struct TweakerWordmark: View {
   private let outlineOffsets: [CGSize] = [
-    CGSize(width: -0.8, height: 0),
-    CGSize(width: 0.8, height: 0),
-    CGSize(width: 0, height: -0.8),
-    CGSize(width: 0, height: 0.8),
-    CGSize(width: -0.6, height: -0.6),
-    CGSize(width: 0.6, height: -0.6),
-    CGSize(width: -0.6, height: 0.6),
-    CGSize(width: 0.6, height: 0.6),
+    CGSize(width: -0.35, height: 0),
+    CGSize(width: 0.35, height: 0),
+    CGSize(width: 0, height: -0.35),
+    CGSize(width: 0, height: 0.35),
   ]
 
   var body: some View {
@@ -337,7 +333,7 @@ private struct TweakerWordmark: View {
           ForEach(Array(outlineOffsets.enumerated()), id: \.offset) { _, offset in
             Text("Tweaker")
               .font(.title2.weight(.bold))
-              .foregroundStyle(Color.accentColor.opacity(0.8))
+              .foregroundStyle(Color.accentColor.opacity(0.45))
               .offset(offset)
           }
         }
