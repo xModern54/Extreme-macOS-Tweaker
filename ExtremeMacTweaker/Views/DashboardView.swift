@@ -43,22 +43,27 @@ struct DashboardView: View {
           }
 
           dashboardSection("Estimated Savings") {
+            let savings = optimizationStore.appliedTweakSavings(
+              catalog: catalogStore.catalog,
+              store: catalogStore
+            )
+
             LazyVGrid(columns: metricColumns, spacing: 12) {
               DashboardMetricTile(
                 title: "Memory",
-                value: "1.4 GB",
+                value: formattedSavingsMemory(savings.memoryMB),
                 detail: "Resident memory reclaimed",
                 systemImage: "memorychip"
               )
               DashboardMetricTile(
                 title: "Storage",
-                value: "6.2 GB",
+                value: "0.00 GB",
                 detail: "Apps and assets removed",
                 systemImage: "internaldrive"
               )
               DashboardMetricTile(
                 title: "Processes",
-                value: "37",
+                value: savings.processes.formatted(),
                 detail: "Fewer background processes",
                 systemImage: "gearshape.2"
               )
@@ -160,6 +165,17 @@ struct DashboardView: View {
     default:
       "Ultimate"
     }
+  }
+
+  private func formattedSavingsMemory(_ megabytes: Int) -> String {
+    let formatter = NumberFormatter()
+    formatter.locale = .current
+    formatter.numberStyle = .decimal
+    formatter.minimumFractionDigits = 2
+    formatter.maximumFractionDigits = 2
+    let gigabytes = Double(megabytes) / 1024
+    let number = formatter.string(from: NSNumber(value: gigabytes)) ?? "0.00"
+    return "\(number) GB"
   }
 
   private func dashboardSection<Content: View>(

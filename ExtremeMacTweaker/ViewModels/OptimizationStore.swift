@@ -324,14 +324,24 @@ final class OptimizationStore: ObservableObject {
 
   func appliedTweakProgress(catalog: TweakCatalog?, store: TweakCatalogStore) -> (applied: Int, total: Int) {
     guard let catalog else { return (0, 0) }
-    let features = catalog.features
-    let applied = features.count { feature in
+    return (appliedFeatures(in: catalog, store: store).count, catalog.features.count)
+  }
+
+  func appliedTweakSavings(catalog: TweakCatalog?, store: TweakCatalogStore) -> (memoryMB: Int, processes: Int) {
+    guard let catalog else { return (0, 0) }
+    return appliedFeatures(in: catalog, store: store).reduce(into: (0, 0)) { total, feature in
+      total.memoryMB += feature.impact.estimatedMemoryMB
+      total.processes += feature.impact.estimatedProcessReduction
+    }
+  }
+
+  private func appliedFeatures(in catalog: TweakCatalog, store: TweakCatalogStore) -> [TweakCatalogFeature] {
+    catalog.features.filter { feature in
       !launchServicesAreCurrentlyEnabled(
         store.services(for: feature),
         defaultEnabled: feature.defaultEnabled
       )
     }
-    return (applied, features.count)
   }
 
   func launchServicesAreCurrentlyEnabled(
