@@ -10,7 +10,8 @@ struct SidebarView: View {
       Color.clear
         .frame(height: 40)
 
-      TweakerWordmark()
+      Text("Tweaker")
+        .font(.title2.weight(.bold))
         .padding(.horizontal, 18)
         .padding(.top, 4)
         .padding(.bottom, 8)
@@ -313,31 +314,6 @@ private struct ApplyReviewView: View {
     case .failed:
       "The operation stopped before all changes were applied."
     }
-  }
-}
-
-private struct TweakerWordmark: View {
-  private let outlineOffsets: [CGSize] = [
-    CGSize(width: -0.18, height: 0),
-    CGSize(width: 0.18, height: 0),
-    CGSize(width: 0, height: -0.18),
-    CGSize(width: 0, height: 0.18),
-  ]
-
-  var body: some View {
-    Text("Tweaker")
-      .font(.title2.weight(.bold))
-      .foregroundStyle(.primary)
-      .background {
-        ZStack {
-          ForEach(Array(outlineOffsets.enumerated()), id: \.offset) { _, offset in
-            Text("Tweaker")
-              .font(.title2.weight(.bold))
-              .foregroundStyle(Color.accentColor.opacity(0.28))
-              .offset(offset)
-          }
-        }
-      }
   }
 }
 
