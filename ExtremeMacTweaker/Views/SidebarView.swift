@@ -160,21 +160,6 @@ private struct ApplyReviewView: View {
           )
         }
 
-        if !optimizationStore.canStartExecution {
-          VStack(alignment: .leading, spacing: 8) {
-            Label(
-              "SIP or Authenticated Root is still on. Tweaker cannot apply these changes yet.",
-              systemImage: "exclamationmark.triangle.fill"
-            )
-            .foregroundStyle(.red)
-
-            Button("Help") {
-              optimizationStore.presentRecoveryGuide()
-            }
-            .buttonStyle(.link)
-          }
-        }
-
       case .failed(let message):
         Label(message, systemImage: "exclamationmark.triangle.fill")
           .foregroundStyle(.red)
@@ -188,11 +173,23 @@ private struct ApplyReviewView: View {
   }
 
   private func protectionStatusRow(title: String, isDisabled: Bool) -> some View {
-    Label(
-      "\(title): \(isDisabled ? "Disabled" : "Enabled")",
-      systemImage: isDisabled ? "checkmark.circle.fill" : "xmark.octagon.fill"
-    )
-    .foregroundStyle(isDisabled ? Color.green : Color.red)
+    HStack(spacing: 10) {
+      Label(
+        "\(title): \(isDisabled ? "Disabled" : "Enabled")",
+        systemImage: isDisabled ? "checkmark.circle.fill" : "xmark.octagon.fill"
+      )
+      .foregroundStyle(isDisabled ? Color.green : Color.red)
+
+      if !isDisabled {
+        Spacer(minLength: 8)
+        Button("Help") {
+          optimizationStore.presentRecoveryGuide()
+        }
+        .buttonStyle(.bordered)
+        .controlSize(.small)
+        .tint(Color.accentColor)
+      }
+    }
   }
 
   private var executionContent: some View {
@@ -239,7 +236,9 @@ private struct ApplyReviewView: View {
             Button("Help") {
               optimizationStore.presentRecoveryGuide()
             }
-            .buttonStyle(.link)
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+            .tint(Color.accentColor)
           }
         }
       }

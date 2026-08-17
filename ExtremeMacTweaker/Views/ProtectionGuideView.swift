@@ -71,9 +71,9 @@ struct ProtectionGuideView: View {
           .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
 
         VStack(alignment: .leading, spacing: 4) {
-          Text("Do not do this on a Mac that holds sensitive data.")
+          Text("Do not do this on a Mac that is already your working machine.")
             .font(.subheadline.weight(.semibold))
-          Text("Use a clean system you are still setting up. Disabling these locks and turning services off can break things or cause conflicts.")
+          Text("Use a system you are still setting up, not the one you already work on.")
             .font(.caption)
             .foregroundStyle(.secondary)
             .fixedSize(horizontal: false, vertical: true)
