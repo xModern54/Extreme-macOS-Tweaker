@@ -10,7 +10,7 @@ enum HostMetricsScanner {
 
   private static func collect() -> HostMetrics {
     let memory = memorySnapshot()
-    let tasks = taskCounts()
+    let tasks = machTaskCounts() ?? visibleTaskCounts()
 
     return HostMetrics(
       processorName: processorName(),
@@ -80,7 +80,31 @@ enum HostMetricsScanner {
     return (total, usedBytes)
   }
 
-  private static func taskCounts() -> (processes: Int, threads: Int) {
+  private static func machTaskCounts() -> (processes: Int, threads: Int)? {
+    var pset = processor_set_name_t(MACH_PORT_NULL)
+    var info = processor_set_load_info()
+    var count = mach_msg_type_number_t(
+      MemoryLayout<processor_set_load_info>.stride / MemoryLayout<natural_t>.stride
+    )
+
+    var status = processor_set_default(mach_host_self(), &pset)
+    if status == KERN_SUCCESS {
+      status = withUnsafeMutablePointer(to: &info) { pointer in
+        pointer.withMemoryRebound(to: integer_t.self, capacity: Int(count)) { rebound in
+          processor_set_statistics(pset, PROCESSOR_SET_LOAD_INFO, rebound, &count)
+        }
+      }
+    }
+
+    if pset != MACH_PORT_NULL {
+      mach_port_deallocate(mach_task_self_, pset)
+    }
+
+    guard status == KERN_SUCCESS else { return nil }
+    return (Int(info.task_count), Int(info.thread_count))
+  }
+
+  private static func visibleTaskCounts() -> (processes: Int, threads: Int) {
     let requiredBytes = proc_listpids(UInt32(PROC_ALL_PIDS), 0, nil, 0)
     guard requiredBytes > 0 else { return (0, 0) }
 
