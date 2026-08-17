@@ -33,6 +33,24 @@ if xcodebuild \
     exit 1
   fi
 
+  APP_PATH="$DERIVED_DATA_PATH/Build/Products/Release/Tweaker.app"
+  ICONSET_SRC="$PROJECT_ROOT/ExtremeMacTweaker/Resources/Assets.xcassets/AppIcon.appiconset"
+  ICONSET_TMP="$(mktemp -d -t tweaker-iconset)"
+  mkdir -p "$ICONSET_TMP/AppIcon.iconset"
+  cp "$ICONSET_SRC/AppIcon-16.png" "$ICONSET_TMP/AppIcon.iconset/icon_16x16.png"
+  cp "$ICONSET_SRC/AppIcon-32.png" "$ICONSET_TMP/AppIcon.iconset/icon_16x16@2x.png"
+  cp "$ICONSET_SRC/AppIcon-32.png" "$ICONSET_TMP/AppIcon.iconset/icon_32x32.png"
+  cp "$ICONSET_SRC/AppIcon-64.png" "$ICONSET_TMP/AppIcon.iconset/icon_32x32@2x.png"
+  cp "$ICONSET_SRC/AppIcon-128.png" "$ICONSET_TMP/AppIcon.iconset/icon_128x128.png"
+  cp "$ICONSET_SRC/AppIcon-256.png" "$ICONSET_TMP/AppIcon.iconset/icon_128x128@2x.png"
+  cp "$ICONSET_SRC/AppIcon-256.png" "$ICONSET_TMP/AppIcon.iconset/icon_256x256.png"
+  cp "$ICONSET_SRC/AppIcon-512.png" "$ICONSET_TMP/AppIcon.iconset/icon_256x256@2x.png"
+  cp "$ICONSET_SRC/AppIcon-512.png" "$ICONSET_TMP/AppIcon.iconset/icon_512x512.png"
+  cp "$ICONSET_SRC/AppIcon-1024.png" "$ICONSET_TMP/AppIcon.iconset/icon_512x512@2x.png"
+  iconutil -c icns "$ICONSET_TMP/AppIcon.iconset" -o "$APP_PATH/Contents/Resources/AppIcon.icns"
+  rm -rf "$ICONSET_TMP"
+  touch "$APP_PATH"
+
   echo "complete"
 else
   status=$?
