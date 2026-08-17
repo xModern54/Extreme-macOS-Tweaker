@@ -72,8 +72,6 @@ struct SecurityView: View {
 
       ScrollView {
         VStack(alignment: .leading, spacing: 16) {
-          securityWarning
-
           VStack(alignment: .leading, spacing: 9) {
             Text("Protection Systems")
               .font(.caption.weight(.semibold))
@@ -104,29 +102,6 @@ struct SecurityView: View {
         }
         .padding(20)
       }
-    }
-  }
-
-  private var securityWarning: some View {
-    HStack(alignment: .top, spacing: 10) {
-      Image(systemName: "exclamationmark.triangle.fill")
-        .foregroundStyle(.orange)
-
-      VStack(alignment: .leading, spacing: 3) {
-        Text("Disabling these protections reduces macOS security.")
-          .font(.subheadline.weight(.medium))
-        Text("Only disable a protection if you understand which trust and malware checks it provides.")
-          .font(.caption)
-          .foregroundStyle(.secondary)
-          .fixedSize(horizontal: false, vertical: true)
-      }
-    }
-    .padding(12)
-    .frame(maxWidth: .infinity, alignment: .leading)
-    .background(Color.orange.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
-    .overlay {
-      RoundedRectangle(cornerRadius: 10)
-        .stroke(Color.orange.opacity(0.22), lineWidth: 1)
     }
   }
 
