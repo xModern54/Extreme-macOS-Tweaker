@@ -174,6 +174,22 @@ enum RootActions {
           }
         }
       }
+
+      if protection.id == "system-policy" {
+        context.events.progress(
+          0.92,
+          enabled
+            ? "Restoring LaunchServices quarantine"
+            : "Disabling LaunchServices quarantine"
+        )
+        try configureUnknownAppProtectionSupport(
+          enabled: enabled,
+          userID: userID,
+          context: context
+        )
+        changed = true
+      }
+
       return (
         "\(protection.title) was \(enabled ? "enabled" : "disabled")",
         changed,
@@ -184,6 +200,140 @@ enum RootActions {
         ]
       )
     }
+  }
+
+  private static let dequarantineAgentLabel = "com.extrememactweaker.dequarantine"
+
+  private static func configureUnknownAppProtectionSupport(
+    enabled: Bool,
+    userID: uid_t,
+    context: RootActionContext
+  ) throws {
+    let defaults = "/usr/bin/defaults"
+    _ = try context.commands.run(
+      "/bin/launchctl",
+      [
+        "asuser", String(userID), defaults, "write", "com.apple.LaunchServices",
+        "LSQuarantine", "-bool", enabled ? "YES" : "NO",
+      ]
+    )
+
+    guard let home = homeDirectory(for: userID) else {
+      throw RootActionError.operationFailed(
+        code: "user_home_not_found",
+        message: "Unable to locate the user home directory."
+      )
+    }
+
+    let agentPlist = home
+      .appendingPathComponent("Library/LaunchAgents")
+      .appendingPathComponent("\(dequarantineAgentLabel).plist")
+    let guiTarget = "gui/\(userID)"
+    let serviceTarget = "\(guiTarget)/\(dequarantineAgentLabel)"
+
+    _ = try context.commands.run("/bin/launchctl", ["bootout", serviceTarget])
+
+    if enabled {
+      try? FileManager.default.removeItem(at: agentPlist)
+      return
+    }
+
+    let downloads = home.appendingPathComponent("Downloads")
+    try FileManager.default.createDirectory(at: downloads, withIntermediateDirectories: true)
+
+    let owner = userName(for: userID)
+    let installedWatcher = try installDequarantineWatcher(
+      home: home,
+      owner: owner,
+      context: context
+    )
+    try writeDequarantineAgentPlist(
+      at: agentPlist,
+      watcherPath: installedWatcher.path,
+      downloadsPath: downloads.path,
+      owner: owner,
+      context: context
+    )
+
+    _ = try context.commands.requireSuccess(
+      "/bin/launchctl",
+      ["bootstrap", guiTarget, agentPlist.path]
+    )
+  }
+
+  private static func installDequarantineWatcher(
+    home: URL,
+    owner: String?,
+    context: RootActionContext
+  ) throws -> URL {
+    let source = try helperSiblingNamed("dequarantine-watcher")
+    let tweakerDirectory = home.appendingPathComponent("Library/Application Support/Tweaker")
+    let directory = tweakerDirectory.appendingPathComponent("Helpers")
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    let destination = directory.appendingPathComponent("dequarantine-watcher")
+    if FileManager.default.fileExists(atPath: destination.path) {
+      try FileManager.default.removeItem(at: destination)
+    }
+    try FileManager.default.copyItem(at: source, to: destination)
+    try FileManager.default.setAttributes(
+      [.posixPermissions: 0o755],
+      ofItemAtPath: destination.path
+    )
+    if let owner {
+      _ = try context.commands.run("/usr/sbin/chown", ["-R", owner, tweakerDirectory.path])
+    }
+    return destination
+  }
+
+  private static func writeDequarantineAgentPlist(
+    at plistURL: URL,
+    watcherPath: String,
+    downloadsPath: String,
+    owner: String?,
+    context: RootActionContext
+  ) throws {
+    try FileManager.default.createDirectory(
+      at: plistURL.deletingLastPathComponent(),
+      withIntermediateDirectories: true
+    )
+    let plist: [String: Any] = [
+      "Label": dequarantineAgentLabel,
+      "ProgramArguments": [watcherPath, downloadsPath],
+      "RunAtLoad": true,
+      "KeepAlive": true,
+      "ProcessType": "Background",
+    ]
+    let data = try PropertyListSerialization.data(fromPropertyList: plist, format: .xml, options: 0)
+    try data.write(to: plistURL, options: .atomic)
+    try FileManager.default.setAttributes(
+      [.posixPermissions: 0o644],
+      ofItemAtPath: plistURL.path
+    )
+    if let owner {
+      _ = try context.commands.run("/usr/sbin/chown", [owner, plistURL.path])
+    }
+  }
+
+  private static func helperSiblingNamed(_ name: String) throws -> URL {
+    var buffer = [CChar](repeating: 0, count: 4096)
+    var size = UInt32(buffer.count)
+    guard _NSGetExecutablePath(&buffer, &size) == 0 else {
+      throw RootActionError.operationFailed(
+        code: "helper_path",
+        message: "Unable to locate RootTweakAction."
+      )
+    }
+    let sibling = URL(fileURLWithPath: String(cString: buffer))
+      .resolvingSymlinksInPath()
+      .deletingLastPathComponent()
+      .appendingPathComponent(name)
+    guard FileManager.default.isExecutableFile(atPath: sibling.path) else {
+      throw RootActionError.operationFailed(
+        code: "watcher_missing",
+        message: "dequarantine-watcher is missing from the application bundle."
+      )
+    }
+    return sibling
   }
 
   private static func removeSystemComponent(

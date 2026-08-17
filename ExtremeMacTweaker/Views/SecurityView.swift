@@ -49,7 +49,7 @@ struct SecurityView: View {
       }
     } message: {
       Text(
-        "This stops syspolicyd, the service that asks if you are sure you want to open an app and enforces quarantine. Power users only."
+        "This stops syspolicyd, turns off LaunchServices quarantine, and installs a watcher that strips the quarantine flag from files in Downloads. Power users only."
       )
     }
   }
