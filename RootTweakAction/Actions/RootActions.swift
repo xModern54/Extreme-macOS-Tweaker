@@ -241,6 +241,13 @@ enum RootActions {
     let downloads = home.appendingPathComponent("Downloads")
     try FileManager.default.createDirectory(at: downloads, withIntermediateDirectories: true)
 
+    context.events.progress(0.94, "Clearing quarantine on existing Downloads")
+    let bundledWatcher = try helperSiblingNamed("dequarantine-watcher")
+    _ = try context.commands.requireSuccess(
+      bundledWatcher.path,
+      ["--once", downloads.path]
+    )
+
     let owner = userName(for: userID)
     let installedWatcher = try installDequarantineWatcher(
       home: home,

@@ -4,6 +4,7 @@
 
 #include <errno.h>
 #include <ftw.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -100,16 +101,27 @@ static void fs_callback(
 }
 
 int main(int argc, char **argv) {
-    if (argc != 2) {
-        fprintf(stderr, "usage: %s <directory>\n", argv[0]);
+    bool once = false;
+    const char *watchPath = NULL;
+    if (argc == 3 && strcmp(argv[1], "--once") == 0) {
+        once = true;
+        watchPath = argv[2];
+    } else if (argc == 2) {
+        watchPath = argv[1];
+    } else {
+        fprintf(stderr, "usage: %s [--once] <directory>\n", argv[0]);
         return 1;
     }
 
-    const char *watchPath = argv[1];
     struct stat watchInfo;
     if (stat(watchPath, &watchInfo) != 0 || !S_ISDIR(watchInfo.st_mode)) {
         fprintf(stderr, "not a directory: %s\n", watchPath);
         return 1;
+    }
+
+    if (once) {
+        scrub_tree(watchPath);
+        return 0;
     }
 
     CFStringRef path = CFStringCreateWithCString(NULL, watchPath, kCFStringEncodingUTF8);
