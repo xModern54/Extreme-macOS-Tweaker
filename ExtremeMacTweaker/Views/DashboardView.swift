@@ -16,22 +16,26 @@ struct DashboardView: View {
         VStack(alignment: .leading, spacing: 20) {
           optimizationCard
 
-          dashboardSection("Hardware") {
-            HStack(alignment: .top, spacing: 12) {
-              DashboardMetricTile(
-                title: "Processor",
-                value: "Apple M4 Pro",
-                detail: "This Mac",
-                systemImage: "cpu"
-              )
-              .frame(width: 196)
+          HStack(alignment: .top, spacing: 12) {
+            DashboardStatGroupTile(
+              title: "Specs",
+              systemImage: "cpu",
+              items: [
+                .init(value: "Apple M4 Pro", label: "Processor"),
+                .init(value: "14", label: "Cores"),
+                .init(value: "24 GB", label: "Memory"),
+              ]
+            )
 
-              DashboardActivityTile(
-                processCount: 384,
-                threadCount: 1_842,
-                memory: "24 GB"
-              )
-            }
+            DashboardStatGroupTile(
+              title: "Runtime",
+              systemImage: "waveform.path.ecg",
+              items: [
+                .init(value: "384", label: "Processes"),
+                .init(value: "1,842", label: "Threads"),
+                .init(value: "11.6 GB", label: "Used"),
+              ]
+            )
           }
 
           dashboardSection("Estimated Savings") {
@@ -184,30 +188,47 @@ private struct DashboardMetricTile: View {
   }
 }
 
-private struct DashboardActivityTile: View {
-  let processCount: Int
-  let threadCount: Int
-  let memory: String
+private struct DashboardStatGroupTile: View {
+  struct Item: Identifiable {
+    let value: String
+    let label: String
+    var id: String { label }
+  }
+
+  let title: String
+  let systemImage: String
+  let items: [Item]
 
   var body: some View {
     VStack(alignment: .leading, spacing: 10) {
       HStack(spacing: 8) {
-        Image(systemName: "waveform.path.ecg")
+        Image(systemName: systemImage)
           .font(.system(size: 12, weight: .semibold))
           .foregroundStyle(Color.accentColor)
           .frame(width: 24, height: 24)
           .background(Color.accentColor.opacity(0.1), in: RoundedRectangle(cornerRadius: 6))
 
-        Text("Activity")
+        Text(title)
           .font(.caption.weight(.semibold))
           .foregroundStyle(.secondary)
           .textCase(.uppercase)
       }
 
       HStack(alignment: .top, spacing: 0) {
-        activityValue(processCount.formatted(), label: "Processes")
-        activityValue(threadCount.formatted(), label: "Threads")
-        activityValue(memory, label: "Memory")
+        ForEach(items) { item in
+          VStack(alignment: .leading, spacing: 3) {
+            Text(item.value)
+              .font(.title2.weight(.semibold).monospacedDigit())
+              .lineLimit(1)
+              .minimumScaleFactor(0.65)
+
+            Text(item.label)
+              .font(.caption)
+              .foregroundStyle(.secondary)
+              .fixedSize(horizontal: false, vertical: true)
+          }
+          .frame(maxWidth: .infinity, alignment: .leading)
+        }
       }
     }
     .padding(14)
@@ -217,20 +238,6 @@ private struct DashboardActivityTile: View {
       RoundedRectangle(cornerRadius: 10)
         .stroke(.separator.opacity(0.45), lineWidth: 1)
     }
-  }
-
-  private func activityValue(_ value: String, label: String) -> some View {
-    VStack(alignment: .leading, spacing: 3) {
-      Text(value)
-        .font(.title2.weight(.semibold).monospacedDigit())
-        .lineLimit(1)
-        .minimumScaleFactor(0.7)
-
-      Text(label)
-        .font(.caption)
-        .foregroundStyle(.secondary)
-    }
-    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
