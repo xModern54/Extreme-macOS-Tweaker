@@ -39,8 +39,6 @@ struct SystemDebloatView: View {
 
       ScrollView {
         LazyVStack(alignment: .leading, spacing: 20) {
-          warning
-
           ForEach(SystemDebloatComponent.Category.allCases, id: \.self) { category in
             let categoryItems = model.items.filter { $0.component.category == category }
             if !categoryItems.isEmpty {
@@ -83,29 +81,6 @@ struct SystemDebloatView: View {
     .padding(.horizontal, 24)
     .padding(.top, 20)
     .padding(.bottom, 16)
-  }
-
-  private var warning: some View {
-    HStack(alignment: .top, spacing: 10) {
-      Image(systemName: "exclamationmark.triangle.fill")
-        .foregroundStyle(.orange)
-
-      VStack(alignment: .leading, spacing: 3) {
-        Text("Features may stop working until macOS downloads their assets again.")
-          .font(.subheadline.weight(.medium))
-        Text("Applying these changes requires System Integrity Protection to be disabled. The System volume and boot snapshot are not modified.")
-          .font(.caption)
-          .foregroundStyle(.secondary)
-          .fixedSize(horizontal: false, vertical: true)
-      }
-    }
-    .padding(12)
-    .frame(maxWidth: .infinity, alignment: .leading)
-    .background(Color.orange.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
-    .overlay {
-      RoundedRectangle(cornerRadius: 10)
-        .stroke(Color.orange.opacity(0.22), lineWidth: 1)
-    }
   }
 
   private func componentSection(
