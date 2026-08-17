@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.17.1",
+  "catalogVersion": "2026.08.12.1",
   "compatibility": {
     "minimumMacOSMajor": 15,
     "maximumMacOSMajor": 27,
@@ -11,58 +11,70 @@
   },
   "categories": [
     {
-      "id": "search-desktop",
-      "title": "Search & Desktop",
-      "systemImage": "magnifyingglass",
+      "id": "search-intelligence",
+      "title": "Search & Intelligence",
+      "systemImage": "sparkles",
       "order": 100
     },
     {
-      "id": "siri-intelligence",
-      "title": "Siri & Intelligence",
+      "id": "apple-intelligence-siri",
+      "title": "Siri & Apple Intelligence",
       "systemImage": "waveform",
       "order": 200
     },
     {
-      "id": "communication-continuity",
-      "title": "Communication & Continuity",
+      "id": "communication",
+      "title": "Communication",
       "systemImage": "message",
       "order": 300
     },
     {
-      "id": "icloud-store",
-      "title": "iCloud & Store",
-      "systemImage": "icloud",
+      "id": "continuity-sharing",
+      "title": "Continuity & Sharing",
+      "systemImage": "airplayaudio",
       "order": 400
     },
     {
-      "id": "media-location",
-      "title": "Media & Location",
-      "systemImage": "photo.on.rectangle",
+      "id": "icloud-store",
+      "title": "iCloud & App Store",
+      "systemImage": "icloud",
       "order": 500
     },
     {
-      "id": "apple-apps",
-      "title": "Apple Apps",
-      "systemImage": "square.grid.2x2",
+      "id": "photos-media",
+      "title": "Photos & Media",
+      "systemImage": "photo.on.rectangle",
       "order": 600
     },
     {
-      "id": "privacy-diagnostics",
-      "title": "Privacy & Diagnostics",
-      "systemImage": "hand.raised",
+      "id": "location-findmy",
+      "title": "Location & Find My",
+      "systemImage": "location",
       "order": 700
+    },
+    {
+      "id": "privacy-telemetry",
+      "title": "Privacy & Telemetry",
+      "systemImage": "hand.raised",
+      "order": 800
+    },
+    {
+      "id": "consumer-apps",
+      "title": "Consumer Features",
+      "systemImage": "square.grid.2x2",
+      "order": 900
     },
     {
       "id": "accessibility",
       "title": "Accessibility",
       "systemImage": "figure.stand",
-      "order": 800
+      "order": 1000
     },
     {
-      "id": "system-network",
-      "title": "System & Network",
+      "id": "system-maintenance",
+      "title": "System & Maintenance",
       "systemImage": "gearshape.2",
-      "order": 900
+      "order": 1200
     }
   ],
   "services": [
@@ -343,12 +355,6 @@
       "kind": "daemon"
     },
     {
-      "id": "biomesyncd",
-      "label": "com.apple.biomesyncd",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
       "id": "routined",
       "label": "com.apple.routined",
       "domain": "gui",
@@ -457,12 +463,6 @@
       "kind": "daemon"
     },
     {
-      "id": "systemstats-microstackshot",
-      "label": "com.apple.systemstats.microstackshot_periodic",
-      "domain": "system",
-      "kind": "daemon"
-    },
-    {
       "id": "usbctelemetryd",
       "label": "com.apple.usbctelemetryd",
       "domain": "system",
@@ -489,12 +489,6 @@
     {
       "id": "reportcrash-root",
       "label": "com.apple.ReportCrash.Root",
-      "domain": "system",
-      "kind": "daemon"
-    },
-    {
-      "id": "coresymbolicationd",
-      "label": "com.apple.coresymbolicationd",
       "domain": "system",
       "kind": "daemon"
     },
@@ -1141,12 +1135,6 @@
       "kind": "daemon"
     },
     {
-      "id": "mobileassetd",
-      "label": "com.apple.mobileassetd",
-      "domain": "system",
-      "kind": "daemon"
-    },
-    {
       "id": "mobile-softwareupdated",
       "label": "com.apple.mobile.softwareupdated",
       "domain": "system",
@@ -1271,12 +1259,6 @@
       "label": "com.apple.geodMachServiceBridge",
       "domain": "gui",
       "kind": "agent"
-    },
-    {
-      "id": "geod",
-      "label": "com.apple.geod",
-      "domain": "gui",
-      "kind": "xpcService"
     },
     {
       "id": "countryd",
@@ -1465,12 +1447,6 @@
       "kind": "daemon"
     },
     {
-      "id": "dhcp6d",
-      "label": "com.apple.dhcp6d",
-      "domain": "system",
-      "kind": "daemon"
-    },
-    {
       "id": "kerberos-digest",
       "label": "com.apple.Kerberos.digest-service",
       "domain": "system",
@@ -1591,12 +1567,6 @@
       "kind": "xpcService"
     },
     {
-      "id": "quicklookd",
-      "label": "com.apple.quicklook",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
       "id": "quicklook-ui",
       "label": "com.apple.quicklook.ui.helper",
       "domain": "gui",
@@ -1611,12 +1581,6 @@
     {
       "id": "followupd",
       "label": "com.apple.followupd",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
-      "id": "coreservices-uiagent",
-      "label": "com.apple.coreservices.uiagent",
       "domain": "gui",
       "kind": "agent"
     },
@@ -1766,8 +1730,7 @@
       "id": "biome-streams",
       "services": [
         "biome-agent",
-        "biomed",
-        "biomesyncd"
+        "biomed"
       ]
     },
     {
@@ -1801,7 +1764,6 @@
         "audioanalyticsd",
         "systemstats-analysis",
         "systemstats-daily",
-        "systemstats-microstackshot",
         "usbctelemetryd",
         "ecosystemd",
         "aslmanager"
@@ -1811,8 +1773,7 @@
       "id": "crash-reporter",
       "services": [
         "reportcrash",
-        "reportcrash-root",
-        "coresymbolicationd"
+        "reportcrash-root"
       ]
     },
     {
@@ -2086,7 +2047,6 @@
         "locationd",
         "corelocation-agent",
         "geod-bridge",
-        "geod",
         "countryd",
         "milod"
       ]
@@ -2217,8 +2177,7 @@
     {
       "id": "netbios",
       "services": [
-        "netbiosd",
-        "dhcp6d"
+        "netbiosd"
       ]
     },
     {
@@ -2294,7 +2253,6 @@
     {
       "id": "quicklook",
       "services": [
-        "quicklookd",
         "quicklook-ui",
         "quicklook-thumbnail"
       ]
@@ -2325,24 +2283,12 @@
       "services": [
         "autofsd"
       ]
-    },
-    {
-      "id": "background-system-assets",
-      "services": [
-        "mobileassetd"
-      ]
-    },
-    {
-      "id": "download-quarantine",
-      "services": [
-        "coreservices-uiagent"
-      ]
     }
   ],
   "features": [
     {
       "id": "spotlight",
-      "categoryID": "search-desktop",
+      "categoryID": "search-intelligence",
       "title": "Spotlight Search",
       "question": "Do you use Spotlight to find files and applications?",
       "description": "Indexes files, application metadata, messages, and other searchable content across macOS.",
@@ -2359,26 +2305,8 @@
       "order": 100
     },
     {
-      "id": "quicklook",
-      "categoryID": "search-desktop",
-      "title": "Quick Look",
-      "question": "Do you use Spacebar Quick Look previews in Finder?",
-      "description": "Quick Look preview daemon, UI helper, and thumbnail agent used by Finder Spacebar previews.",
-      "disableGuidance": "Disable this if Spacebar previews are unused. Finder icon thumbnails may also be reduced.",
-      "systemImage": "eye",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "quicklook"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 150,
-        "estimatedProcessReduction": 3
-      },
-      "order": 200
-    },
-    {
       "id": "widgets",
-      "categoryID": "search-desktop",
+      "categoryID": "search-intelligence",
       "title": "Desktop Widgets",
       "question": "Do you use desktop or Notification Center widgets?",
       "description": "Runs WidgetKit processes that keep widget timelines and control descriptors up to date.",
@@ -2392,11 +2320,11 @@
         "estimatedMemoryMB": 200,
         "estimatedProcessReduction": 6
       },
-      "order": 300
+      "order": 200
     },
     {
       "id": "document-versions",
-      "categoryID": "search-desktop",
+      "categoryID": "search-intelligence",
       "title": "Document Versions",
       "question": "Do you use Browse All Versions for document history?",
       "description": "Stores macOS Auto Save document revisions for supported Cocoa applications.",
@@ -2410,29 +2338,11 @@
         "estimatedMemoryMB": 10,
         "estimatedProcessReduction": 1
       },
-      "order": 400
-    },
-    {
-      "id": "help-index",
-      "categoryID": "search-desktop",
-      "title": "Help Indexer",
-      "question": "Allow background Help Center indexing?",
-      "description": "Indexes application help books for Help Viewer search.",
-      "disableGuidance": "Disable this if you do not use Help Viewer search.",
-      "systemImage": "questionmark.circle",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "help-indexer"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 76,
-        "estimatedProcessReduction": 1
-      },
-      "order": 500
+      "order": 300
     },
     {
       "id": "siri-dictation",
-      "categoryID": "siri-intelligence",
+      "categoryID": "apple-intelligence-siri",
       "title": "Siri & Dictation",
       "question": "Do you use Siri or system dictation?",
       "description": "Provides local speech recognition, Siri assistant services, and system-wide dictation.",
@@ -2450,7 +2360,7 @@
     },
     {
       "id": "apple-intelligence",
-      "categoryID": "siri-intelligence",
+      "categoryID": "apple-intelligence-siri",
       "title": "Apple Intelligence",
       "question": "Do you use on-device Apple Intelligence features?",
       "description": "Hosts generative model runtime, model catalog, and intelligence platform services.",
@@ -2468,10 +2378,10 @@
     },
     {
       "id": "proactive-suggestions",
-      "categoryID": "siri-intelligence",
+      "categoryID": "apple-intelligence-siri",
       "title": "Proactive Suggestions",
       "question": "Do you want routine learning and app prediction suggestions?",
-      "description": "Learns routines and usage patterns, and syncs on-device behavior streams for App Prediction and proactive suggestions.",
+      "description": "Learns routines and usage patterns to power App Prediction and proactive suggestions.",
       "disableGuidance": "Disable this on a coding-only Mac where proactive suggestions are not useful.",
       "systemImage": "lightbulb",
       "defaultEnabled": true,
@@ -2480,32 +2390,32 @@
         "biome-streams"
       ],
       "impact": {
-        "estimatedMemoryMB": 190,
-        "estimatedProcessReduction": 9
+        "estimatedMemoryMB": 180,
+        "estimatedProcessReduction": 8
       },
       "order": 300
     },
     {
-      "id": "translation",
-      "categoryID": "siri-intelligence",
-      "title": "System Translation",
-      "question": "Do you use system-wide translation features?",
-      "description": "On-device and system translation daemon.",
-      "disableGuidance": "Disable this if translation features are unused.",
-      "systemImage": "character.book.closed",
+      "id": "apple-trial",
+      "categoryID": "apple-intelligence-siri",
+      "title": "Experiment Enrollment",
+      "question": "Allow Apple A/B experiment enrollment on this Mac?",
+      "description": "Downloads and applies Apple Trial feature-flag experiment payloads.",
+      "disableGuidance": "Disable this to stop experiment enrollment and related background fetches.",
+      "systemImage": "testtube.2",
       "defaultEnabled": true,
       "disableServiceGroups": [
-        "translation"
+        "apple-trial"
       ],
       "impact": {
-        "estimatedMemoryMB": 22,
-        "estimatedProcessReduction": 1
+        "estimatedMemoryMB": 52,
+        "estimatedProcessReduction": 3
       },
       "order": 400
     },
     {
       "id": "imessage",
-      "categoryID": "communication-continuity",
+      "categoryID": "communication",
       "title": "Messages & iMessage",
       "question": "Do you use Messages or iMessage on this Mac?",
       "description": "Runs the Messages backend, Apple IDS identity services, and related call-history helpers.",
@@ -2524,7 +2434,7 @@
     },
     {
       "id": "facetime",
-      "categoryID": "communication-continuity",
+      "categoryID": "communication",
       "title": "FaceTime & Calls",
       "question": "Do you use FaceTime or Phone Continuity on this Mac?",
       "description": "Provides CallKit, FaceTime signaling, and AV conference services.",
@@ -2542,7 +2452,7 @@
     },
     {
       "id": "mail",
-      "categoryID": "communication-continuity",
+      "categoryID": "communication",
       "title": "Apple Mail",
       "question": "Do you use the Apple Mail app?",
       "description": "Background mail daemon used by the system Mail application.",
@@ -2560,7 +2470,7 @@
     },
     {
       "id": "airdrop-continuity",
-      "categoryID": "communication-continuity",
+      "categoryID": "continuity-sharing",
       "title": "AirDrop & Continuity",
       "question": "Do you use AirDrop, Handoff, Continuity Camera, or Universal Clipboard?",
       "description": "Enables nearby sharing, Handoff, Continuity capture, and related device discovery.",
@@ -2575,11 +2485,11 @@
         "estimatedMemoryMB": 150,
         "estimatedProcessReduction": 8
       },
-      "order": 400
+      "order": 100
     },
     {
       "id": "bluetooth-user-pairing",
-      "categoryID": "communication-continuity",
+      "categoryID": "continuity-sharing",
       "title": "Bluetooth Pairing Assistant",
       "question": "Do you pair new Bluetooth devices in System Settings on this Mac?",
       "description": "Per-user Bluetooth cloud pairing and GUI pairing handshake support.",
@@ -2593,7 +2503,7 @@
         "estimatedMemoryMB": 17,
         "estimatedProcessReduction": 1
       },
-      "order": 500
+      "order": 200
     },
     {
       "id": "icloud-drive",
@@ -2668,24 +2578,6 @@
       "order": 400
     },
     {
-      "id": "private-relay",
-      "categoryID": "icloud-store",
-      "title": "iCloud Private Relay",
-      "question": "Do you use iCloud Private Relay?",
-      "description": "Network service proxy used by Private Relay and related privacy proxy paths.",
-      "disableGuidance": "Disable this if Private Relay is unused.",
-      "systemImage": "network",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "private-relay"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 40,
-        "estimatedProcessReduction": 1
-      },
-      "order": 500
-    },
-    {
       "id": "app-store",
       "categoryID": "icloud-store",
       "title": "Mac App Store",
@@ -2702,7 +2594,7 @@
         "estimatedMemoryMB": 200,
         "estimatedProcessReduction": 12
       },
-      "order": 600
+      "order": 500
     },
     {
       "id": "app-store-ads",
@@ -2720,7 +2612,7 @@
         "estimatedMemoryMB": 60,
         "estimatedProcessReduction": 3
       },
-      "order": 700
+      "order": 600
     },
     {
       "id": "media-stores",
@@ -2738,7 +2630,7 @@
         "estimatedMemoryMB": 22,
         "estimatedProcessReduction": 2
       },
-      "order": 800
+      "order": 700
     },
     {
       "id": "software-update",
@@ -2756,7 +2648,7 @@
         "estimatedMemoryMB": 39,
         "estimatedProcessReduction": 3
       },
-      "order": 900
+      "order": 800
     },
     {
       "id": "content-caching",
@@ -2774,65 +2666,11 @@
         "estimatedMemoryMB": 56,
         "estimatedProcessReduction": 5
       },
-      "order": 1000
-    },
-    {
-      "id": "background-system-assets",
-      "categoryID": "icloud-store",
-      "title": "Background System Assets",
-      "question": "Allow Apple to download extra system assets in the background?",
-      "description": "Downloads supplemental voices, dictionaries, fonts, aerial wallpaper metadata, and on-device model assets from Apple CDNs.",
-      "disableGuidance": "Disable this if you do not need background asset updates. macOS software updates stay on a separate daemon.",
-      "systemImage": "arrow.down.app",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "background-system-assets"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 45,
-        "estimatedProcessReduction": 1
-      },
-      "order": 1100
-    },
-    {
-      "id": "appstore-nuclear-install",
-      "categoryID": "icloud-store",
-      "title": "Install Coordination (Advanced)",
-      "question": "Disable install coordination and FairPlay install helpers?",
-      "description": "Nuclear install and DRM coordination layer used by Mac App Store installs.",
-      "disableGuidance": "Disable this only on experimental target machines after App Store daemons are already off. Coordinated App Store installs will fail.",
-      "systemImage": "shippingbox",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "appstore-stage-c"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 25,
-        "estimatedProcessReduction": 2
-      },
-      "order": 1200
-    },
-    {
-      "id": "photos-library",
-      "categoryID": "media-location",
-      "title": "Photos Library",
-      "question": "Do you use the Photos app on this Mac?",
-      "description": "Core Photos library daemon for opening and maintaining the photo library.",
-      "disableGuidance": "Disable this if Photos.app is not used. The library on disk remains but the daemon will not run.",
-      "systemImage": "photo",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "photos-library"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 10,
-        "estimatedProcessReduction": 1
-      },
-      "order": 100
+      "order": 900
     },
     {
       "id": "photos-analysis",
-      "categoryID": "media-location",
+      "categoryID": "photos-media",
       "title": "Photos Analysis",
       "question": "Do you need Photos memories, face recognition, or media analysis?",
       "description": "Analyzes the photo library for faces, objects, memories, and related ML features.",
@@ -2846,11 +2684,29 @@
         "estimatedMemoryMB": 67,
         "estimatedProcessReduction": 2
       },
+      "order": 100
+    },
+    {
+      "id": "photos-library",
+      "categoryID": "photos-media",
+      "title": "Photos Library",
+      "question": "Do you use the Photos app on this Mac?",
+      "description": "Core Photos library daemon for opening and maintaining the photo library.",
+      "disableGuidance": "Disable this if Photos.app is not used. The library on disk remains but the daemon will not run.",
+      "systemImage": "photo",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "photos-library"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 10,
+        "estimatedProcessReduction": 1
+      },
       "order": 200
     },
     {
       "id": "camera",
-      "categoryID": "media-location",
+      "categoryID": "photos-media",
       "title": "Camera Stack",
       "question": "Do you use the built-in or USB camera on this Mac?",
       "description": "Camera capture and Core Media IO assistant services.",
@@ -2868,7 +2724,7 @@
     },
     {
       "id": "wallpaper-aerials",
-      "categoryID": "media-location",
+      "categoryID": "photos-media",
       "title": "Dynamic Wallpapers",
       "question": "Do you use aerial or dynamic video wallpapers?",
       "description": "Background wallpaper export helpers used for dynamic wallpaper assets.",
@@ -2886,10 +2742,10 @@
     },
     {
       "id": "location",
-      "categoryID": "media-location",
+      "categoryID": "location-findmy",
       "title": "Location Services",
       "question": "Do applications need the location of this Mac?",
-      "description": "Core Location hub, permission agent, GeoServices map tiles, and related geo helpers.",
+      "description": "Core Location hub, permission agent, and related geo helpers.",
       "disableGuidance": "Disable this if maps, weather location, and app geolocation are unnecessary. Some Wi‑Fi region helpers may degrade. Automatic time zone can be affected.",
       "systemImage": "location",
       "defaultEnabled": true,
@@ -2898,14 +2754,14 @@
         "weather-maps-tails"
       ],
       "impact": {
-        "estimatedMemoryMB": 132,
-        "estimatedProcessReduction": 7
+        "estimatedMemoryMB": 114,
+        "estimatedProcessReduction": 6
       },
-      "order": 500
+      "order": 100
     },
     {
       "id": "find-my",
-      "categoryID": "media-location",
+      "categoryID": "location-findmy",
       "title": "Find My",
       "question": "Do you use Find My Mac or the Find My network?",
       "description": "Device locate, offline finding, and Find My beacon services.",
@@ -2919,246 +2775,11 @@
         "estimatedMemoryMB": 72,
         "estimatedProcessReduction": 5
       },
-      "order": 600
-    },
-    {
-      "id": "homekit",
-      "categoryID": "apple-apps",
-      "title": "HomeKit",
-      "question": "Do you use HomeKit or the Home app?",
-      "description": "Home automation hub, energy, events, and Thread commissioner services.",
-      "disableGuidance": "Disable this if you do not control HomeKit accessories from this Mac.",
-      "systemImage": "house",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "homekit"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 119,
-        "estimatedProcessReduction": 5
-      },
-      "order": 100
-    },
-    {
-      "id": "screen-time",
-      "categoryID": "apple-apps",
-      "title": "Screen Time",
-      "question": "Do you use Screen Time, Live Activities, or app usage limits?",
-      "description": "Tracks usage, Live Activities, social layer suggestions, and managed settings.",
-      "disableGuidance": "Disable this if you do not use Screen Time reports, Downtime, or Live Activities.",
-      "systemImage": "hourglass",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "screen-time"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 80,
-        "estimatedProcessReduction": 6
-      },
       "order": 200
     },
     {
-      "id": "focus",
-      "categoryID": "apple-apps",
-      "title": "Focus Modes",
-      "question": "Do you use Focus or Do Not Disturb automation?",
-      "description": "Focus and Do Not Disturb policy server.",
-      "disableGuidance": "Disable this if Focus modes are unused.",
-      "systemImage": "moon.zzz",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "focus-dnd"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 31,
-        "estimatedProcessReduction": 1
-      },
-      "order": 300
-    },
-    {
-      "id": "reminders",
-      "categoryID": "apple-apps",
-      "title": "Reminders",
-      "question": "Do you use the Reminders app?",
-      "description": "Background Reminders sync and list maintenance daemon.",
-      "disableGuidance": "Disable this if Reminders is unused.",
-      "systemImage": "checklist",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "reminders"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 20,
-        "estimatedProcessReduction": 1
-      },
-      "order": 400
-    },
-    {
-      "id": "contacts",
-      "categoryID": "apple-apps",
-      "title": "Contacts & People",
-      "question": "Do you use Contacts, People suggestions, or Family circle services?",
-      "description": "Contacts database, AddressBook helpers, People, and Family circle agents.",
-      "disableGuidance": "Disable this if Contacts, People suggestions, and Family Sharing circle features are unused.",
-      "systemImage": "person.2",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "contacts-addressbook",
-        "people-family-calendar"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 90,
-        "estimatedProcessReduction": 8
-      },
-      "order": 500
-    },
-    {
-      "id": "family-followup",
-      "categoryID": "apple-apps",
-      "title": "Family Follow-Up Agents",
-      "question": "Keep Family Sharing follow-up agents?",
-      "description": "Idle Family Sharing follow-up and related leftover agents.",
-      "disableGuidance": "Disable this if Family Sharing follow-ups are unused.",
-      "systemImage": "figure.2.and.child.holdinghands",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "family-followup"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 10,
-        "estimatedProcessReduction": 1
-      },
-      "order": 600
-    },
-    {
-      "id": "wallet",
-      "categoryID": "apple-apps",
-      "title": "Wallet & Apple Pay",
-      "question": "Do you use Wallet, Apple Pay, or passes on this Mac?",
-      "description": "FinanceKit, PassKit, NFC, and secure element related services.",
-      "disableGuidance": "Disable this if payments and passes are never used on this Mac.",
-      "systemImage": "creditcard",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "wallet-applepay"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 52,
-        "estimatedProcessReduction": 4
-      },
-      "order": 700
-    },
-    {
-      "id": "games",
-      "categoryID": "apple-apps",
-      "title": "Game Center & Controllers",
-      "question": "Do you play games or use Game Controllers on this Mac?",
-      "description": "Game Center, game policy, controller, and sports session services.",
-      "disableGuidance": "Disable this on a coding-only Mac without games or controllers.",
-      "systemImage": "gamecontroller",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "game-stack"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 74,
-        "estimatedProcessReduction": 6
-      },
-      "order": 800
-    },
-    {
-      "id": "education",
-      "categoryID": "apple-apps",
-      "title": "Classroom & Assessment",
-      "question": "Do you use Schoolwork, Classroom, or assessment lockdown?",
-      "description": "Student and assessment agents for education environments.",
-      "disableGuidance": "Disable this on non-school machines.",
-      "systemImage": "graduationcap",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "education"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 40,
-        "estimatedProcessReduction": 2
-      },
-      "order": 900
-    },
-    {
-      "id": "clock-timers",
-      "categoryID": "apple-apps",
-      "title": "Clock Timers",
-      "question": "Do you use Clock app timers and alarms?",
-      "description": "Mobile timer daemon used by Clock features.",
-      "disableGuidance": "Disable this if Clock timers are unused.",
-      "systemImage": "timer",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "clock-timers"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 15,
-        "estimatedProcessReduction": 1
-      },
-      "order": 1000
-    },
-    {
-      "id": "time-machine",
-      "categoryID": "apple-apps",
-      "title": "Time Machine",
-      "question": "Do you use Time Machine backups?",
-      "description": "Time Machine backup engine, helper, and notification agent.",
-      "disableGuidance": "Disable this if no Time Machine destination is used.",
-      "systemImage": "clock.badge.checkmark",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "time-machine"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 14,
-        "estimatedProcessReduction": 3
-      },
-      "order": 1100
-    },
-    {
-      "id": "notifications-core",
-      "categoryID": "apple-apps",
-      "title": "Notification Center",
-      "question": "Do you need Notification Center banners and Apple Push?",
-      "description": "Core user notification servers and Apple Push Service.",
-      "disableGuidance": "Disable this only on aggressive profiles. Most banners and remote pushes will stop.",
-      "systemImage": "bell",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "notifications-core"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 123,
-        "estimatedProcessReduction": 4
-      },
-      "order": 1200
-    },
-    {
-      "id": "notifications-extra",
-      "categoryID": "apple-apps",
-      "title": "Extra Notification Agents",
-      "question": "Keep Software Update, Safari, iCloud, and USB notification agents?",
-      "description": "Peripheral notification delegates for updates, Safari web push, family, and USB alerts.",
-      "disableGuidance": "Disable this to remove secondary notification agents while leaving core system plumbing intact if Notification Center is still enabled.",
-      "systemImage": "bell.badge",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "notifications-peripheral"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 43,
-        "estimatedProcessReduction": 5
-      },
-      "order": 1300
-    },
-    {
       "id": "analytics",
-      "categoryID": "privacy-diagnostics",
+      "categoryID": "privacy-telemetry",
       "title": "Analytics & Diagnostics",
       "question": "Send diagnostic and usage analytics to Apple?",
       "description": "Core analytics reporting hub and related diagnostic reporters.",
@@ -3176,10 +2797,10 @@
     },
     {
       "id": "telemetry-extra",
-      "categoryID": "privacy-diagnostics",
+      "categoryID": "privacy-telemetry",
       "title": "Extra Telemetry",
       "question": "Allow input, audio, USB, and systemstats telemetry daemons?",
-      "description": "Additional telemetry collectors, including systemstats, input, audio, and USB probes.",
+      "description": "Additional telemetry collectors not required for everyday development.",
       "disableGuidance": "Disable this on a lean coding profile to reduce idle collectors.",
       "systemImage": "chart.xyaxis.line",
       "defaultEnabled": true,
@@ -3187,17 +2808,17 @@
         "telemetry-tails"
       ],
       "impact": {
-        "estimatedMemoryMB": 45,
-        "estimatedProcessReduction": 6
+        "estimatedMemoryMB": 40,
+        "estimatedProcessReduction": 5
       },
       "order": 200
     },
     {
       "id": "crash-reporter",
-      "categoryID": "privacy-diagnostics",
+      "categoryID": "privacy-telemetry",
       "title": "Crash Reporter Dialogs",
       "question": "Do you want “Application Quit Unexpectedly” crash dialogs?",
-      "description": "Intercepts crashes, can write diagnostic reports, and symbolicates system crash logs.",
+      "description": "Intercepts crashes and can write diagnostic reports.",
       "disableGuidance": "Disable this for fewer interruption dialogs. Keep enabled if you need local crash reports for native debugging.",
       "systemImage": "exclamationmark.triangle",
       "defaultEnabled": true,
@@ -3205,64 +2826,227 @@
         "crash-reporter"
       ],
       "impact": {
-        "estimatedMemoryMB": 30,
-        "estimatedProcessReduction": 3
+        "estimatedMemoryMB": 15,
+        "estimatedProcessReduction": 2
       },
       "order": 300
     },
     {
-      "id": "apple-trial",
-      "categoryID": "privacy-diagnostics",
-      "title": "Experiment Enrollment",
-      "question": "Allow Apple A/B experiment enrollment on this Mac?",
-      "description": "Downloads and applies Apple Trial feature-flag experiment payloads.",
-      "disableGuidance": "Disable this to stop experiment enrollment and related background fetches.",
-      "systemImage": "testtube.2",
+      "id": "homekit",
+      "categoryID": "consumer-apps",
+      "title": "HomeKit",
+      "question": "Do you use HomeKit or the Home app?",
+      "description": "Home automation hub, energy, events, and Thread commissioner services.",
+      "disableGuidance": "Disable this if you do not control HomeKit accessories from this Mac.",
+      "systemImage": "house",
       "defaultEnabled": true,
       "disableServiceGroups": [
-        "apple-trial"
+        "homekit"
       ],
       "impact": {
-        "estimatedMemoryMB": 52,
-        "estimatedProcessReduction": 3
+        "estimatedMemoryMB": 119,
+        "estimatedProcessReduction": 5
+      },
+      "order": 100
+    },
+    {
+      "id": "screen-time",
+      "categoryID": "consumer-apps",
+      "title": "Screen Time",
+      "question": "Do you use Screen Time, Live Activities, or app usage limits?",
+      "description": "Tracks usage, Live Activities, social layer suggestions, and managed settings.",
+      "disableGuidance": "Disable this if you do not use Screen Time reports, Downtime, or Live Activities.",
+      "systemImage": "hourglass",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "screen-time"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 80,
+        "estimatedProcessReduction": 6
+      },
+      "order": 200
+    },
+    {
+      "id": "focus",
+      "categoryID": "consumer-apps",
+      "title": "Focus Modes",
+      "question": "Do you use Focus or Do Not Disturb automation?",
+      "description": "Focus and Do Not Disturb policy server.",
+      "disableGuidance": "Disable this if Focus modes are unused.",
+      "systemImage": "moon.zzz",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "focus-dnd"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 31,
+        "estimatedProcessReduction": 1
+      },
+      "order": 300
+    },
+    {
+      "id": "reminders",
+      "categoryID": "consumer-apps",
+      "title": "Reminders",
+      "question": "Do you use the Reminders app?",
+      "description": "Background Reminders sync and list maintenance daemon.",
+      "disableGuidance": "Disable this if Reminders is unused.",
+      "systemImage": "checklist",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "reminders"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 20,
+        "estimatedProcessReduction": 1
       },
       "order": 400
     },
     {
-      "id": "network-symptoms",
-      "categoryID": "privacy-diagnostics",
-      "title": "Network Diagnostics Analytics",
-      "question": "Keep network symptoms analytics enabled?",
-      "description": "Collects network quality and symptoms metrics.",
-      "disableGuidance": "Disable this to reduce network analytics collection. Basic connectivity remains.",
-      "systemImage": "waveform.path.ecg",
+      "id": "contacts",
+      "categoryID": "consumer-apps",
+      "title": "Contacts & People",
+      "question": "Do you use Contacts, People suggestions, or Family circle services?",
+      "description": "Contacts database, AddressBook helpers, People, and Family circle agents.",
+      "disableGuidance": "Disable this if Contacts, People suggestions, and Family Sharing circle features are unused.",
+      "systemImage": "person.2",
       "defaultEnabled": true,
       "disableServiceGroups": [
-        "network-symptoms"
+        "contacts-addressbook",
+        "people-family-calendar"
       ],
       "impact": {
-        "estimatedMemoryMB": 46,
-        "estimatedProcessReduction": 2
+        "estimatedMemoryMB": 90,
+        "estimatedProcessReduction": 8
       },
       "order": 500
     },
     {
-      "id": "onboarding-feedback",
-      "categoryID": "privacy-diagnostics",
-      "title": "Onboarding & Feedback",
-      "question": "Keep new-device outreach, eligibility, Feedback Assistant, and transparency agents?",
-      "description": "Onboarding, eligibility gates, Feedback Assistant, and software transparency helpers.",
-      "disableGuidance": "Disable this on a locked-down coding image.",
-      "systemImage": "bubble.left.and.bubble.right",
+      "id": "wallet",
+      "categoryID": "consumer-apps",
+      "title": "Wallet & Apple Pay",
+      "question": "Do you use Wallet, Apple Pay, or passes on this Mac?",
+      "description": "FinanceKit, PassKit, NFC, and secure element related services.",
+      "disableGuidance": "Disable this if payments and passes are never used on this Mac.",
+      "systemImage": "creditcard",
       "defaultEnabled": true,
       "disableServiceGroups": [
-        "onboarding-feedback"
+        "wallet-applepay"
       ],
       "impact": {
-        "estimatedMemoryMB": 30,
+        "estimatedMemoryMB": 52,
         "estimatedProcessReduction": 4
       },
       "order": 600
+    },
+    {
+      "id": "games",
+      "categoryID": "consumer-apps",
+      "title": "Game Center & Controllers",
+      "question": "Do you play games or use Game Controllers on this Mac?",
+      "description": "Game Center, game policy, controller, and sports session services.",
+      "disableGuidance": "Disable this on a coding-only Mac without games or controllers.",
+      "systemImage": "gamecontroller",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "game-stack"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 74,
+        "estimatedProcessReduction": 6
+      },
+      "order": 700
+    },
+    {
+      "id": "time-machine",
+      "categoryID": "consumer-apps",
+      "title": "Time Machine",
+      "question": "Do you use Time Machine backups?",
+      "description": "Time Machine backup engine, helper, and notification agent.",
+      "disableGuidance": "Disable this if no Time Machine destination is used.",
+      "systemImage": "clock.badge.checkmark",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "time-machine"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 14,
+        "estimatedProcessReduction": 3
+      },
+      "order": 800
+    },
+    {
+      "id": "notifications-core",
+      "categoryID": "consumer-apps",
+      "title": "Notification Center",
+      "question": "Do you need Notification Center banners and Apple Push?",
+      "description": "Core user notification servers and Apple Push Service.",
+      "disableGuidance": "Disable this only on aggressive profiles. Most banners and remote pushes will stop.",
+      "systemImage": "bell",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "notifications-core"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 123,
+        "estimatedProcessReduction": 4
+      },
+      "order": 900
+    },
+    {
+      "id": "notifications-extra",
+      "categoryID": "consumer-apps",
+      "title": "Extra Notification Agents",
+      "question": "Keep Software Update, Safari, iCloud, and USB notification agents?",
+      "description": "Peripheral notification delegates for updates, Safari web push, family, and USB alerts.",
+      "disableGuidance": "Disable this to remove secondary notification agents while leaving core system plumbing intact if Notification Center is still enabled.",
+      "systemImage": "bell.badge",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "notifications-peripheral"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 43,
+        "estimatedProcessReduction": 5
+      },
+      "order": 1000
+    },
+    {
+      "id": "education",
+      "categoryID": "consumer-apps",
+      "title": "Classroom & Assessment",
+      "question": "Do you use Schoolwork, Classroom, or assessment lockdown?",
+      "description": "Student and assessment agents for education environments.",
+      "disableGuidance": "Disable this on non-school machines.",
+      "systemImage": "graduationcap",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "education"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 40,
+        "estimatedProcessReduction": 2
+      },
+      "order": 1100
+    },
+    {
+      "id": "help-index",
+      "categoryID": "consumer-apps",
+      "title": "Help Indexer",
+      "question": "Allow background Help Center indexing?",
+      "description": "Indexes application help books for Help Viewer search.",
+      "disableGuidance": "Disable this if you do not use Help Viewer search.",
+      "systemImage": "questionmark.circle",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "help-indexer"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 76,
+        "estimatedProcessReduction": 1
+      },
+      "order": 1200
     },
     {
       "id": "accessibility-tts",
@@ -3320,7 +3104,7 @@
     },
     {
       "id": "enterprise-sso",
-      "categoryID": "system-network",
+      "categoryID": "system-maintenance",
       "title": "Enterprise SSO",
       "question": "Do you use Platform SSO or enterprise single sign-on?",
       "description": "AppSSO and Platform SSO agents for managed identity providers.",
@@ -3338,7 +3122,7 @@
     },
     {
       "id": "mdm",
-      "categoryID": "system-network",
+      "categoryID": "system-maintenance",
       "title": "Remote Management",
       "question": "Is this Mac enrolled in MDM or Remote Management?",
       "description": "MDM and remote management client services.",
@@ -3355,44 +3139,26 @@
       "order": 200
     },
     {
-      "id": "smartcards",
-      "categoryID": "system-network",
-      "title": "Smart Cards",
-      "question": "Do you use smart cards or hardware tokens?",
-      "description": "CryptoTokenKit smart card host daemon.",
-      "disableGuidance": "Disable this if no smart cards are used.",
-      "systemImage": "creditcard.and.123",
+      "id": "private-relay",
+      "categoryID": "system-maintenance",
+      "title": "iCloud Private Relay",
+      "question": "Do you use iCloud Private Relay?",
+      "description": "Network service proxy used by Private Relay and related privacy proxy paths.",
+      "disableGuidance": "Disable this if Private Relay is unused.",
+      "systemImage": "network",
       "defaultEnabled": true,
       "disableServiceGroups": [
-        "smartcards"
+        "private-relay"
       ],
       "impact": {
-        "estimatedMemoryMB": 46,
-        "estimatedProcessReduction": 2
+        "estimatedMemoryMB": 40,
+        "estimatedProcessReduction": 1
       },
       "order": 300
     },
     {
-      "id": "kerberos",
-      "categoryID": "system-network",
-      "title": "Kerberos & GSSAPI",
-      "question": "Do you join Active Directory or use Kerberos tickets?",
-      "description": "Kerberos digest, GSS credential, and gssd services.",
-      "disableGuidance": "Disable this on standalone personal Macs without directory accounts.",
-      "systemImage": "lock.rectangle.on.rectangle",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "kerberos-gss"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 34,
-        "estimatedProcessReduction": 3
-      },
-      "order": 400
-    },
-    {
       "id": "captive-portal",
-      "categoryID": "system-network",
+      "categoryID": "system-maintenance",
       "title": "Captive Portal Assistant",
       "question": "Auto-detect hotel and airport Wi‑Fi login pages?",
       "description": "Detects captive networks and presents login sheets.",
@@ -3406,173 +3172,29 @@
         "estimatedMemoryMB": 13,
         "estimatedProcessReduction": 1
       },
+      "order": 400
+    },
+    {
+      "id": "translation",
+      "categoryID": "system-maintenance",
+      "title": "System Translation",
+      "question": "Do you use system-wide translation features?",
+      "description": "On-device and system translation daemon.",
+      "disableGuidance": "Disable this if translation features are unused.",
+      "systemImage": "character.book.closed",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "translation"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 22,
+        "estimatedProcessReduction": 1
+      },
       "order": 500
     },
     {
-      "id": "cellular",
-      "categoryID": "system-network",
-      "title": "Cellular Stack",
-      "question": "Does this Mac need CoreTelephony / cellular services?",
-      "description": "CommCenter telephony stack used on cellular-capable Macs.",
-      "disableGuidance": "Disable this on Wi‑Fi-only MacBooks without cellular hardware.",
-      "systemImage": "antenna.radiowaves.left.and.right",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "cellular-commcenter"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 20,
-        "estimatedProcessReduction": 1
-      },
-      "order": 600
-    },
-    {
-      "id": "wifi-agent",
-      "categoryID": "system-network",
-      "title": "Wi‑Fi Menu Agent",
-      "question": "Keep the Wi‑Fi menu extras and hotspot assistant agent?",
-      "description": "User-level Wi‑Fi notifications and auto-hotspot related agent.",
-      "disableGuidance": "Disable this if the Wi‑Fi menu icon is hidden and auto-hotspot is unused. Core Wi‑Fi remains available.",
-      "systemImage": "wifi",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "wifi-menu-agent"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 48,
-        "estimatedProcessReduction": 1
-      },
-      "order": 700
-    },
-    {
-      "id": "netbios",
-      "categoryID": "system-network",
-      "title": "Legacy Network Services",
-      "question": "Do you need NetBIOS name services or IPv6 Internet Sharing?",
-      "description": "Legacy NetBIOS name resolution and the DHCPv6 server used when this Mac shares its connection.",
-      "disableGuidance": "Disable this on modern single-Mac networks that do not use NetBIOS or Internet Sharing. Regular Wi‑Fi and Ethernet stay available.",
-      "systemImage": "network",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "netbios"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 10,
-        "estimatedProcessReduction": 2
-      },
-      "order": 800
-    },
-    {
-      "id": "automount",
-      "categoryID": "system-network",
-      "title": "Network Automount",
-      "question": "Do you use transparent NFS or SMB automount under /net?",
-      "description": "Autofs daemon for automatic network share mounting.",
-      "disableGuidance": "Disable this if you mount shares manually in Finder. Manual SMB connections still work.",
-      "systemImage": "externaldrive.connected.to.line.below",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "automount"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 10,
-        "estimatedProcessReduction": 1
-      },
-      "order": 900
-    },
-    {
-      "id": "ios-finder",
-      "categoryID": "system-network",
-      "title": "iPhone in Finder",
-      "question": "Show connected iPhone or iPad devices in Finder?",
-      "description": "Apple Media Products device discovery for Finder sidebar device entries.",
-      "disableGuidance": "Disable this if you do not sync devices through Finder. Xcode and usbmux-based tools continue to work.",
-      "systemImage": "iphone",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "ios-finder-discovery"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 11,
-        "estimatedProcessReduction": 1
-      },
-      "order": 1000
-    },
-    {
-      "id": "image-capture",
-      "categoryID": "system-network",
-      "title": "Image Capture Discovery",
-      "question": "Auto-discover scanners and cameras for Image Capture?",
-      "description": "Image Capture device discovery daemon.",
-      "disableGuidance": "Disable this if scanners and PTP cameras are unused.",
-      "systemImage": "scanner",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "image-capture"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 15,
-        "estimatedProcessReduction": 1
-      },
-      "order": 1100
-    },
-    {
-      "id": "accessory-firmware",
-      "categoryID": "system-network",
-      "title": "Accessory Firmware Updates",
-      "question": "Allow background firmware updates for Apple accessories?",
-      "description": "Accessory updater and UARP firmware services.",
-      "disableGuidance": "Disable this if accessory firmware is managed rarely. Re-enable before hardware service visits.",
-      "systemImage": "externaldrive.badge.timemachine",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "accessory-firmware"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 80,
-        "estimatedProcessReduction": 4
-      },
-      "order": 1200
-    },
-    {
-      "id": "hardware-repair",
-      "categoryID": "system-network",
-      "title": "Repair Diagnostics",
-      "question": "Keep hardware repair verification agents running?",
-      "description": "Repair diagnostics and related verification helpers.",
-      "disableGuidance": "Disable this on coding machines that do not need background repair checks.",
-      "systemImage": "wrench.and.screwdriver",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "hardware-repair"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 20,
-        "estimatedProcessReduction": 2
-      },
-      "order": 1300
-    },
-    {
-      "id": "power-diagnostics",
-      "categoryID": "system-network",
-      "title": "Power Diagnostics",
-      "question": "Collect detailed power and performance diagnostic logs?",
-      "description": "PerfPower diagnostic services separate from core power management.",
-      "disableGuidance": "Disable this to drop diagnostic collectors. Charging and thermal control remain.",
-      "systemImage": "battery.100",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "power-diagnostics"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 34,
-        "estimatedProcessReduction": 2
-      },
-      "order": 1400
-    },
-    {
       "id": "spellcheck",
-      "categoryID": "system-network",
+      "categoryID": "system-maintenance",
       "title": "System Spell Check",
       "question": "Do you use system-wide spell checking?",
       "description": "AppleSpell system spelling and grammar service.",
@@ -3586,11 +3208,11 @@
         "estimatedMemoryMB": 35,
         "estimatedProcessReduction": 1
       },
-      "order": 1500
+      "order": 600
     },
     {
       "id": "tal",
-      "categoryID": "system-network",
+      "categoryID": "system-maintenance",
       "title": "Resume Windows After Login",
       "question": "Restore open apps and windows after logout?",
       "description": "Transparent Application Lifecycle agent for session restore.",
@@ -3604,11 +3226,245 @@
         "estimatedMemoryMB": 26,
         "estimatedProcessReduction": 1
       },
+      "order": 700
+    },
+    {
+      "id": "ios-finder",
+      "categoryID": "system-maintenance",
+      "title": "iPhone in Finder",
+      "question": "Show connected iPhone or iPad devices in Finder?",
+      "description": "Apple Media Products device discovery for Finder sidebar device entries.",
+      "disableGuidance": "Disable this if you do not sync devices through Finder. Xcode and usbmux-based tools continue to work.",
+      "systemImage": "iphone",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "ios-finder-discovery"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 11,
+        "estimatedProcessReduction": 1
+      },
+      "order": 800
+    },
+    {
+      "id": "image-capture",
+      "categoryID": "system-maintenance",
+      "title": "Image Capture Discovery",
+      "question": "Auto-discover scanners and cameras for Image Capture?",
+      "description": "Image Capture device discovery daemon.",
+      "disableGuidance": "Disable this if scanners and PTP cameras are unused.",
+      "systemImage": "scanner",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "image-capture"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 15,
+        "estimatedProcessReduction": 1
+      },
+      "order": 900
+    },
+    {
+      "id": "smartcards",
+      "categoryID": "system-maintenance",
+      "title": "Smart Cards",
+      "question": "Do you use smart cards or hardware tokens?",
+      "description": "CryptoTokenKit smart card host daemon.",
+      "disableGuidance": "Disable this if no smart cards are used.",
+      "systemImage": "creditcard.and.123",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "smartcards"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 46,
+        "estimatedProcessReduction": 2
+      },
+      "order": 1000
+    },
+    {
+      "id": "cellular",
+      "categoryID": "system-maintenance",
+      "title": "Cellular Stack",
+      "question": "Does this Mac need CoreTelephony / cellular services?",
+      "description": "CommCenter telephony stack used on cellular-capable Macs.",
+      "disableGuidance": "Disable this on Wi‑Fi-only MacBooks without cellular hardware.",
+      "systemImage": "antenna.radiowaves.left.and.right",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "cellular-commcenter"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 20,
+        "estimatedProcessReduction": 1
+      },
+      "order": 1100
+    },
+    {
+      "id": "network-symptoms",
+      "categoryID": "system-maintenance",
+      "title": "Network Diagnostics Analytics",
+      "question": "Keep network symptoms analytics enabled?",
+      "description": "Collects network quality and symptoms metrics.",
+      "disableGuidance": "Disable this to reduce network analytics collection. Basic connectivity remains.",
+      "systemImage": "waveform.path.ecg",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "network-symptoms"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 46,
+        "estimatedProcessReduction": 2
+      },
+      "order": 1200
+    },
+    {
+      "id": "wifi-agent",
+      "categoryID": "system-maintenance",
+      "title": "Wi‑Fi Menu Agent",
+      "question": "Keep the Wi‑Fi menu extras and hotspot assistant agent?",
+      "description": "User-level Wi‑Fi notifications and auto-hotspot related agent.",
+      "disableGuidance": "Disable this if the Wi‑Fi menu icon is hidden and auto-hotspot is unused. Core Wi‑Fi remains available.",
+      "systemImage": "wifi",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "wifi-menu-agent"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 48,
+        "estimatedProcessReduction": 1
+      },
+      "order": 1300
+    },
+    {
+      "id": "netbios",
+      "categoryID": "system-maintenance",
+      "title": "NetBIOS",
+      "question": "Do you need legacy NetBIOS name services?",
+      "description": "Legacy NetBIOS name resolution for older Windows networks.",
+      "disableGuidance": "Disable this on modern networks that do not use NetBIOS.",
+      "systemImage": "network",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "netbios"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 8,
+        "estimatedProcessReduction": 1
+      },
+      "order": 1400
+    },
+    {
+      "id": "kerberos",
+      "categoryID": "system-maintenance",
+      "title": "Kerberos & GSSAPI",
+      "question": "Do you join Active Directory or use Kerberos tickets?",
+      "description": "Kerberos digest, GSS credential, and gssd services.",
+      "disableGuidance": "Disable this on standalone personal Macs without directory accounts.",
+      "systemImage": "lock.rectangle.on.rectangle",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "kerberos-gss"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 34,
+        "estimatedProcessReduction": 3
+      },
+      "order": 1500
+    },
+    {
+      "id": "accessory-firmware",
+      "categoryID": "system-maintenance",
+      "title": "Accessory Firmware Updates",
+      "question": "Allow background firmware updates for Apple accessories?",
+      "description": "Accessory updater and UARP firmware services.",
+      "disableGuidance": "Disable this if accessory firmware is managed rarely. Re-enable before hardware service visits.",
+      "systemImage": "externaldrive.badge.timemachine",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "accessory-firmware"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 80,
+        "estimatedProcessReduction": 4
+      },
       "order": 1600
     },
     {
+      "id": "hardware-repair",
+      "categoryID": "system-maintenance",
+      "title": "Repair Diagnostics",
+      "question": "Keep hardware repair verification agents running?",
+      "description": "Repair diagnostics and related verification helpers.",
+      "disableGuidance": "Disable this on coding machines that do not need background repair checks.",
+      "systemImage": "wrench.and.screwdriver",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "hardware-repair"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 20,
+        "estimatedProcessReduction": 2
+      },
+      "order": 1700
+    },
+    {
+      "id": "power-diagnostics",
+      "categoryID": "system-maintenance",
+      "title": "Power Diagnostics",
+      "question": "Collect detailed power and performance diagnostic logs?",
+      "description": "PerfPower diagnostic services separate from core power management.",
+      "disableGuidance": "Disable this to drop diagnostic collectors. Charging and thermal control remain.",
+      "systemImage": "battery.100",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "power-diagnostics"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 34,
+        "estimatedProcessReduction": 2
+      },
+      "order": 1800
+    },
+    {
+      "id": "clock-timers",
+      "categoryID": "system-maintenance",
+      "title": "Clock Timers",
+      "question": "Do you use Clock app timers and alarms?",
+      "description": "Mobile timer daemon used by Clock features.",
+      "disableGuidance": "Disable this if Clock timers are unused.",
+      "systemImage": "timer",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "clock-timers"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 15,
+        "estimatedProcessReduction": 1
+      },
+      "order": 1900
+    },
+    {
+      "id": "onboarding-feedback",
+      "categoryID": "system-maintenance",
+      "title": "Onboarding & Feedback",
+      "question": "Keep new-device outreach, eligibility, Feedback Assistant, and transparency agents?",
+      "description": "Onboarding, eligibility gates, Feedback Assistant, and software transparency helpers.",
+      "disableGuidance": "Disable this on a locked-down coding image.",
+      "systemImage": "bubble.left.and.bubble.right",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "onboarding-feedback"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 30,
+        "estimatedProcessReduction": 4
+      },
+      "order": 2000
+    },
+    {
       "id": "login-item-banners",
-      "categoryID": "system-network",
+      "categoryID": "system-maintenance",
       "title": "Login Item Banners",
       "question": "Show banners when apps add background login items?",
       "description": "Background Task Management agent and daemon for login-item notifications.",
@@ -3622,65 +3478,11 @@
         "estimatedMemoryMB": 18,
         "estimatedProcessReduction": 2
       },
-      "order": 1700
-    },
-    {
-      "id": "apfs-volume-banners",
-      "categoryID": "system-network",
-      "title": "Encrypted Volume Banners",
-      "question": "Show password banners for encrypted external APFS volumes?",
-      "description": "User agent that presents FileVault and encrypted volume notifications.",
-      "disableGuidance": "Disable this if you do not attach encrypted external volumes that need UI banners.",
-      "systemImage": "externaldrive.badge.person.crop",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "apfs-volume-ui"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 15,
-        "estimatedProcessReduction": 1
-      },
-      "order": 1800
-    },
-    {
-      "id": "cursor-language-indicator",
-      "categoryID": "system-network",
-      "title": "Cursor Language Indicator",
-      "question": "Do you need the floating language pill while typing?",
-      "description": "Shows a temporary language indicator near the text caret when switching layouts.",
-      "disableGuidance": "Disable this only on single-language keyboards. Multi-layout users should keep it enabled.",
-      "systemImage": "character.cursor.ibeam",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "cursor-language-pill"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 32,
-        "estimatedProcessReduction": 1
-      },
-      "order": 1900
-    },
-    {
-      "id": "download-quarantine",
-      "categoryID": "system-network",
-      "title": "Download Quarantine Alerts",
-      "question": "Show “this file was downloaded from the Internet” and Gatekeeper warning dialogs?",
-      "description": "CoreServices UI agent that presents quarantine and unidentified-developer alerts.",
-      "disableGuidance": "Disable this on a power-user machine if you do not want those warning dialogs. Gatekeeper policy itself is controlled on the Security tab.",
-      "systemImage": "exclamationmark.shield",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "download-quarantine"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 35,
-        "estimatedProcessReduction": 1
-      },
-      "order": 2000
+      "order": 2100
     },
     {
       "id": "safari-helpers",
-      "categoryID": "system-network",
+      "categoryID": "system-maintenance",
       "title": "Safari Background Helpers",
       "question": "Do you use Safari and its background helpers?",
       "description": "Safari platform support, Safe Browsing, and related background agents.",
@@ -3694,11 +3496,11 @@
         "estimatedMemoryMB": 36,
         "estimatedProcessReduction": 3
       },
-      "order": 2100
+      "order": 2200
     },
     {
       "id": "passkeys",
-      "categoryID": "system-network",
+      "categoryID": "system-maintenance",
       "title": "Passkeys & AutoFill",
       "question": "Do you use Safari Passkeys or system AutoFill?",
       "description": "Authentication Services agent for Passkeys and password AutoFill.",
@@ -3712,11 +3514,65 @@
         "estimatedMemoryMB": 15,
         "estimatedProcessReduction": 1
       },
-      "order": 2200
+      "order": 2300
+    },
+    {
+      "id": "cursor-language-indicator",
+      "categoryID": "system-maintenance",
+      "title": "Cursor Language Indicator",
+      "question": "Do you need the floating language pill while typing?",
+      "description": "Shows a temporary language indicator near the text caret when switching layouts.",
+      "disableGuidance": "Disable this only on single-language keyboards. Multi-layout users should keep it enabled.",
+      "systemImage": "character.cursor.ibeam",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "cursor-language-pill"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 32,
+        "estimatedProcessReduction": 1
+      },
+      "order": 2400
+    },
+    {
+      "id": "quicklook",
+      "categoryID": "system-maintenance",
+      "title": "Quick Look",
+      "question": "Do you use Spacebar Quick Look previews in Finder?",
+      "description": "Quick Look UI helper and thumbnail agent services.",
+      "disableGuidance": "Disable this if previews are unused. Finder icon thumbnails may also be reduced depending on configuration.",
+      "systemImage": "eye",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "quicklook"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 80,
+        "estimatedProcessReduction": 2
+      },
+      "order": 2500
+    },
+    {
+      "id": "family-followup",
+      "categoryID": "system-maintenance",
+      "title": "Family Follow-Up Agents",
+      "question": "Keep Family Sharing follow-up agents?",
+      "description": "Idle Family Sharing follow-up and related leftover agents.",
+      "disableGuidance": "Disable this if Family Sharing follow-ups are unused.",
+      "systemImage": "figure.2.and.child.holdinghands",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "family-followup"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 10,
+        "estimatedProcessReduction": 1
+      },
+      "order": 2600
     },
     {
       "id": "misc-trims",
-      "categoryID": "system-network",
+      "categoryID": "system-maintenance",
       "title": "Legacy Maintenance Helpers",
       "question": "Keep rarely used maintenance helpers such as warmd and IMK launch agent?",
       "description": "Small legacy or low-value helpers validated as removable on coding targets.",
@@ -3730,7 +3586,61 @@
         "estimatedMemoryMB": 20,
         "estimatedProcessReduction": 4
       },
-      "order": 2300
+      "order": 2700
+    },
+    {
+      "id": "apfs-volume-banners",
+      "categoryID": "system-maintenance",
+      "title": "Encrypted Volume Banners",
+      "question": "Show password banners for encrypted external APFS volumes?",
+      "description": "User agent that presents FileVault and encrypted volume notifications.",
+      "disableGuidance": "Disable this if you do not attach encrypted external volumes that need UI banners.",
+      "systemImage": "externaldrive.badge.person.crop",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "apfs-volume-ui"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 15,
+        "estimatedProcessReduction": 1
+      },
+      "order": 2800
+    },
+    {
+      "id": "automount",
+      "categoryID": "system-maintenance",
+      "title": "Network Automount",
+      "question": "Do you use transparent NFS or SMB automount under /net?",
+      "description": "Autofs daemon for automatic network share mounting.",
+      "disableGuidance": "Disable this if you mount shares manually in Finder. Manual SMB connections still work.",
+      "systemImage": "externaldrive.connected.to.line.below",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "automount"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 10,
+        "estimatedProcessReduction": 1
+      },
+      "order": 2900
+    },
+    {
+      "id": "appstore-nuclear-install",
+      "categoryID": "system-maintenance",
+      "title": "Install Coordination (Advanced)",
+      "question": "Disable install coordination and FairPlay install helpers?",
+      "description": "Nuclear install and DRM coordination layer used by Mac App Store installs.",
+      "disableGuidance": "Disable this only on experimental target machines after App Store daemons are already off. Coordinated App Store installs will fail.",
+      "systemImage": "shippingbox",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "appstore-stage-c"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 25,
+        "estimatedProcessReduction": 2
+      },
+      "order": 3000
     }
   ]
 }
