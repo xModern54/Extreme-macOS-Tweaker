@@ -10,16 +10,15 @@ enum HostMetricsScanner {
 
   private static func collect() -> HostMetrics {
     let memory = memorySnapshot()
-    let mach = machTaskCounts()
-    let visible = visibleTaskCounts()
+    let tasks = machTaskCounts() ?? visibleTaskCounts()
 
     return HostMetrics(
       processorName: processorName(),
       coreCount: sysctlInt("hw.physicalcpu") ?? ProcessInfo.processInfo.processorCount,
       memoryBytes: memory.total,
       usedMemoryBytes: memory.used,
-      processCount: mach?.processes ?? visible.processes,
-      threadCount: visible.threads
+      processCount: tasks.processes,
+      threadCount: tasks.threads
     )
   }
 
