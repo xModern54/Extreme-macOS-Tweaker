@@ -43,7 +43,7 @@ static void scrub_one(const char *path) {
     if (removexattr(path, kQuarantineXattr, XATTR_NOFOLLOW) == 0) {
         return;
     }
-    if (errno != ENOATTR && errno != ENOENT) {
+    if (errno != ENOATTR && errno != ENOENT && errno != EPERM && errno != EACCES) {
         fprintf(stderr, "removexattr(%s): %s\n", path, strerror(errno));
     }
 }
@@ -87,6 +87,7 @@ static void fs_callback(
         if (!(eventFlags & kFSEventStreamEventFlagItemIsFile)
             && !(eventFlags & kFSEventStreamEventFlagItemIsDir)
             && !(eventFlags & kFSEventStreamEventFlagItemIsSymlink)) {
+            scrub_tree(path);
             continue;
         }
 
@@ -110,8 +111,6 @@ int main(int argc, char **argv) {
         fprintf(stderr, "not a directory: %s\n", watchPath);
         return 1;
     }
-
-    scrub_tree(watchPath);
 
     CFStringRef path = CFStringCreateWithCString(NULL, watchPath, kCFStringEncodingUTF8);
     if (!path) {
@@ -154,6 +153,10 @@ int main(int argc, char **argv) {
         fprintf(stderr, "FSEventStreamStart failed\n");
         return 1;
     }
+
+    dispatch_async(queue, ^{
+        scrub_tree(watchPath);
+    });
 
     dispatch_main();
     return 0;
