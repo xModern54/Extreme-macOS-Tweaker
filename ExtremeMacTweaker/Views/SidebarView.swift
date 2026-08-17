@@ -10,6 +10,13 @@ struct SidebarView: View {
       Color.clear
         .frame(height: 28)
 
+      Text("Tweaker")
+        .font(.title2.weight(.bold))
+        .padding(.horizontal, 18)
+        .padding(.top, 2)
+        .padding(.bottom, 8)
+        .frame(maxWidth: .infinity, alignment: .leading)
+
       List(selection: $selection) {
         SidebarRow(section: .dashboard)
           .tag(AppSection.dashboard)
