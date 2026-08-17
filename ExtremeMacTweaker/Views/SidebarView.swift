@@ -8,12 +8,12 @@ struct SidebarView: View {
   var body: some View {
     VStack(spacing: 0) {
       Color.clear
-        .frame(height: 28)
+        .frame(height: 40)
 
       Text("Tweaker")
         .font(.title2.weight(.bold))
         .padding(.horizontal, 18)
-        .padding(.top, 2)
+        .padding(.top, 4)
         .padding(.bottom, 8)
         .frame(maxWidth: .infinity, alignment: .leading)
 
