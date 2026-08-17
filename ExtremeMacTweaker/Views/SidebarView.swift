@@ -20,10 +20,12 @@ struct SidebarView: View {
       }
       .listStyle(.sidebar)
       .scrollContentBackground(.hidden)
+      .background(.clear)
       .environment(\.defaultMinListRowHeight, 34)
 
-      Divider()
-        .opacity(0.45)
+      Rectangle()
+        .fill(Color.primary.opacity(0.08))
+        .frame(height: 1)
 
       VStack(alignment: .leading, spacing: 10) {
         HStack(spacing: 8) {
@@ -50,7 +52,7 @@ struct SidebarView: View {
     }
     .background {
       VisualEffectView(
-        material: .sidebar,
+        material: .underWindowBackground,
         blendingMode: .behindWindow,
         state: .followsWindowActiveState
       )

@@ -7,15 +7,19 @@ struct RootView: View {
     HStack(spacing: 0) {
       SidebarView(selection: $selection)
         .frame(width: 232)
-
-      Divider()
+        .overlay(alignment: .trailing) {
+          Rectangle()
+            .fill(Color(nsColor: .separatorColor).opacity(0.35))
+            .frame(width: 1)
+            .ignoresSafeArea()
+        }
 
       DetailWorkspace(section: selection ?? .systemTweaker)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     .ignoresSafeArea()
     .containerBackground(.clear, for: .window)
-    .tint(.accentColor)
+    .tint(Color(nsColor: .controlAccentColor))
   }
 }
 
