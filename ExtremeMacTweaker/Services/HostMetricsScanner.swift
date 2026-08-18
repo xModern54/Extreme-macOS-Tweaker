@@ -10,7 +10,7 @@ enum HostMetricsScanner {
 
   private static func collect() -> HostMetrics {
     let memory = memorySnapshot()
-    let tasks = machTaskCounts() ?? visibleTaskCounts()
+    let tasks = userTaskCounts()
 
     return HostMetrics(
       processorName: processorName(),
@@ -80,50 +80,27 @@ enum HostMetricsScanner {
     return (total, usedBytes)
   }
 
-  private static func machTaskCounts() -> (processes: Int, threads: Int)? {
-    var pset = processor_set_name_t(MACH_PORT_NULL)
-    var info = processor_set_load_info()
-    var count = mach_msg_type_number_t(
-      MemoryLayout<processor_set_load_info>.stride / MemoryLayout<natural_t>.stride
-    )
-
-    var status = processor_set_default(mach_host_self(), &pset)
-    if status == KERN_SUCCESS {
-      status = withUnsafeMutablePointer(to: &info) { pointer in
-        pointer.withMemoryRebound(to: integer_t.self, capacity: Int(count)) { rebound in
-          processor_set_statistics(pset, PROCESSOR_SET_LOAD_INFO, rebound, &count)
-        }
-      }
-    }
-
-    if pset != MACH_PORT_NULL {
-      mach_port_deallocate(mach_task_self_, pset)
-    }
-
-    guard status == KERN_SUCCESS else { return nil }
-    return (Int(info.task_count), Int(info.thread_count))
-  }
-
-  private static func visibleTaskCounts() -> (processes: Int, threads: Int) {
-    let requiredBytes = proc_listpids(UInt32(PROC_ALL_PIDS), 0, nil, 0)
+  private static func userTaskCounts() -> (processes: Int, threads: Int) {
+    let uid = UInt32(geteuid())
+    let requiredBytes = proc_listpids(UInt32(PROC_UID_ONLY), uid, nil, 0)
     guard requiredBytes > 0 else { return (0, 0) }
 
-    var pids = [pid_t](repeating: 0, count: Int(requiredBytes) / MemoryLayout<pid_t>.stride)
+    var pids = [pid_t](repeating: 0, count: Int(requiredBytes) / MemoryLayout<pid_t>.size)
     let writtenBytes = pids.withUnsafeMutableBytes { buffer in
-      proc_listpids(UInt32(PROC_ALL_PIDS), 0, buffer.baseAddress, Int32(buffer.count))
+      proc_listpids(UInt32(PROC_UID_ONLY), uid, buffer.baseAddress, Int32(buffer.count))
     }
     guard writtenBytes > 0 else { return (0, 0) }
 
-    let count = min(Int(writtenBytes) / MemoryLayout<pid_t>.stride, pids.count)
+    let count = min(Int(writtenBytes) / MemoryLayout<pid_t>.size, pids.count)
     var processes = 0
     var threads = 0
-    let infoSize = MemoryLayout<proc_taskinfo>.stride
+    let infoSize = Int32(MemoryLayout<proc_taskinfo>.size)
 
     for pid in pids.prefix(count) where pid > 0 {
       var info = proc_taskinfo()
       let result = withUnsafeMutablePointer(to: &info) { pointer in
-        pointer.withMemoryRebound(to: CChar.self, capacity: infoSize) { rebound in
-          proc_pidinfo(pid, PROC_PIDTASKINFO, 0, rebound, Int32(infoSize))
+        pointer.withMemoryRebound(to: CChar.self, capacity: Int(infoSize)) { rebound in
+          proc_pidinfo(pid, PROC_PIDTASKINFO, 0, rebound, infoSize)
         }
       }
       guard result == infoSize else { continue }
