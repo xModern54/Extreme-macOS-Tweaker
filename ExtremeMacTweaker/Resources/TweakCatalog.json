@@ -3256,7 +3256,7 @@
         "help-indexer"
       ],
       "impact": {
-        "estimatedMemoryMB": 76,
+        "estimatedMemoryMB": 61,
         "estimatedProcessReduction": 2
       },
       "order": 500
@@ -3274,7 +3274,7 @@
         "speech-siri"
       ],
       "impact": {
-        "estimatedMemoryMB": 100,
+        "estimatedMemoryMB": 80,
         "estimatedProcessReduction": 16
       },
       "order": 100
@@ -3366,7 +3366,7 @@
         "facetime-callkit"
       ],
       "impact": {
-        "estimatedMemoryMB": 70,
+        "estimatedMemoryMB": 56,
         "estimatedProcessReduction": 5
       },
       "order": 200
@@ -3439,7 +3439,7 @@
         "icloud-drive"
       ],
       "impact": {
-        "estimatedMemoryMB": 83,
+        "estimatedMemoryMB": 66,
         "estimatedProcessReduction": 4
       },
       "order": 100
@@ -3548,7 +3548,7 @@
         "appstore-ads"
       ],
       "impact": {
-        "estimatedMemoryMB": 60,
+        "estimatedMemoryMB": 48,
         "estimatedProcessReduction": 3
       },
       "order": 700
@@ -3602,7 +3602,7 @@
         "content-caching"
       ],
       "impact": {
-        "estimatedMemoryMB": 56,
+        "estimatedMemoryMB": 45,
         "estimatedProcessReduction": 5
       },
       "order": 1000
@@ -3674,7 +3674,7 @@
         "photos-analysis"
       ],
       "impact": {
-        "estimatedMemoryMB": 67,
+        "estimatedMemoryMB": 54,
         "estimatedProcessReduction": 2
       },
       "order": 200
@@ -3747,7 +3747,7 @@
         "find-my"
       ],
       "impact": {
-        "estimatedMemoryMB": 72,
+        "estimatedMemoryMB": 58,
         "estimatedProcessReduction": 5
       },
       "order": 600
@@ -3765,7 +3765,7 @@
         "homekit"
       ],
       "impact": {
-        "estimatedMemoryMB": 95,
+        "estimatedMemoryMB": 76,
         "estimatedProcessReduction": 5
       },
       "order": 100
@@ -3783,7 +3783,7 @@
         "screen-time"
       ],
       "impact": {
-        "estimatedMemoryMB": 80,
+        "estimatedMemoryMB": 64,
         "estimatedProcessReduction": 6
       },
       "order": 200
@@ -3856,7 +3856,7 @@
         "people-family-calendar"
       ],
       "impact": {
-        "estimatedMemoryMB": 90,
+        "estimatedMemoryMB": 72,
         "estimatedProcessReduction": 10
       },
       "order": 500
@@ -3892,7 +3892,7 @@
         "wallet-applepay"
       ],
       "impact": {
-        "estimatedMemoryMB": 52,
+        "estimatedMemoryMB": 42,
         "estimatedProcessReduction": 4
       },
       "order": 700
@@ -3910,7 +3910,7 @@
         "game-stack"
       ],
       "impact": {
-        "estimatedMemoryMB": 74,
+        "estimatedMemoryMB": 59,
         "estimatedProcessReduction": 6
       },
       "order": 800
@@ -3982,7 +3982,7 @@
         "notifications-core"
       ],
       "impact": {
-        "estimatedMemoryMB": 98,
+        "estimatedMemoryMB": 78,
         "estimatedProcessReduction": 4
       },
       "order": 1200
@@ -4072,7 +4072,7 @@
         "apple-trial"
       ],
       "impact": {
-        "estimatedMemoryMB": 52,
+        "estimatedMemoryMB": 42,
         "estimatedProcessReduction": 4
       },
       "order": 400
@@ -4162,7 +4162,7 @@
         "accessibility-ui-overlays"
       ],
       "impact": {
-        "estimatedMemoryMB": 98,
+        "estimatedMemoryMB": 78,
         "estimatedProcessReduction": 3
       },
       "order": 300
@@ -4180,7 +4180,7 @@
         "enterprise-sso"
       ],
       "impact": {
-        "estimatedMemoryMB": 68,
+        "estimatedMemoryMB": 54,
         "estimatedProcessReduction": 2
       },
       "order": 100
@@ -4378,7 +4378,7 @@
         "accessory-firmware"
       ],
       "impact": {
-        "estimatedMemoryMB": 80,
+        "estimatedMemoryMB": 64,
         "estimatedProcessReduction": 4
       },
       "order": 1200
