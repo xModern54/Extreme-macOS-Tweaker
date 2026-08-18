@@ -229,7 +229,7 @@ final class OptimizationStore: ObservableObject {
     }
 
     restartInProgress = true
-    executionMessage = "Restarting macOS without restoring windows"
+    executionMessage = "Restarting macOS with a clean login"
 
     do {
       for try await event in session.events(

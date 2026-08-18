@@ -394,11 +394,14 @@ enum RootActions {
     userID: uid_t,
     _ context: RootActionContext
   ) throws -> (String, Bool, [String: String]) {
-    context.events.progress(0.25, "Clearing saved windows so the next login is clean")
+    context.events.progress(0.2, "Disabling reopen of apps after login")
     try prepareCleanLogin(userID: userID, context: context)
 
-    context.events.progress(0.7, "Requesting a clean system restart")
-    _ = try context.commands.requireSuccess("/sbin/shutdown", ["-r", "now"])
+    context.events.progress(0.55, "Clearing the saved relaunch list")
+    try clearSavedRelaunchState(userID: userID, context: context)
+
+    context.events.progress(0.85, "Restarting through the login session")
+    try requestSessionRestart(userID: userID, context: context)
     return ("System restart was requested", true, ["userID": String(userID)])
   }
 
@@ -414,47 +417,102 @@ enum RootActions {
       ["write", systemLoginWindow, "TALLogoutSavesState", "-bool", "false"]
     )
 
+    try writeUserDefault(
+      userID: userID,
+      domain: "com.apple.loginwindow",
+      key: "TALLogoutSavesState",
+      boolValue: false,
+      context: context
+    )
+    try writeUserDefault(
+      userID: userID,
+      domain: "com.apple.loginwindow",
+      key: "LoginwindowLaunchesRelaunchApps",
+      boolValue: false,
+      context: context
+    )
+    try writeUserDefault(
+      userID: userID,
+      domain: "NSGlobalDomain",
+      key: "NSQuitAlwaysKeepsWindows",
+      boolValue: false,
+      context: context
+    )
+
+    _ = try context.commands.run("/usr/bin/killall", ["cfprefsd"])
+  }
+
+  private static func clearSavedRelaunchState(
+    userID: uid_t,
+    context: RootActionContext
+  ) throws {
     _ = try context.commands.run(
       "/bin/launchctl",
       [
-        "asuser", String(userID), defaults, "write", "com.apple.loginwindow",
-        "TALLogoutSavesState", "-bool", "false",
-      ]
-    )
-    _ = try context.commands.run(
-      "/bin/launchctl",
-      [
-        "asuser", String(userID), defaults, "write", "com.apple.loginwindow",
-        "LoginwindowLaunchesRelaunchApps", "-bool", "false",
+        "asuser", String(userID), "/usr/bin/defaults",
+        "delete", "com.apple.loginwindow", "TALAppsToRelaunchAtLogin",
       ]
     )
 
-    guard let home = homeDirectory(for: userID) else {
-      _ = try context.commands.run("/usr/bin/killall", ["cfprefsd"])
-      return
-    }
-
-    let userLoginWindow = home
-      .appendingPathComponent("Library/Preferences/com.apple.loginwindow")
-      .path
-    _ = try context.commands.run(
-      defaults,
-      ["write", userLoginWindow, "TALLogoutSavesState", "-bool", "false"]
-    )
-    _ = try context.commands.run(
-      defaults,
-      ["write", userLoginWindow, "LoginwindowLaunchesRelaunchApps", "-bool", "false"]
-    )
-    if let owner = userName(for: userID) {
-      _ = try context.commands.run("/usr/sbin/chown", [owner, userLoginWindow + ".plist"])
-    }
+    guard let home = homeDirectory(for: userID) else { return }
 
     let savedState = home.appendingPathComponent("Library/Saved Application State").path
     if FileManager.default.fileExists(atPath: savedState) {
       _ = try context.commands.requireSuccess("/bin/rm", ["-rf", "--", savedState])
     }
 
-    _ = try context.commands.run("/usr/bin/killall", ["cfprefsd"])
+    let byHost = home.appendingPathComponent("Library/Preferences/ByHost").path
+    if let files = try? FileManager.default.contentsOfDirectory(atPath: byHost) {
+      for file in files where file.hasPrefix("com.apple.loginwindow.") && file.hasSuffix(".plist") {
+        let domainPath = (byHost as NSString).appendingPathComponent(file)
+        _ = try context.commands.run(
+          "/usr/bin/defaults",
+          ["delete", domainPath, "TALAppsToRelaunchAtLogin"]
+        )
+      }
+    }
+  }
+
+  private static func requestSessionRestart(
+    userID: uid_t,
+    context: RootActionContext
+  ) throws {
+    let restartScript = "tell application \"System Events\" to restart"
+    let sessionRestart = try context.commands.run(
+      "/bin/launchctl",
+      ["asuser", String(userID), "/usr/bin/osascript", "-e", restartScript]
+    )
+    if sessionRestart.exitCode == 0 {
+      return
+    }
+
+    if let owner = userName(for: userID) {
+      let ownedRestart = try context.commands.run(
+        "/usr/bin/sudo",
+        ["-u", owner, "/usr/bin/osascript", "-e", restartScript]
+      )
+      if ownedRestart.exitCode == 0 {
+        return
+      }
+    }
+
+    _ = try context.commands.requireSuccess("/sbin/shutdown", ["-r", "now"])
+  }
+
+  private static func writeUserDefault(
+    userID: uid_t,
+    domain: String,
+    key: String,
+    boolValue: Bool,
+    context: RootActionContext
+  ) throws {
+    _ = try context.commands.requireSuccess(
+      "/bin/launchctl",
+      [
+        "asuser", String(userID), "/usr/bin/defaults",
+        "write", domain, key, "-bool", boolValue ? "true" : "false",
+      ]
+    )
   }
 
   private static func userName(for userID: uid_t) -> String? {

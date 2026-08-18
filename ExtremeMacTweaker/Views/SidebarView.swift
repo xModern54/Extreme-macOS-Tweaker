@@ -326,6 +326,7 @@ private struct ApplyReviewView: View {
         Button("Restart Now") {
           Task { await optimizationStore.restartSystemWithoutReopeningApplications() }
         }
+        .help("Restart macOS without restoring the current apps and windows")
         .tint(.red)
         .buttonStyle(.borderedProminent)
         .disabled(optimizationStore.restartInProgress)
