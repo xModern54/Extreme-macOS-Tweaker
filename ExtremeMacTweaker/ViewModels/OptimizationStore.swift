@@ -37,6 +37,8 @@ final class OptimizationStore: ObservableObject {
   private let persistenceURL: URL?
   private let launchServiceStatesURL: URL?
   private let savedStorageURL: URL?
+  private let dequarantineStateURL: URL?
+  private var recordedDequarantineState: Bool?
   private var privilegedSession: PrivilegedExecutionSession?
 
   init() {
@@ -50,9 +52,11 @@ final class OptimizationStore: ObservableObject {
     launchServiceStatesURL = tweakerDirectory?
       .appendingPathComponent("launch-service-states.json")
     savedStorageURL = tweakerDirectory?.appendingPathComponent("saved-storage.json")
+    dequarantineStateURL = tweakerDirectory?.appendingPathComponent("dequarantine-state.json")
     restoreAppliedLaunchServiceStates()
     restorePendingChanges()
     restoreSavedStorage()
+    restoreDequarantineState()
   }
 
   var savedStorageBytes: Int64 { savedStorage.totalBytes }
@@ -193,6 +197,7 @@ final class OptimizationStore: ObservableObject {
       )
 
       recordAppliedLaunchServiceChanges(plan.changes)
+      recordAppliedSecurityFeatureChanges(plan.changes)
       recordAppliedStorageSavings(storageSavings)
       clearPendingChanges()
       executionProgress = 1
@@ -288,17 +293,23 @@ final class OptimizationStore: ObservableObject {
   }
 
   func securityProtectionIsEnabled(_ protection: SecurityProtection) -> Bool {
-    if let pending = pendingChanges.lazy.compactMap({ change -> SecurityFeatureChange? in
-      guard case .securityFeature(let feature) = change else { return nil }
-      return feature
-    }).first(where: { $0.featureID == protection.id }) {
+    if let pending = pendingSecurityChange(for: protection.id) {
       return pending.action == .enable
     }
-    return observedSecurityProtectionStates[protection.id] ?? true
+    return observedSecurityProtectionStates[protection.id]
+      ?? (protection.kind == .dequarantine ? false : true)
+  }
+
+  func securityTweakIsApplied(_ protection: SecurityProtection) -> Bool {
+    if protection.kind == .dequarantine {
+      return securityProtectionIsEnabled(protection)
+    }
+    return !securityProtectionIsEnabled(protection)
   }
 
   func setSecurityProtection(_ protection: SecurityProtection, enabled: Bool) {
-    let observedEnabled = observedSecurityProtectionStates[protection.id] ?? true
+    let observedEnabled = observedSecurityProtectionStates[protection.id]
+      ?? (protection.kind == .dequarantine ? false : true)
     if enabled == observedEnabled {
       removeChange(withID: "security-feature:\(protection.id)")
       return
@@ -314,8 +325,84 @@ final class OptimizationStore: ObservableObject {
     )
   }
 
+  func setSecurityTweak(_ protection: SecurityProtection, applied: Bool) {
+    setSecurityTweak(protection, applied: applied, propagates: true)
+  }
+
+  private func setSecurityTweak(
+    _ protection: SecurityProtection,
+    applied: Bool,
+    propagates: Bool
+  ) {
+    if protection.kind == .dequarantine {
+      setSecurityProtection(protection, enabled: applied)
+    } else {
+      setSecurityProtection(protection, enabled: !applied)
+    }
+
+    guard
+      propagates,
+      protection.id == "system-policy",
+      let whitelist = SecurityProtectionCatalog.protection(withID: "download-whitelist")
+    else {
+      return
+    }
+    setSecurityTweak(whitelist, applied: applied, propagates: false)
+  }
+
+  private func pendingSecurityChange(for featureID: String) -> SecurityFeatureChange? {
+    pendingChanges.lazy.compactMap { change -> SecurityFeatureChange? in
+      guard case .securityFeature(let feature) = change else { return nil }
+      return feature
+    }
+    .first(where: { $0.featureID == featureID })
+  }
+
+  private func recordAppliedSecurityFeatureChanges(_ changes: [OptimizationChange]) {
+    for change in changes {
+      guard case .securityFeature(let feature) = change else { continue }
+      let isEnabled = feature.action == .enable
+      observedSecurityProtectionStates[feature.featureID] = isEnabled
+      if feature.featureID == "download-whitelist" {
+        recordedDequarantineState = isEnabled
+        persistDequarantineState()
+      }
+    }
+  }
+
+  private func restoreDequarantineState() {
+    guard
+      let dequarantineStateURL,
+      let data = try? Data(contentsOf: dequarantineStateURL),
+      let decoded = try? JSONDecoder().decode(Bool.self, from: data)
+    else {
+      return
+    }
+    recordedDequarantineState = decoded
+    observedSecurityProtectionStates["download-whitelist"] = decoded
+  }
+
+  private func persistDequarantineState() {
+    guard let dequarantineStateURL, let recordedDequarantineState else { return }
+
+    do {
+      try FileManager.default.createDirectory(
+        at: dequarantineStateURL.deletingLastPathComponent(),
+        withIntermediateDirectories: true
+      )
+      let data = try JSONEncoder().encode(recordedDequarantineState)
+      try data.write(to: dequarantineStateURL, options: .atomic)
+    } catch {
+      // The next scan falls back to the live binary if this cache cannot be saved.
+    }
+  }
+
   func refreshSecurityProtectionStates() async {
-    observedSecurityProtectionStates = await SecurityProtectionStateScanner.scan(userID: getuid())
+    var scanned = await SecurityProtectionStateScanner.scan(userID: getuid())
+    if let recordedWhitelist = recordedDequarantineState {
+      scanned["download-whitelist"] = recordedWhitelist
+    }
+    observedSecurityProtectionStates = scanned
   }
 
   func isSystemComponentSelected(_ componentID: String) -> Bool {

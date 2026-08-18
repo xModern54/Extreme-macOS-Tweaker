@@ -13,7 +13,7 @@ struct ExecutionPlan: Sendable {
       case .launchService(let service):
         service.action == .disable
       case .securityFeature(let feature):
-        if feature.featureID == "system-policy" {
+        if feature.featureID == "system-policy" || feature.featureID == "download-whitelist" {
           true
         } else {
           feature.action == .disable
@@ -31,7 +31,7 @@ struct ExecutionPlan: Sendable {
       case .systemApplication:
         true
       case .securityFeature(let feature):
-        feature.featureID == "system-policy"
+        feature.featureID == "download-whitelist"
       default:
         false
       }
@@ -87,8 +87,9 @@ enum ExecutionStep: Identifiable, Sendable {
     case .setLaunchService(_, let label, _, let enabled):
       "\(enabled ? "Enabling" : "Disabling") service \(label)"
     case .setSecurityFeature(let id, let enabled):
-      "\(enabled ? "Enable" : "Disable") "
-        + (SecurityProtectionCatalog.protection(withID: id)?.title ?? id)
+      enabled
+        ? "Turn off \(SecurityProtectionCatalog.protection(withID: id)?.title ?? id)"
+        : (SecurityProtectionCatalog.protection(withID: id)?.title ?? id)
     case .installSystemDequarantineDaemon:
       "Install the system dequarantine daemon"
     case .removeSystemDequarantineDaemon:

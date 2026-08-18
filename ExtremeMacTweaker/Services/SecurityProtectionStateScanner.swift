@@ -21,6 +21,11 @@ enum SecurityProtectionStateScanner {
           if !serviceStates.isEmpty {
             states[protection.id] = serviceStates.contains(true)
           }
+
+        case .dequarantine:
+          states[protection.id] = FileManager.default.isExecutableFile(
+            atPath: "/usr/libexec/extrememactweaker.dequarantine"
+          )
         }
       }
 

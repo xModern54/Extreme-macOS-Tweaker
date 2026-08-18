@@ -51,17 +51,18 @@ enum OptimizationInterpreter {
         )
 
       case .securityFeature(let feature):
-        securitySteps.append(
-          .setSecurityFeature(id: feature.featureID, enabled: feature.action == .enable)
-        )
-        if feature.featureID == "system-policy" {
-          if feature.action == .disable {
+        if feature.featureID == "download-whitelist" {
+          if feature.action == .enable {
             systemVolumeSteps.append(
               .installSystemDequarantineDaemon(downloadsPath: downloadsPath)
             )
           } else {
             systemVolumeSteps.append(.removeSystemDequarantineDaemon)
           }
+        } else {
+          securitySteps.append(
+            .setSecurityFeature(id: feature.featureID, enabled: feature.action == .enable)
+          )
         }
 
       case .systemComponent(let component):

@@ -4,6 +4,7 @@ struct SecurityProtection: Identifiable, Hashable, Sendable {
   enum Kind: String, Hashable, Sendable {
     case gatekeeper
     case launchServices
+    case dequarantine
   }
 
   let id: String
@@ -35,9 +36,9 @@ enum SecurityProtectionCatalog {
   static let protections: [SecurityProtection] = [
     SecurityProtection(
       id: "gatekeeper",
-      title: "Gatekeeper",
-      question: "Keep Gatekeeper application assessment enabled?",
-      summary: "Checks developer signatures and notarization before downloaded applications are opened.",
+      title: "Disable Gatekeeper",
+      question: "Turn off Gatekeeper application assessment?",
+      summary: "Stops signature and notarization checks before downloaded applications are opened.",
       disableConsequence: "Applications from unidentified developers can be opened without Gatekeeper assessment.",
       systemImage: "checkmark.seal",
       kind: .gatekeeper,
@@ -47,9 +48,9 @@ enum SecurityProtectionCatalog {
     ),
     SecurityProtection(
       id: "xprotect",
-      title: "XProtect Antivirus",
-      question: "Keep Apple's built-in malware scanner running?",
-      summary: "Background signature scans and malware cleanup jobs.",
+      title: "Disable XProtect Antivirus",
+      question: "Stop Apple's built-in malware scanner?",
+      summary: "Turns off background signature scans and malware cleanup jobs.",
       disableConsequence: "XProtect will stop scanning for and remediating known malware.",
       systemImage: "shield.lefthalf.filled",
       kind: .launchServices,
@@ -102,10 +103,10 @@ enum SecurityProtectionCatalog {
     ),
     SecurityProtection(
       id: "system-policy",
-      title: "Unknown App Protection",
-      question: "Keep the unknown-app and quarantine prompts?",
-      summary: "syspolicyd. The service behind \"Are you sure you want to open this app?\" and quarantine checks.",
-      disableConsequence: "syspolicyd is stopped, LaunchServices quarantine is turned off, and a system LaunchDaemon is installed on the signed system volume to strip the quarantine flag from Downloads. A restart is required.",
+      title: "Disable Unknown App Protection",
+      question: "Stop unknown-app prompts and LaunchServices quarantine?",
+      summary: "Turns off syspolicyd, the service behind \"Are you sure you want to open this app?\"",
+      disableConsequence: "syspolicyd is stopped and LaunchServices quarantine is turned off. Global Item Whitelist is turned on with this option.",
       systemImage: "lock.shield",
       kind: .launchServices,
       services: [
@@ -116,6 +117,18 @@ enum SecurityProtectionCatalog {
           "/System/Library/LaunchDaemons/com.apple.security.syspolicy.plist"
         )
       ],
+      requiresSIPDisabledToDisable: true,
+      confirmsBeforeDisable: true
+    ),
+    SecurityProtection(
+      id: "download-whitelist",
+      title: "Global Item Whitelist",
+      question: "Strip the quarantine flag from everything in Downloads?",
+      summary: "Installs a system LaunchDaemon that clears quarantine on files that land in Downloads.",
+      disableConsequence: "A system LaunchDaemon is written to the signed system volume and starts at boot with launchd. New files in Downloads lose their quarantine flag. A restart is required.",
+      systemImage: "folder.badge.checkmark",
+      kind: .dequarantine,
+      services: [],
       requiresSIPDisabledToDisable: true,
       confirmsBeforeDisable: true
     ),

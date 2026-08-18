@@ -32,15 +32,15 @@ struct SecurityView: View {
       Task { await optimizationStore.refreshSecurityProtectionStates() }
     }
     .alert(
-      "Disable \(disableConfirmation?.title ?? "this protection")?",
+      "Apply \(disableConfirmation?.title ?? "this override")?",
       isPresented: Binding(
         get: { disableConfirmation != nil },
         set: { if !$0 { disableConfirmation = nil } }
       )
     ) {
-      Button("Disable", role: .destructive) {
+      Button("Apply", role: .destructive) {
         if let protection = disableConfirmation {
-          optimizationStore.setSecurityProtection(protection, enabled: false)
+          optimizationStore.setSecurityTweak(protection, applied: true)
         }
         disableConfirmation = nil
       }
@@ -48,9 +48,7 @@ struct SecurityView: View {
         disableConfirmation = nil
       }
     } message: {
-      Text(
-        "This stops syspolicyd, turns off LaunchServices quarantine, and installs a system LaunchDaemon that strips the quarantine flag from Downloads. That writes the signed system volume and needs a restart. Power users only."
-      )
+      Text(confirmationMessage)
     }
   }
 
@@ -69,7 +67,7 @@ struct SecurityView: View {
 
         SecurityProtectionInspector(
           protection: selectedProtection,
-          isEnabled: optimizationStore.securityProtectionIsEnabled(selectedProtection)
+          isApplied: optimizationStore.securityTweakIsApplied(selectedProtection)
         )
         .frame(width: inspectorWidth, height: geometry.size.height)
       }
@@ -82,7 +80,7 @@ struct SecurityView: View {
         Text("Security")
           .font(.title2.weight(.semibold))
 
-        Text("Choose which macOS protection systems remain active.")
+        Text("Choose which security overrides to apply. All of them are off by default.")
           .font(.subheadline)
           .foregroundStyle(.secondary)
       }
@@ -95,7 +93,7 @@ struct SecurityView: View {
       ScrollView {
         VStack(alignment: .leading, spacing: 16) {
           VStack(alignment: .leading, spacing: 9) {
-            Text("Protection Systems")
+            Text("Overrides")
               .font(.caption.weight(.semibold))
               .foregroundStyle(.secondary)
               .textCase(.uppercase)
@@ -104,7 +102,7 @@ struct SecurityView: View {
               ForEach(Array(protections.enumerated()), id: \.element.id) { index, protection in
                 SecurityProtectionRow(
                   protection: protection,
-                  isEnabled: binding(for: protection),
+                  isApplied: binding(for: protection),
                   isSelected: selectedProtectionID == protection.id
                 )
                 .contentShape(Rectangle())
@@ -129,25 +127,37 @@ struct SecurityView: View {
 
   private func binding(for protection: SecurityProtection) -> Binding<Bool> {
     Binding(
-      get: { optimizationStore.securityProtectionIsEnabled(protection) },
-      set: { enabled in
+      get: { optimizationStore.securityTweakIsApplied(protection) },
+      set: { applied in
         selectedProtectionID = protection.id
-        if !enabled,
+        if applied,
           protection.confirmsBeforeDisable,
-          optimizationStore.securityProtectionIsEnabled(protection)
+          !optimizationStore.securityTweakIsApplied(protection)
         {
           disableConfirmation = protection
           return
         }
-        optimizationStore.setSecurityProtection(protection, enabled: enabled)
+        optimizationStore.setSecurityTweak(protection, applied: applied)
       }
     )
+  }
+
+  private var confirmationMessage: String {
+    switch disableConfirmation?.id {
+    case "download-whitelist":
+      "This writes a system LaunchDaemon onto the signed system volume that strips the quarantine flag from files in Downloads. A restart is required."
+    case "system-policy":
+      "This stops syspolicyd, turns off LaunchServices quarantine, and also turns on Global Item Whitelist. Power users only."
+    default:
+      disableConfirmation?.disableConsequence
+        ?? "This applies a security override."
+    }
   }
 }
 
 private struct SecurityProtectionRow: View {
   let protection: SecurityProtection
-  @Binding var isEnabled: Bool
+  @Binding var isApplied: Bool
   let isSelected: Bool
 
   var body: some View {
@@ -167,7 +177,7 @@ private struct SecurityProtectionRow: View {
 
       Spacer(minLength: 8)
 
-      Text(statusLabel)
+      Text(isApplied ? "On" : "Off")
         .font(.caption.weight(.semibold))
         .foregroundStyle(Color.accentColor)
         .padding(.horizontal, 9)
@@ -175,7 +185,7 @@ private struct SecurityProtectionRow: View {
         .background(Color.accentColor.opacity(0.1), in: Capsule())
         .fixedSize()
 
-      Toggle("", isOn: $isEnabled)
+      Toggle("", isOn: $isApplied)
         .labelsHidden()
         .toggleStyle(.checkbox)
     }
@@ -183,16 +193,11 @@ private struct SecurityProtectionRow: View {
     .padding(.vertical, 10)
     .background(isSelected ? Color.accentColor.opacity(0.08) : Color.clear)
   }
-
-  private var statusLabel: String {
-    if isEnabled { return "Enabled" }
-    return protection.kind == .gatekeeper ? "From Anywhere" : "Disabled"
-  }
 }
 
 private struct SecurityProtectionInspector: View {
   let protection: SecurityProtection
-  let isEnabled: Bool
+  let isApplied: Bool
 
   var body: some View {
     GeometryReader { geometry in
@@ -222,9 +227,9 @@ private struct SecurityProtectionInspector: View {
           Text(protection.title)
             .font(.headline)
 
-          Text(statusText)
+          Text(isApplied ? "On" : "Off")
             .font(.caption.weight(.medium))
-            .foregroundStyle(isEnabled ? Color.secondary : Color.orange)
+            .foregroundStyle(isApplied ? Color.orange : Color.secondary)
         }
       }
 
@@ -241,9 +246,9 @@ private struct SecurityProtectionInspector: View {
 
   private var behaviorSection: some View {
     VStack(alignment: .leading, spacing: 8) {
-      sectionTitle(isEnabled ? "Protection Active" : "When Disabled")
+      sectionTitle(isApplied ? "When Applied" : "Default")
 
-      Text(isEnabled ? enabledDescription : protection.disableConsequence)
+      Text(isApplied ? protection.disableConsequence : idleDescription)
         .font(.subheadline)
         .foregroundStyle(.secondary)
         .fixedSize(horizontal: false, vertical: true)
@@ -255,7 +260,7 @@ private struct SecurityProtectionInspector: View {
       sectionTitle(protection.services.isEmpty ? "System Control" : "Related Services")
 
       if protection.services.isEmpty {
-        Text("spctl --global-\(isEnabled ? "enable" : "disable")")
+        Text(implementationDetail)
           .font(.caption.monospaced())
           .foregroundStyle(.secondary)
           .textSelection(.enabled)
@@ -263,7 +268,7 @@ private struct SecurityProtectionInspector: View {
         ForEach(protection.services) { service in
           HStack(alignment: .firstTextBaseline, spacing: 6) {
             Circle()
-              .fill(isEnabled ? Color.accentColor : Color.secondary.opacity(0.45))
+              .fill(isApplied ? Color.accentColor : Color.secondary.opacity(0.45))
               .frame(width: 6, height: 6)
             VStack(alignment: .leading, spacing: 1) {
               Text(service.label)
@@ -282,15 +287,25 @@ private struct SecurityProtectionInspector: View {
     }
   }
 
-  private var statusText: String {
-    if isEnabled { return "Enabled" }
-    return protection.kind == .gatekeeper ? "Applications from Anywhere" : "Disabled"
+  private var idleDescription: String {
+    switch protection.kind {
+    case .gatekeeper:
+      "Gatekeeper stays on and assesses downloaded applications before they open."
+    case .launchServices:
+      "The related macOS protection services keep running."
+    case .dequarantine:
+      "Downloads keep the quarantine flag that macOS assigns to them."
+    }
   }
 
-  private var enabledDescription: String {
+  private var implementationDetail: String {
     switch protection.kind {
-    case .gatekeeper: "Downloaded applications are assessed before they are opened."
-    case .launchServices: "The related background protection services are allowed to run."
+    case .gatekeeper:
+      "spctl --global-\(isApplied ? "disable" : "enable")"
+    case .dequarantine:
+      "/usr/libexec/extrememactweaker.dequarantine"
+    case .launchServices:
+      ""
     }
   }
 

@@ -142,6 +142,16 @@ enum RootActions {
         ]
       )
 
+    case .dequarantine:
+      return (
+        "\(protection.title) was \(enabled ? "enabled" : "disabled")",
+        true,
+        [
+          "protectionID": protection.id,
+          "enabled": String(enabled),
+        ]
+      )
+
     case .launchServices:
       var changed = false
       for (index, service) in protection.services.enumerated() {
@@ -213,12 +223,6 @@ enum RootActions {
   }
 
   private static let dequarantineDaemonLabel = "com.extrememactweaker.dequarantine"
-  private static let legacyDequarantineDaemonPlist = URL(
-    fileURLWithPath: "/Library/LaunchDaemons/com.extrememactweaker.dequarantine.plist"
-  )
-  private static let legacyDequarantineWatcher = URL(
-    fileURLWithPath: "/Library/Application Support/Tweaker/Helpers/dequarantine-watcher"
-  )
 
   private static func configureUnknownAppProtectionSupport(
     enabled: Bool,
@@ -233,48 +237,6 @@ enum RootActions {
         "LSQuarantine", "-bool", enabled ? "YES" : "NO",
       ]
     )
-
-    guard let home = homeDirectory(for: userID) else {
-      throw RootActionError.operationFailed(
-        code: "user_home_not_found",
-        message: "Unable to locate the user home directory."
-      )
-    }
-
-    try tearDownLegacyDequarantineJobs(home: home, userID: userID, context: context)
-
-    guard !enabled else { return }
-
-    let downloads = home.appendingPathComponent("Downloads")
-    try FileManager.default.createDirectory(at: downloads, withIntermediateDirectories: true)
-
-    context.events.progress(0.94, "Clearing quarantine on existing Downloads")
-    let bundledWatcher = try helperSiblingNamed("dequarantine-watcher")
-    _ = try context.commands.requireSuccess(
-      bundledWatcher.path,
-      ["--once", downloads.path]
-    )
-  }
-
-  private static func tearDownLegacyDequarantineJobs(
-    home: URL,
-    userID: uid_t,
-    context: RootActionContext
-  ) throws {
-    let legacyAgentPlist = home
-      .appendingPathComponent("Library/LaunchAgents")
-      .appendingPathComponent("\(dequarantineDaemonLabel).plist")
-    _ = try context.commands.run(
-      "/bin/launchctl",
-      ["bootout", "gui/\(userID)/\(dequarantineDaemonLabel)"]
-    )
-    _ = try context.commands.run(
-      "/bin/launchctl",
-      ["bootout", "system/\(dequarantineDaemonLabel)"]
-    )
-    try? FileManager.default.removeItem(at: legacyAgentPlist)
-    try? FileManager.default.removeItem(at: legacyDequarantineDaemonPlist)
-    try? FileManager.default.removeItem(at: legacyDequarantineWatcher)
   }
 
   private static func installSystemDequarantine(
@@ -292,6 +254,13 @@ enum RootActions {
       systemPath: SystemVolume.dequarantinePlistPath
     )
     let source = try helperSiblingNamed("dequarantine-watcher")
+
+    context.events.progress(0.2, "Clearing quarantine on existing Downloads")
+    try FileManager.default.createDirectory(
+      at: URL(fileURLWithPath: downloads, isDirectory: true),
+      withIntermediateDirectories: true
+    )
+    _ = try context.commands.requireSuccess(source.path, ["--once", downloads])
 
     context.events.progress(0.35, "Copying the dequarantine watcher onto the system volume")
     _ = try context.commands.requireSuccess(
@@ -335,6 +304,11 @@ enum RootActions {
     let mountedPlist = try SystemVolume.mountedDequarantinePath(
       root: mountPath,
       systemPath: SystemVolume.dequarantinePlistPath
+    )
+
+    _ = try context.commands.run(
+      "/bin/launchctl",
+      ["bootout", "system/\(dequarantineDaemonLabel)"]
     )
 
     var removed = false

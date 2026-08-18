@@ -131,11 +131,18 @@ enum OptimizationChange: Codable, Hashable, Identifiable, Sendable {
     case .launchService(let change):
       "\(change.action == .enable ? "Enable" : "Disable") \(change.label)"
     case .securityFeature(let change):
-      "\(change.action == .enable ? "Enable" : "Disable") "
-        + (SecurityProtectionCatalog.protection(withID: change.featureID)?.title
-          ?? change.featureID)
+      securityFeatureTitle(change)
     case .systemComponent(let change):
       "Remove \(change.title)"
     }
   }
+}
+
+private func securityFeatureTitle(_ change: SecurityFeatureChange) -> String {
+  let title = SecurityProtectionCatalog.protection(withID: change.featureID)?.title
+    ?? change.featureID
+  if change.featureID == "download-whitelist" {
+    return change.action == .enable ? title : "Turn off \(title)"
+  }
+  return change.action == .disable ? title : "Turn off \(title)"
 }
