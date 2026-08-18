@@ -7,16 +7,13 @@ BUILD_SCRIPT="$PROJECT_ROOT/Scripts/Build.sh"
 APP_PATH="$PROJECT_ROOT/Tweaker.app"
 APP_BINARY="$APP_PATH/Contents/MacOS/Tweaker"
 VOLUME_NAME="Extreme Mac Tweaker"
-MOUNT_POINT="/Volumes/${VOLUME_NAME}"
+MOUNT_POINT=""
 STAGE=""
 RW_DMG=""
 LOG="$(mktemp -t extreme-mac-tweaker-release.XXXXXX)"
 
 cleanup() {
-  if [[ -d "$MOUNT_POINT" ]]; then
-    /usr/bin/hdiutil detach "$MOUNT_POINT" >/dev/null 2>&1 || \
-      /usr/bin/hdiutil detach -force "$MOUNT_POINT" >/dev/null 2>&1 || true
-  fi
+  eject_release_volumes
   if [[ -n "$STAGE" && -d "$STAGE" ]]; then
     rm -rf "$STAGE"
   fi
@@ -33,6 +30,58 @@ fail() {
     cat "$LOG" >&2
   fi
   exit "${2:-1}"
+}
+
+eject_release_volumes() {
+  local vol
+  for vol in \
+    "/Volumes/Extreme Mac Tweaker" \
+    "/Volumes/Extreme Mac Tweaker 1" \
+    "/Volumes/Extreme Mac Tweaker 2"; do
+    if [[ -d "$vol" ]]; then
+      /usr/bin/hdiutil detach "$vol" >/dev/null 2>&1 || \
+        /usr/bin/hdiutil detach -force "$vol" >/dev/null 2>&1 || true
+    fi
+  done
+}
+
+mount_point_from_plist() {
+  /usr/bin/python3 - "$1" <<'PY'
+import plistlib
+import sys
+
+with open(sys.argv[1], "rb") as handle:
+    payload = plistlib.load(handle)
+for entity in payload.get("system-entities", []):
+    mount_point = entity.get("mount-point")
+    if mount_point:
+        print(mount_point)
+        raise SystemExit(0)
+raise SystemExit(1)
+PY
+}
+
+set_disk_image_icon() {
+  local target="$1"
+  local source="$2"
+  if ! /usr/bin/osascript - "$source" "$target" >"$LOG" 2>&1 <<'APPLESCRIPT'
+use framework "AppKit"
+use scripting additions
+on run argv
+  set sourcePath to item 1 of argv
+  set targetPath to item 2 of argv
+  set workspace to current application's NSWorkspace's sharedWorkspace()
+  set iconImage to workspace's iconForFile:sourcePath
+  if iconImage is missing value then error "Failed to read the application icon"
+  iconImage's setSize:(current application's NSMakeSize(512, 512))
+  if (workspace's setIcon:iconImage forFile:targetPath options:0) as boolean is false then
+    error "Failed to assign the disk image icon"
+  end if
+end run
+APPLESCRIPT
+  then
+    fail "Failed to set the disk image icon."
+  fi
 }
 
 if [[ ! -x "$BUILD_SCRIPT" ]]; then
@@ -66,56 +115,43 @@ esac
 
 DMG_NAME="ExtremeMacTweaker-v${VERSION}-${DMG_ARCH}.dmg"
 DMG_PATH="$PROJECT_ROOT/$DMG_NAME"
+VOLUME_ICON="$APP_PATH/Contents/Resources/AppIcon.icns"
+if [[ ! -f "$VOLUME_ICON" ]]; then
+  fail "AppIcon.icns is missing from Tweaker.app."
+fi
 
 STAGE="$(mktemp -d -t extreme-mac-tweaker-dmg)"
 RW_DMG="${STAGE}.udrw.dmg"
-if ! /usr/bin/ditto "$APP_PATH" "$STAGE/Tweaker.app"; then
-  fail "Failed to stage Tweaker.app for the disk image."
-fi
-ln -s /Applications "$STAGE/Applications"
-VOLUME_ICON="$APP_PATH/Contents/Resources/AppIcon.icns"
 
-/usr/bin/hdiutil detach "$MOUNT_POINT" >/dev/null 2>&1 || true
+eject_release_volumes
 rm -f "$DMG_PATH" "$RW_DMG"
 if ! /usr/bin/hdiutil create \
   -volname "$VOLUME_NAME" \
-  -srcfolder "$STAGE" \
-  -ov \
-  -format UDRW \
+  -size 64m \
   -fs HFS+ \
+  -layout SPUD \
+  -ov \
   "$RW_DMG" >"$LOG" 2>&1; then
   fail "Failed to create the writable disk image."
-fi
-
-if ! /usr/bin/hdiutil resize -size 64m "$RW_DMG" >"$LOG" 2>&1; then
-  fail "Failed to resize the writable disk image."
 fi
 
 if ! /usr/bin/hdiutil attach \
   -readwrite \
   -noverify \
   -noautoopen \
+  -plist \
   "$RW_DMG" >"$LOG" 2>&1; then
   fail "Failed to mount the writable disk image."
 fi
 
-for _ in $(seq 1 50); do
-  if [[ -d "$MOUNT_POINT/Tweaker.app" && -e "$MOUNT_POINT/Applications" ]]; then
-    break
-  fi
-  sleep 0.1
-done
-if [[ ! -d "$MOUNT_POINT/Tweaker.app" ]]; then
-  fail "The writable disk image did not mount at ${MOUNT_POINT}."
+MOUNT_POINT="$(mount_point_from_plist "$LOG" || true)"
+if [[ -z "$MOUNT_POINT" || ! -d "$MOUNT_POINT" ]]; then
+  fail "The writable disk image did not mount."
 fi
-
-if [[ -f "$VOLUME_ICON" ]]; then
-  cp "$VOLUME_ICON" "$MOUNT_POINT/.VolumeIcon.icns"
-  if [[ -x /usr/bin/SetFile ]]; then
-    /usr/bin/SetFile -c icnC "$MOUNT_POINT/.VolumeIcon.icns" >/dev/null 2>&1 || true
-    /usr/bin/SetFile -a C "$MOUNT_POINT" >/dev/null 2>&1 || true
-  fi
+if ! /usr/bin/ditto "$APP_PATH" "$MOUNT_POINT/Tweaker.app"; then
+  fail "Failed to copy Tweaker.app onto the disk image."
 fi
+ln -s /Applications "$MOUNT_POINT/Applications"
 
 if ! /usr/bin/osascript >"$LOG" 2>&1 <<EOF
 tell application "Finder"
@@ -132,6 +168,15 @@ tell application "Finder"
     delay 0.4
     set position of item "Tweaker.app" of container window to {160, 200}
     set position of item "Applications" of container window to {440, 200}
+    try
+      set position of item ".fseventsd" of container window to {10000, 10000}
+    end try
+    try
+      set position of item ".DS_Store" of container window to {10000, 10000}
+    end try
+    try
+      set position of item ".VolumeIcon.icns" of container window to {10000, 10000}
+    end try
     delay 0.4
     set position of item "Tweaker.app" of container window to {160, 200}
     set position of item "Applications" of container window to {440, 200}
@@ -151,14 +196,41 @@ if [[ -x /usr/sbin/bless ]]; then
   /usr/sbin/bless --folder "$MOUNT_POINT" --openfolder "$MOUNT_POINT" >/dev/null 2>&1 || true
 fi
 
+/usr/bin/osascript -e "tell application \"Finder\" to close every window of disk \"${VOLUME_NAME}\"" >/dev/null 2>&1 || true
+
+if ! /usr/bin/ditto "$VOLUME_ICON" "$MOUNT_POINT/.VolumeIcon.icns"; then
+  fail "Failed to copy the volume icon."
+fi
+if [[ -x /usr/bin/SetFile ]]; then
+  /usr/bin/SetFile -c icnC "$MOUNT_POINT/.VolumeIcon.icns" >/dev/null 2>&1 || true
+  /usr/bin/SetFile -a C "$MOUNT_POINT" >/dev/null 2>&1 || true
+fi
+if [[ ! -f "$MOUNT_POINT/.VolumeIcon.icns" ]]; then
+  fail "The volume icon was not written to the disk image."
+fi
+/usr/bin/osascript >"$LOG" 2>&1 <<EOF || true
+tell application "Finder"
+  tell disk "$VOLUME_NAME"
+    open
+    try
+      set position of item ".VolumeIcon.icns" of container window to {10000, 10000}
+    end try
+    close
+  end tell
+end tell
+EOF
+
+rm -rf \
+  "$MOUNT_POINT/.fseventsd" \
+  "$MOUNT_POINT/.Spotlight-V100" \
+  "$MOUNT_POINT/.Trashes" \
+  "$MOUNT_POINT/.TemporaryItems" \
+  "$MOUNT_POINT/.DocumentRevisions-V100"
 sync
-/usr/bin/osascript -e "tell application \"Finder\" to eject disk \"${VOLUME_NAME}\"" >/dev/null 2>&1 || true
-sleep 1
+
+eject_release_volumes
 if [[ -d "$MOUNT_POINT" ]]; then
-  if ! /usr/bin/hdiutil detach "$MOUNT_POINT" >"$LOG" 2>&1; then
-    /usr/bin/hdiutil detach -force "$MOUNT_POINT" >"$LOG" 2>&1 || \
-      fail "Failed to unmount the writable disk image."
-  fi
+  fail "Failed to unmount the writable disk image."
 fi
 
 if ! /usr/bin/hdiutil convert \
@@ -169,6 +241,26 @@ if ! /usr/bin/hdiutil convert \
   -o "$DMG_PATH" >"$LOG" 2>&1; then
   fail "Failed to create $DMG_NAME."
 fi
+
+if ! /usr/bin/hdiutil attach -readonly -nobrowse -noautoopen -plist "$DMG_PATH" >"$LOG" 2>&1; then
+  fail "Failed to verify $DMG_NAME."
+fi
+VERIFY_MOUNT="$(mount_point_from_plist "$LOG" || true)"
+if [[ -z "$VERIFY_MOUNT" ]]; then
+  fail "Failed to mount $DMG_NAME for verification."
+fi
+if [[ -e "$VERIFY_MOUNT/.fseventsd" ]]; then
+  /usr/bin/hdiutil detach "$VERIFY_MOUNT" >/dev/null 2>&1 || true
+  fail ".fseventsd must not be included in the disk image."
+fi
+if [[ ! -f "$VERIFY_MOUNT/.VolumeIcon.icns" ]]; then
+  /usr/bin/hdiutil detach "$VERIFY_MOUNT" >/dev/null 2>&1 || true
+  fail "The volume icon is missing from the disk image."
+fi
+/usr/bin/hdiutil detach "$VERIFY_MOUNT" >/dev/null 2>&1 || \
+  /usr/bin/hdiutil detach -force "$VERIFY_MOUNT" >/dev/null 2>&1 || true
+
+set_disk_image_icon "$DMG_PATH" "$APP_PATH"
 
 if ! /usr/bin/codesign --force --sign - --timestamp=none "$DMG_PATH" >"$LOG" 2>&1; then
   fail "Failed to adhoc-sign $DMG_NAME."
