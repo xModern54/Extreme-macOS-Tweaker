@@ -15,26 +15,30 @@
 #include <unistd.h>
 
 static const char *kQuarantineXattr = "com.apple.quarantine";
+static const char *kQueueName = "com.extrememactweaker.dequarantine";
 
-// Batch a download burst into one wakeup. NoDefer is intentionally off so
-// the process stays asleep until this window closes.
+// FileEvents are coalesced into this window. NoDefer stays off so a quiet
+// watcher does not wake until the window closes.
 static const CFTimeInterval kEventLatencySeconds = 0.5;
 
-static char *g_watch_path = NULL;
+static const FSEventStreamEventFlags kLostEventFlags =
+    kFSEventStreamEventFlagMustScanSubDirs
+    | kFSEventStreamEventFlagKernelDropped
+    | kFSEventStreamEventFlagUserDropped
+    | kFSEventStreamEventFlagEventIdsWrapped;
 
-static bool is_skippable_name(const char *name);
-static const char *last_path_component(const char *path);
-static void set_thread_disk_policy(int policy);
-static void scrub_one(const char *path);
-static void scrub_tree(const char *root);
-static void fs_callback(
-    ConstFSEventStreamRef stream,
-    void *info,
-    size_t count,
-    void *eventPaths,
-    const FSEventStreamEventFlags flags[],
-    const FSEventStreamEventId ids[]
-);
+static const FSEventStreamEventFlags kArrivalFlags =
+    kFSEventStreamEventFlagItemCreated
+    | kFSEventStreamEventFlagItemRenamed
+    | kFSEventStreamEventFlagItemCloned;
+
+static const FSEventStreamEventFlags kInterestingFlags =
+    kFSEventStreamEventFlagItemCreated
+    | kFSEventStreamEventFlagItemRenamed
+    | kFSEventStreamEventFlagItemCloned
+    | kFSEventStreamEventFlagItemXattrMod;
+
+static char *g_watch_path = NULL;
 
 static const char *last_path_component(const char *path) {
     const char *slash = strrchr(path, '/');
@@ -68,11 +72,22 @@ static bool is_skippable_name(const char *name) {
     return false;
 }
 
+static bool is_skippable_path(const char *path) {
+    return path != NULL && is_skippable_name(last_path_component(path));
+}
+
+static bool is_watch_root(const char *path) {
+    return g_watch_path != NULL && path != NULL && strcmp(path, g_watch_path) == 0;
+}
+
 static void set_thread_disk_policy(int policy) {
     (void)setiopolicy_np(IOPOL_TYPE_DISK, IOPOL_SCOPE_THREAD, policy);
 }
 
 static void scrub_one(const char *path) {
+    if (path == NULL || path[0] == '\0') {
+        return;
+    }
     if (removexattr(path, kQuarantineXattr, XATTR_NOFOLLOW) == 0) {
         return;
     }
@@ -82,10 +97,14 @@ static void scrub_one(const char *path) {
 }
 
 static void scrub_tree(const char *root) {
-    char path_buf[PATH_MAX];
     if (root == NULL || root[0] == '\0') {
         return;
     }
+    if (!is_watch_root(root) && is_skippable_path(root)) {
+        return;
+    }
+
+    char path_buf[PATH_MAX];
     if (strlcpy(path_buf, root, sizeof(path_buf)) >= sizeof(path_buf)) {
         fprintf(stderr, "path too long: %s\n", root);
         return;
@@ -101,24 +120,19 @@ static void scrub_tree(const char *root) {
     }
 
     errno = 0;
-    FTSENT *entry;
-    while ((entry = fts_read(fts)) != NULL) {
+    for (FTSENT *entry = fts_read(fts); entry != NULL; entry = fts_read(fts)) {
+        if (entry->fts_level > 0 && is_skippable_name(entry->fts_name)) {
+            if (entry->fts_info == FTS_D) {
+                (void)fts_set(fts, entry, FTS_SKIP);
+            }
+            continue;
+        }
         switch (entry->fts_info) {
             case FTS_D:
             case FTS_F:
             case FTS_SL:
             case FTS_SLNONE:
-            case FTS_DEFAULT:
-                if (entry->fts_level > 0 && is_skippable_name(entry->fts_name)) {
-                    if (entry->fts_info == FTS_D) {
-                        (void)fts_set(fts, entry, FTS_SKIP);
-                    }
-                    continue;
-                }
-                if (entry->fts_info == FTS_D || entry->fts_info == FTS_F
-                    || entry->fts_info == FTS_SL || entry->fts_info == FTS_SLNONE) {
-                    scrub_one(entry->fts_accpath);
-                }
+                scrub_one(entry->fts_path);
                 break;
             default:
                 break;
@@ -128,6 +142,49 @@ static void scrub_tree(const char *root) {
         fprintf(stderr, "fts_read(%s): %s\n", root, strerror(errno));
     }
     (void)fts_close(fts);
+}
+
+static void catch_up(void) {
+    set_thread_disk_policy(IOPOL_UTILITY);
+    scrub_tree(g_watch_path);
+    set_thread_disk_policy(IOPOL_DEFAULT);
+}
+
+static void handle_event(const char *path, FSEventStreamEventFlags flags) {
+    if (flags & kFSEventStreamEventFlagRootChanged) {
+        scrub_tree(g_watch_path);
+        return;
+    }
+
+    if (flags & kLostEventFlags) {
+        const char *target = (path != NULL && path[0] != '\0') ? path : g_watch_path;
+        scrub_tree(target);
+        return;
+    }
+
+    if (flags & (kFSEventStreamEventFlagMount | kFSEventStreamEventFlagUnmount)) {
+        scrub_one(path);
+        return;
+    }
+
+    if ((flags & kInterestingFlags) == 0) {
+        return;
+    }
+    if (is_skippable_path(path)) {
+        return;
+    }
+
+    const bool directory_arrived =
+        (flags & kFSEventStreamEventFlagItemIsDir) != 0
+        && (flags & kArrivalFlags) != 0;
+    if (directory_arrived) {
+        // Contents of a dropped-in folder may not get their own events.
+        // An xattr-only change on a folder must not walk the subtree.
+        scrub_tree(path);
+        return;
+    }
+
+    scrub_one(path);
 }
 
 static void fs_callback(
@@ -144,64 +201,7 @@ static void fs_callback(
 
     char **paths = eventPaths;
     for (size_t index = 0; index < count; index++) {
-        const char *path = paths[index];
-        FSEventStreamEventFlags eventFlags = flags[index];
-
-        if (eventFlags & kFSEventStreamEventFlagRootChanged) {
-            scrub_tree(g_watch_path);
-            continue;
-        }
-
-        if (eventFlags & (
-                kFSEventStreamEventFlagMustScanSubDirs
-                | kFSEventStreamEventFlagKernelDropped
-                | kFSEventStreamEventFlagUserDropped
-                | kFSEventStreamEventFlagEventIdsWrapped
-            )) {
-            const char *target = (path != NULL && path[0] != '\0') ? path : g_watch_path;
-            scrub_tree(target);
-            continue;
-        }
-
-        if (eventFlags & (
-                kFSEventStreamEventFlagMount
-                | kFSEventStreamEventFlagUnmount
-            )) {
-            if (path != NULL && path[0] != '\0') {
-                scrub_one(path);
-            }
-            continue;
-        }
-
-        const FSEventStreamEventFlags interesting =
-            kFSEventStreamEventFlagItemCreated
-            | kFSEventStreamEventFlagItemRenamed
-            | kFSEventStreamEventFlagItemXattrMod;
-        if ((eventFlags & interesting) == 0) {
-            continue;
-        }
-
-        if (path == NULL || path[0] == '\0') {
-            continue;
-        }
-        if (is_skippable_name(last_path_component(path))) {
-            continue;
-        }
-
-        const bool is_dir = (eventFlags & kFSEventStreamEventFlagItemIsDir) != 0;
-        const bool arrived = (eventFlags & (
-                kFSEventStreamEventFlagItemCreated
-                | kFSEventStreamEventFlagItemRenamed
-            )) != 0;
-
-        // A directory that just appeared may already contain files that do
-        // not get their own events. An xattr-only change on a folder must
-        // not walk the subtree — Finder tags would otherwise rescan Downloads.
-        if (is_dir && arrived) {
-            scrub_tree(path);
-        } else {
-            scrub_one(path);
-        }
+        handle_event(paths[index], flags[index]);
     }
 }
 
@@ -226,6 +226,65 @@ static int resolve_watch_path(const char *input) {
     return 0;
 }
 
+static int run_once(void) {
+    catch_up();
+    return 0;
+}
+
+static int run_watch(void) {
+    CFStringRef path = CFStringCreateWithCString(NULL, g_watch_path, kCFStringEncodingUTF8);
+    if (path == NULL) {
+        fprintf(stderr, "CFStringCreateWithCString failed\n");
+        return 1;
+    }
+
+    const void *values[] = { path };
+    CFArrayRef paths = CFArrayCreate(NULL, values, 1, &kCFTypeArrayCallBacks);
+    CFRelease(path);
+    if (paths == NULL) {
+        fprintf(stderr, "CFArrayCreate failed\n");
+        return 1;
+    }
+
+    const FSEventStreamCreateFlags create_flags =
+        kFSEventStreamCreateFlagFileEvents
+        | kFSEventStreamCreateFlagIgnoreSelf
+        | kFSEventStreamCreateFlagWatchRoot;
+    FSEventStreamRef stream = FSEventStreamCreate(
+        NULL,
+        fs_callback,
+        NULL,
+        paths,
+        kFSEventStreamEventIdSinceNow,
+        kEventLatencySeconds,
+        create_flags
+    );
+    CFRelease(paths);
+    if (stream == NULL) {
+        fprintf(stderr, "FSEventStreamCreate failed\n");
+        return 1;
+    }
+
+    dispatch_queue_attr_t attr = dispatch_queue_attr_make_with_qos_class(
+        DISPATCH_QUEUE_SERIAL,
+        QOS_CLASS_UTILITY,
+        0
+    );
+    dispatch_queue_t queue = dispatch_queue_create(kQueueName, attr);
+    FSEventStreamSetDispatchQueue(stream, queue);
+
+    if (!FSEventStreamStart(stream)) {
+        fprintf(stderr, "FSEventStreamStart failed\n");
+        return 1;
+    }
+
+    dispatch_async(queue, ^{
+        catch_up();
+    });
+    dispatch_main();
+    return 0;
+}
+
 int main(int argc, char **argv) {
     bool once = false;
     const char *input_path = NULL;
@@ -242,68 +301,5 @@ int main(int argc, char **argv) {
     if (resolve_watch_path(input_path) != 0) {
         return 1;
     }
-
-    if (once) {
-        set_thread_disk_policy(IOPOL_UTILITY);
-        scrub_tree(g_watch_path);
-        return 0;
-    }
-
-    CFStringRef path = CFStringCreateWithCString(NULL, g_watch_path, kCFStringEncodingUTF8);
-    if (!path) {
-        fprintf(stderr, "CFStringCreateWithCString failed\n");
-        return 1;
-    }
-
-    const void *values[] = { path };
-    CFArrayRef paths = CFArrayCreate(NULL, values, 1, &kCFTypeArrayCallBacks);
-    CFRelease(path);
-    if (!paths) {
-        fprintf(stderr, "CFArrayCreate failed\n");
-        return 1;
-    }
-
-    FSEventStreamCreateFlags create_flags =
-        kFSEventStreamCreateFlagFileEvents
-        | kFSEventStreamCreateFlagIgnoreSelf
-        | kFSEventStreamCreateFlagWatchRoot;
-    FSEventStreamRef stream = FSEventStreamCreate(
-        NULL,
-        fs_callback,
-        NULL,
-        paths,
-        kFSEventStreamEventIdSinceNow,
-        kEventLatencySeconds,
-        create_flags
-    );
-    CFRelease(paths);
-    if (!stream) {
-        fprintf(stderr, "FSEventStreamCreate failed\n");
-        return 1;
-    }
-
-    dispatch_queue_attr_t attr = dispatch_queue_attr_make_with_qos_class(
-        DISPATCH_QUEUE_SERIAL,
-        QOS_CLASS_UTILITY,
-        0
-    );
-    dispatch_queue_t queue = dispatch_queue_create(
-        "com.extrememactweaker.dequarantine",
-        attr
-    );
-    FSEventStreamSetDispatchQueue(stream, queue);
-
-    if (!FSEventStreamStart(stream)) {
-        fprintf(stderr, "FSEventStreamStart failed\n");
-        return 1;
-    }
-
-    dispatch_async(queue, ^{
-        set_thread_disk_policy(IOPOL_UTILITY);
-        scrub_tree(g_watch_path);
-        set_thread_disk_policy(IOPOL_DEFAULT);
-    });
-
-    dispatch_main();
-    return 0;
+    return once ? run_once() : run_watch();
 }
