@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.18.4",
+  "catalogVersion": "2026.08.18.5",
   "compatibility": {
     "minimumMacOSMajor": 15,
     "maximumMacOSMajor": 27,
@@ -581,6 +581,12 @@
       "label": "com.apple.rapportd",
       "domain": "system",
       "kind": "daemon"
+    },
+    {
+      "id": "rapportd-user",
+      "label": "com.apple.rapportd",
+      "domain": "gui",
+      "kind": "agent"
     },
     {
       "id": "nearbyd",
@@ -2598,6 +2604,7 @@
       "services": [
         "sharingd",
         "rapportd",
+        "rapportd-user",
         "nearbyd",
         "useractivityd",
         "wifip2pd",
@@ -3404,7 +3411,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 120,
-        "estimatedProcessReduction": 17
+        "estimatedProcessReduction": 18
       },
       "order": 400
     },
