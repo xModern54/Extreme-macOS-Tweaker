@@ -91,6 +91,7 @@ if xcodebuild \
   cp "$ICONSET_SRC/AppIcon-1024.png" "$ICONSET_TMP/AppIcon.iconset/icon_512x512@2x.png"
   iconutil -c icns "$ICONSET_TMP/AppIcon.iconset" -o "$APP_PATH/Contents/Resources/AppIcon.icns"
   rm -rf "$ICONSET_TMP"
+  rm -f "$APP_PATH/Contents/Resources/TweakCatalog.next.json"
   touch "$APP_PATH"
 
   sign_adhoc "$WATCHER_OUT"
@@ -110,6 +111,10 @@ if xcodebuild \
   fi
   if ! codesign --verify "$RELEASE_APP_PATH"; then
     echo "Adhoc signature verification failed after copy." >&2
+    exit 1
+  fi
+  if [[ -e "$RELEASE_APP_PATH/Contents/Resources/TweakCatalog.next.json" ]]; then
+    echo "TweakCatalog.next.json must not be included in Tweaker.app." >&2
     exit 1
   fi
 

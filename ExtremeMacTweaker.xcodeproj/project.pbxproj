@@ -18,6 +18,9 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		A10000000000000000000002 /* ExtremeMacTweaker */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A10000000000000000000010 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+			);
 			path = ExtremeMacTweaker;
 			sourceTree = "<group>";
 		};
@@ -30,6 +33,13 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = PrivilegedProtocol;
 			sourceTree = "<group>";
+		};
+		A10000000000000000000010 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/TweakCatalog.next.json,
+			);
+			target = A10000000000000000000006 /* ExtremeMacTweaker */;
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -342,6 +352,7 @@
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				EXCLUDED_SOURCE_FILE_NAMES = TweakCatalog.next.json;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Tweaker;
 				INFOPLIST_KEY_CFBundleName = Tweaker;
@@ -377,6 +388,7 @@
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				EXCLUDED_SOURCE_FILE_NAMES = TweakCatalog.next.json;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Tweaker;
 				INFOPLIST_KEY_CFBundleName = Tweaker;
