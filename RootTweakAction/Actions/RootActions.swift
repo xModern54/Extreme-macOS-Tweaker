@@ -202,7 +202,10 @@ enum RootActions {
     }
   }
 
-  private static let dequarantineAgentLabel = "com.extrememactweaker.dequarantine"
+  private static let dequarantineDaemonLabel = "com.extrememactweaker.dequarantine"
+  private static let dequarantineDaemonPlist = URL(
+    fileURLWithPath: "/Library/LaunchDaemons/com.extrememactweaker.dequarantine.plist"
+  )
 
   private static func configureUnknownAppProtectionSupport(
     enabled: Bool,
@@ -225,16 +228,14 @@ enum RootActions {
       )
     }
 
-    let agentPlist = home
-      .appendingPathComponent("Library/LaunchAgents")
-      .appendingPathComponent("\(dequarantineAgentLabel).plist")
-    let guiTarget = "gui/\(userID)"
-    let serviceTarget = "\(guiTarget)/\(dequarantineAgentLabel)"
-
-    _ = try context.commands.run("/bin/launchctl", ["bootout", serviceTarget])
+    try tearDownLegacyDequarantineAgent(home: home, userID: userID, context: context)
+    _ = try context.commands.run(
+      "/bin/launchctl",
+      ["bootout", "system/\(dequarantineDaemonLabel)"]
+    )
 
     if enabled {
-      try? FileManager.default.removeItem(at: agentPlist)
+      try? FileManager.default.removeItem(at: dequarantineDaemonPlist)
       return
     }
 
@@ -248,34 +249,41 @@ enum RootActions {
       ["--once", downloads.path]
     )
 
-    let owner = userName(for: userID)
-    let installedWatcher = try installDequarantineWatcher(
-      home: home,
-      owner: owner,
-      context: context
-    )
-    try writeDequarantineAgentPlist(
-      at: agentPlist,
+    let installedWatcher = try installDequarantineWatcher(context: context)
+    try writeDequarantineDaemonPlist(
       watcherPath: installedWatcher.path,
       downloadsPath: downloads.path,
-      owner: owner,
       context: context
     )
 
     _ = try context.commands.requireSuccess(
       "/bin/launchctl",
-      ["bootstrap", guiTarget, agentPlist.path]
+      ["bootstrap", "system", dequarantineDaemonPlist.path]
     )
   }
 
-  private static func installDequarantineWatcher(
+  private static func tearDownLegacyDequarantineAgent(
     home: URL,
-    owner: String?,
+    userID: uid_t,
     context: RootActionContext
-  ) throws -> URL {
+  ) throws {
+    let legacyPlist = home
+      .appendingPathComponent("Library/LaunchAgents")
+      .appendingPathComponent("\(dequarantineDaemonLabel).plist")
+    _ = try context.commands.run(
+      "/bin/launchctl",
+      ["bootout", "gui/\(userID)/\(dequarantineDaemonLabel)"]
+    )
+    try? FileManager.default.removeItem(at: legacyPlist)
+  }
+
+  private static func installDequarantineWatcher(context: RootActionContext) throws -> URL {
     let source = try helperSiblingNamed("dequarantine-watcher")
-    let tweakerDirectory = home.appendingPathComponent("Library/Application Support/Tweaker")
-    let directory = tweakerDirectory.appendingPathComponent("Helpers")
+    let tweakerDirectory = URL(
+      fileURLWithPath: "/Library/Application Support/Tweaker",
+      isDirectory: true
+    )
+    let directory = tweakerDirectory.appendingPathComponent("Helpers", isDirectory: true)
     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
     let destination = directory.appendingPathComponent("dequarantine-watcher")
     if FileManager.default.fileExists(atPath: destination.path) {
@@ -286,39 +294,35 @@ enum RootActions {
       [.posixPermissions: 0o755],
       ofItemAtPath: destination.path
     )
-    if let owner {
-      _ = try context.commands.run("/usr/sbin/chown", ["-R", owner, tweakerDirectory.path])
-    }
+    _ = try context.commands.run("/usr/sbin/chown", ["root:wheel", destination.path])
     return destination
   }
 
-  private static func writeDequarantineAgentPlist(
-    at plistURL: URL,
+  private static func writeDequarantineDaemonPlist(
     watcherPath: String,
     downloadsPath: String,
-    owner: String?,
     context: RootActionContext
   ) throws {
     try FileManager.default.createDirectory(
-      at: plistURL.deletingLastPathComponent(),
+      at: dequarantineDaemonPlist.deletingLastPathComponent(),
       withIntermediateDirectories: true
     )
     let plist: [String: Any] = [
-      "Label": dequarantineAgentLabel,
+      "Label": dequarantineDaemonLabel,
       "ProgramArguments": [watcherPath, downloadsPath],
       "RunAtLoad": true,
       "KeepAlive": true,
-      "ProcessType": "Background",
     ]
     let data = try PropertyListSerialization.data(fromPropertyList: plist, format: .xml, options: 0)
-    try data.write(to: plistURL, options: .atomic)
+    try data.write(to: dequarantineDaemonPlist, options: .atomic)
     try FileManager.default.setAttributes(
       [.posixPermissions: 0o644],
-      ofItemAtPath: plistURL.path
+      ofItemAtPath: dequarantineDaemonPlist.path
     )
-    if let owner {
-      _ = try context.commands.run("/usr/sbin/chown", [owner, plistURL.path])
-    }
+    _ = try context.commands.run(
+      "/usr/sbin/chown",
+      ["root:wheel", dequarantineDaemonPlist.path]
+    )
   }
 
   private static func helperSiblingNamed(_ name: String) throws -> URL {
