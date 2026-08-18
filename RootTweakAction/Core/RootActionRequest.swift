@@ -24,6 +24,8 @@ enum RootActionRequest {
   )
   case removeSystemComponent(id: String)
   case setSecurityProtection(id: String, userID: uid_t, enabled: Bool)
+  case installSystemDequarantine(mountPath: String, downloadsPath: String)
+  case removeSystemDequarantine(mountPath: String)
   case restartSystem(userID: uid_t, appPath: String?)
 
   var name: String {
@@ -40,6 +42,8 @@ enum RootActionRequest {
     case .setLaunchService: "set-launch-service"
     case .removeSystemComponent: "remove-system-component"
     case .setSecurityProtection: "set-security-protection"
+    case .installSystemDequarantine: "install-system-dequarantine"
+    case .removeSystemDequarantine: "remove-system-dequarantine"
     case .restartSystem: "restart-system"
     }
   }
@@ -62,6 +66,10 @@ enum RootActionRequest {
     case .setSecurityProtection(let id, _, let enabled):
       "\(enabled ? "Enabling" : "Disabling") "
         + (SecurityProtectionCatalog.protection(withID: id)?.title ?? "security protection")
+    case .installSystemDequarantine:
+      "Installing the system dequarantine daemon"
+    case .removeSystemDequarantine:
+      "Removing the system dequarantine daemon"
     case .restartSystem: "Restarting macOS"
     }
   }
@@ -134,6 +142,13 @@ enum RootActionRequest {
         userID: userID,
         enabled: enabled
       )
+    case "install-system-dequarantine":
+      return .installSystemDequarantine(
+        mountPath: try required("mount-path", in: options),
+        downloadsPath: try required("downloads", in: options)
+      )
+    case "remove-system-dequarantine":
+      return .removeSystemDequarantine(mountPath: try required("mount-path", in: options))
     case "restart-system":
       let userIDValue = try required("user-id", in: options)
       guard let userID = uid_t(userIDValue) else {

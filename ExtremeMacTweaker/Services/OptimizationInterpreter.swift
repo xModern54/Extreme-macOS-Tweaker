@@ -6,10 +6,13 @@ enum OptimizationInterpreter {
       return ExecutionPlan(changes: [], steps: [])
     }
 
-    var applicationSteps: [ExecutionStep] = []
+    var systemVolumeSteps: [ExecutionStep] = []
     var launchServiceSteps: [ExecutionStep] = []
     var securitySteps: [ExecutionStep] = []
     var componentSteps: [ExecutionStep] = []
+    let downloadsPath = FileManager.default.homeDirectoryForCurrentUser
+      .appendingPathComponent("Downloads", isDirectory: true)
+      .path
 
     for change in changes {
       switch change {
@@ -18,7 +21,7 @@ enum OptimizationInterpreter {
 
         switch application.action {
         case .disable:
-          applicationSteps.append(
+          systemVolumeSteps.append(
             .disableSystemApplication(
               sourcePath: application.sourcePath,
               destinationPath: SystemApplicationsScanner.disabledApplicationsDirectory
@@ -26,7 +29,7 @@ enum OptimizationInterpreter {
             )
           )
         case .restore:
-          applicationSteps.append(
+          systemVolumeSteps.append(
             .restoreSystemApplication(
               sourcePath: application.sourcePath,
               destinationPath: SystemApplicationsScanner.applicationsDirectory
@@ -34,7 +37,7 @@ enum OptimizationInterpreter {
             )
           )
         case .delete:
-          applicationSteps.append(.deleteSystemApplication(path: application.sourcePath))
+          systemVolumeSteps.append(.deleteSystemApplication(path: application.sourcePath))
         }
 
       case .launchService(let service):
@@ -51,6 +54,15 @@ enum OptimizationInterpreter {
         securitySteps.append(
           .setSecurityFeature(id: feature.featureID, enabled: feature.action == .enable)
         )
+        if feature.featureID == "system-policy" {
+          if feature.action == .disable {
+            systemVolumeSteps.append(
+              .installSystemDequarantineDaemon(downloadsPath: downloadsPath)
+            )
+          } else {
+            systemVolumeSteps.append(.removeSystemDequarantineDaemon)
+          }
+        }
 
       case .systemComponent(let component):
         componentSteps.append(
@@ -74,7 +86,7 @@ enum OptimizationInterpreter {
       }
 
     var steps: [ExecutionStep] = []
-    if !applicationSteps.isEmpty {
+    if !systemVolumeSteps.isEmpty {
       steps.append(.verifySystemRequirements)
     } else if requiresSIPCheck {
       steps.append(.verifySystemIntegrityProtection)
@@ -83,9 +95,9 @@ enum OptimizationInterpreter {
     steps.append(contentsOf: securitySteps)
     steps.append(contentsOf: componentSteps)
 
-    if !applicationSteps.isEmpty {
+    if !systemVolumeSteps.isEmpty {
       steps.append(.mountSystemVolume)
-      steps.append(contentsOf: applicationSteps)
+      steps.append(contentsOf: systemVolumeSteps)
       steps.append(.createSystemSnapshot)
       steps.append(.unmountSystemVolume)
     }

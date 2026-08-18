@@ -76,6 +76,16 @@ enum RootActions {
         context: context
       )
 
+    case .installSystemDequarantine(let mountPath, let downloadsPath):
+      return try installSystemDequarantine(
+        mountPath: mountPath,
+        downloadsPath: downloadsPath,
+        context: context
+      )
+
+    case .removeSystemDequarantine(let mountPath):
+      return try removeSystemDequarantine(mountPath: mountPath, context: context)
+
     case .restartSystem(let userID, let appPath):
       return try restartSystem(userID: userID, appPath: appPath, context)
     }
@@ -203,8 +213,11 @@ enum RootActions {
   }
 
   private static let dequarantineDaemonLabel = "com.extrememactweaker.dequarantine"
-  private static let dequarantineDaemonPlist = URL(
+  private static let legacyDequarantineDaemonPlist = URL(
     fileURLWithPath: "/Library/LaunchDaemons/com.extrememactweaker.dequarantine.plist"
+  )
+  private static let legacyDequarantineWatcher = URL(
+    fileURLWithPath: "/Library/Application Support/Tweaker/Helpers/dequarantine-watcher"
   )
 
   private static func configureUnknownAppProtectionSupport(
@@ -228,16 +241,9 @@ enum RootActions {
       )
     }
 
-    try tearDownLegacyDequarantineAgent(home: home, userID: userID, context: context)
-    _ = try context.commands.run(
-      "/bin/launchctl",
-      ["bootout", "system/\(dequarantineDaemonLabel)"]
-    )
+    try tearDownLegacyDequarantineJobs(home: home, userID: userID, context: context)
 
-    if enabled {
-      try? FileManager.default.removeItem(at: dequarantineDaemonPlist)
-      return
-    }
+    guard !enabled else { return }
 
     let downloads = home.appendingPathComponent("Downloads")
     try FileManager.default.createDirectory(at: downloads, withIntermediateDirectories: true)
@@ -248,80 +254,105 @@ enum RootActions {
       bundledWatcher.path,
       ["--once", downloads.path]
     )
-
-    let installedWatcher = try installDequarantineWatcher(context: context)
-    try writeDequarantineDaemonPlist(
-      watcherPath: installedWatcher.path,
-      downloadsPath: downloads.path,
-      context: context
-    )
-
-    _ = try context.commands.requireSuccess(
-      "/bin/launchctl",
-      ["bootstrap", "system", dequarantineDaemonPlist.path]
-    )
   }
 
-  private static func tearDownLegacyDequarantineAgent(
+  private static func tearDownLegacyDequarantineJobs(
     home: URL,
     userID: uid_t,
     context: RootActionContext
   ) throws {
-    let legacyPlist = home
+    let legacyAgentPlist = home
       .appendingPathComponent("Library/LaunchAgents")
       .appendingPathComponent("\(dequarantineDaemonLabel).plist")
     _ = try context.commands.run(
       "/bin/launchctl",
       ["bootout", "gui/\(userID)/\(dequarantineDaemonLabel)"]
     )
-    try? FileManager.default.removeItem(at: legacyPlist)
+    _ = try context.commands.run(
+      "/bin/launchctl",
+      ["bootout", "system/\(dequarantineDaemonLabel)"]
+    )
+    try? FileManager.default.removeItem(at: legacyAgentPlist)
+    try? FileManager.default.removeItem(at: legacyDequarantineDaemonPlist)
+    try? FileManager.default.removeItem(at: legacyDequarantineWatcher)
   }
 
-  private static func installDequarantineWatcher(context: RootActionContext) throws -> URL {
-    let source = try helperSiblingNamed("dequarantine-watcher")
-    let tweakerDirectory = URL(
-      fileURLWithPath: "/Library/Application Support/Tweaker",
-      isDirectory: true
-    )
-    let directory = tweakerDirectory.appendingPathComponent("Helpers", isDirectory: true)
-    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-    let destination = directory.appendingPathComponent("dequarantine-watcher")
-    if FileManager.default.fileExists(atPath: destination.path) {
-      try FileManager.default.removeItem(at: destination)
-    }
-    try FileManager.default.copyItem(at: source, to: destination)
-    try FileManager.default.setAttributes(
-      [.posixPermissions: 0o755],
-      ofItemAtPath: destination.path
-    )
-    _ = try context.commands.run("/usr/sbin/chown", ["root:wheel", destination.path])
-    return destination
-  }
-
-  private static func writeDequarantineDaemonPlist(
-    watcherPath: String,
+  private static func installSystemDequarantine(
+    mountPath: String,
     downloadsPath: String,
     context: RootActionContext
-  ) throws {
-    try FileManager.default.createDirectory(
-      at: dequarantineDaemonPlist.deletingLastPathComponent(),
-      withIntermediateDirectories: true
+  ) throws -> (String, Bool, [String: String]) {
+    let downloads = try SystemVolume.validatedDownloadsPath(downloadsPath)
+    let mountedBinary = try SystemVolume.mountedDequarantinePath(
+      root: mountPath,
+      systemPath: SystemVolume.dequarantineBinaryPath
     )
+    let mountedPlist = try SystemVolume.mountedDequarantinePath(
+      root: mountPath,
+      systemPath: SystemVolume.dequarantinePlistPath
+    )
+    let source = try helperSiblingNamed("dequarantine-watcher")
+
+    context.events.progress(0.35, "Copying the dequarantine watcher onto the system volume")
+    _ = try context.commands.requireSuccess(
+      "/bin/mkdir",
+      ["-p", URL(fileURLWithPath: mountedBinary).deletingLastPathComponent().path]
+    )
+    _ = try context.commands.requireSuccess("/bin/cp", [source.path, mountedBinary])
+    _ = try context.commands.requireSuccess("/bin/chmod", ["755", mountedBinary])
+    _ = try context.commands.run("/usr/sbin/chown", ["root:wheel", mountedBinary])
+
+    context.events.progress(0.7, "Installing the system LaunchDaemon")
     let plist: [String: Any] = [
       "Label": dequarantineDaemonLabel,
-      "ProgramArguments": [watcherPath, downloadsPath],
+      "ProgramArguments": [SystemVolume.dequarantineBinaryPath, downloads],
       "RunAtLoad": true,
       "KeepAlive": true,
     ]
     let data = try PropertyListSerialization.data(fromPropertyList: plist, format: .xml, options: 0)
-    try data.write(to: dequarantineDaemonPlist, options: .atomic)
-    try FileManager.default.setAttributes(
-      [.posixPermissions: 0o644],
-      ofItemAtPath: dequarantineDaemonPlist.path
+    try data.write(to: URL(fileURLWithPath: mountedPlist), options: .atomic)
+    _ = try context.commands.requireSuccess("/bin/chmod", ["644", mountedPlist])
+    _ = try context.commands.run("/usr/sbin/chown", ["root:wheel", mountedPlist])
+
+    return (
+      "System dequarantine daemon was installed",
+      true,
+      [
+        "binary": SystemVolume.dequarantineBinaryPath,
+        "plist": SystemVolume.dequarantinePlistPath,
+      ]
     )
-    _ = try context.commands.run(
-      "/usr/sbin/chown",
-      ["root:wheel", dequarantineDaemonPlist.path]
+  }
+
+  private static func removeSystemDequarantine(
+    mountPath: String,
+    context: RootActionContext
+  ) throws -> (String, Bool, [String: String]) {
+    let mountedBinary = try SystemVolume.mountedDequarantinePath(
+      root: mountPath,
+      systemPath: SystemVolume.dequarantineBinaryPath
+    )
+    let mountedPlist = try SystemVolume.mountedDequarantinePath(
+      root: mountPath,
+      systemPath: SystemVolume.dequarantinePlistPath
+    )
+
+    var removed = false
+    context.events.progress(0.5, "Removing the system dequarantine daemon")
+    for path in [mountedBinary, mountedPlist] where FileManager.default.fileExists(atPath: path) {
+      _ = try context.commands.requireSuccess("/bin/rm", ["-f", "--", path])
+      removed = true
+    }
+
+    return (
+      removed
+        ? "System dequarantine daemon was removed"
+        : "System dequarantine daemon is already absent",
+      removed,
+      [
+        "binary": SystemVolume.dequarantineBinaryPath,
+        "plist": SystemVolume.dequarantinePlistPath,
+      ]
     )
   }
 

@@ -49,7 +49,7 @@ struct SecurityView: View {
       }
     } message: {
       Text(
-        "This stops syspolicyd, turns off LaunchServices quarantine, and installs a watcher that strips the quarantine flag from files in Downloads. Power users only."
+        "This stops syspolicyd, turns off LaunchServices quarantine, and installs a system LaunchDaemon that strips the quarantine flag from Downloads. That writes the signed system volume and needs a restart. Power users only."
       )
     }
   }

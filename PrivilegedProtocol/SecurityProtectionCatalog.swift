@@ -105,7 +105,7 @@ enum SecurityProtectionCatalog {
       title: "Unknown App Protection",
       question: "Keep the unknown-app and quarantine prompts?",
       summary: "syspolicyd. The service behind \"Are you sure you want to open this app?\" and quarantine checks.",
-      disableConsequence: "syspolicyd is stopped, LaunchServices quarantine is turned off, and new files in Downloads are stripped of the quarantine flag.",
+      disableConsequence: "syspolicyd is stopped, LaunchServices quarantine is turned off, and a system LaunchDaemon is installed on the signed system volume to strip the quarantine flag from Downloads. A restart is required.",
       systemImage: "lock.shield",
       kind: .launchServices,
       services: [

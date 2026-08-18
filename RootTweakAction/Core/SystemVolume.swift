@@ -4,6 +4,9 @@ enum SystemVolume {
   static let allowedMountPath = "/Volumes/SystemRW"
   static let applicationsDirectory = "/System/Applications"
   static let disabledApplicationsDirectory = "/System/Applications/.disabled"
+  static let dequarantineBinaryPath = "/usr/libexec/extrememactweaker.dequarantine"
+  static let dequarantinePlistPath =
+    "/System/Library/LaunchDaemons/com.extrememactweaker.dequarantine.plist"
 
   static func baseDevice(using commands: CommandRunner) throws -> String {
     let output = try commands.requireSuccess("/usr/sbin/diskutil", ["info", "-plist", "/"])
@@ -56,9 +59,37 @@ enum SystemVolume {
   }
 
   static func mountedPath(root mountPath: String, systemPath: String) throws -> String {
+    try mountedAllowedPath(
+      root: mountPath,
+      systemPath: try validatedApplicationPath(systemPath)
+    )
+  }
+
+  static func mountedDequarantinePath(
+    root mountPath: String,
+    systemPath: String
+  ) throws -> String {
+    let standardized = standardizedPath(systemPath)
+    guard standardized == dequarantineBinaryPath || standardized == dequarantinePlistPath else {
+      throw RootActionError.invalidArguments(
+        "Path is outside the allowed dequarantine locations: \(systemPath)"
+      )
+    }
+    return try mountedAllowedPath(root: mountPath, systemPath: standardized)
+  }
+
+  static func validatedDownloadsPath(_ path: String) throws -> String {
+    let standardized = standardizedPath(path)
+    let parts = standardized.split(separator: "/", omittingEmptySubsequences: true)
+    guard parts.count == 3, parts[0] == "Users", parts[2] == "Downloads" else {
+      throw RootActionError.invalidArguments("Downloads path must be /Users/<name>/Downloads.")
+    }
+    return standardized
+  }
+
+  private static func mountedAllowedPath(root mountPath: String, systemPath: String) throws -> String {
     let mount = try validatedMountPath(mountPath)
-    let system = try validatedApplicationPath(systemPath)
-    let relativePath = String(system.dropFirst())
+    let relativePath = String(systemPath.dropFirst())
     let mounted = URL(fileURLWithPath: mount, isDirectory: true)
       .appendingPathComponent(relativePath)
       .standardizedFileURL

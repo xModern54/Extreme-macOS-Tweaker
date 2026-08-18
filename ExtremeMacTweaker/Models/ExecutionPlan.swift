@@ -13,9 +13,13 @@ struct ExecutionPlan: Sendable {
       case .launchService(let service):
         service.action == .disable
       case .securityFeature(let feature):
-        feature.action == .disable
-          && (SecurityProtectionCatalog.protection(withID: feature.featureID)?
-            .requiresSIPDisabledToDisable ?? true)
+        if feature.featureID == "system-policy" {
+          true
+        } else {
+          feature.action == .disable
+            && (SecurityProtectionCatalog.protection(withID: feature.featureID)?
+              .requiresSIPDisabledToDisable ?? true)
+        }
       case .systemComponent:
         true
       }
@@ -23,8 +27,14 @@ struct ExecutionPlan: Sendable {
   }
   var requiresAuthenticatedRootDisabled: Bool {
     changes.contains { change in
-      if case .systemApplication = change { return true }
-      return false
+      switch change {
+      case .systemApplication:
+        true
+      case .securityFeature(let feature):
+        feature.featureID == "system-policy"
+      default:
+        false
+      }
     }
   }
   var requiresSystemProtectionCheck: Bool {
@@ -52,6 +62,8 @@ enum ExecutionStep: Identifiable, Sendable {
     enabled: Bool
   )
   case setSecurityFeature(id: String, enabled: Bool)
+  case installSystemDequarantineDaemon(downloadsPath: String)
+  case removeSystemDequarantineDaemon
   case removeSystemComponent(id: String, title: String)
   case createSystemSnapshot
   case unmountSystemVolume
@@ -77,6 +89,10 @@ enum ExecutionStep: Identifiable, Sendable {
     case .setSecurityFeature(let id, let enabled):
       "\(enabled ? "Enable" : "Disable") "
         + (SecurityProtectionCatalog.protection(withID: id)?.title ?? id)
+    case .installSystemDequarantineDaemon:
+      "Install the system dequarantine daemon"
+    case .removeSystemDequarantineDaemon:
+      "Remove the system dequarantine daemon"
     case .removeSystemComponent(_, let title):
       "Remove \(title)"
     case .createSystemSnapshot:

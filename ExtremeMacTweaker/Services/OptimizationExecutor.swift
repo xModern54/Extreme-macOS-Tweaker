@@ -82,6 +82,14 @@ final class OptimizationExecutor {
         "--user-id", String(userID),
         "--enabled", String(enabled),
       ]
+    case .installSystemDequarantineDaemon(let downloadsPath):
+      [
+        "install-system-dequarantine",
+        "--mount-path", mountPath,
+        "--downloads", downloadsPath,
+      ]
+    case .removeSystemDequarantineDaemon:
+      ["remove-system-dequarantine", "--mount-path", mountPath]
     case .removeSystemComponent(let id, _):
       ["remove-system-component", "--id", id]
     }
