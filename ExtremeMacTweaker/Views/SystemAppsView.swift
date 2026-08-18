@@ -36,7 +36,7 @@ struct SystemAppsView: View {
           Text("System Applications")
             .font(.title2.weight(.semibold))
 
-          Text("\(model.applications.count) apps in /System/Applications")
+          Text("You can delete or hide any of the \(model.applications.count) system applications.")
             .font(.subheadline)
             .foregroundStyle(.secondary)
         }
