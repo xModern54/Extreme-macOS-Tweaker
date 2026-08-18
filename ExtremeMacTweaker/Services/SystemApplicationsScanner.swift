@@ -5,13 +5,19 @@ enum SystemApplicationsScanner {
     fileURLWithPath: "/System/Applications",
     isDirectory: true
   )
-  static let disabledApplicationsDirectory = applicationsDirectory
+  static let disabledApplicationsDirectory = URL(
+    fileURLWithPath: "/System/Library/TweakerDisabledApplications",
+    isDirectory: true
+  )
+  static let legacyDisabledApplicationsDirectory = applicationsDirectory
     .appendingPathComponent(".disabled", isDirectory: true)
 
   static func discoverApplications() throws -> [SystemApplication] {
     let installed = try discoverApplications(in: applicationsDirectory, state: .installed)
     let disabled = (try? discoverApplications(in: disabledApplicationsDirectory, state: .disabled)) ?? []
-    return (installed + disabled)
+    let legacyDisabled =
+      (try? discoverApplications(in: legacyDisabledApplicationsDirectory, state: .disabled)) ?? []
+    return (installed + disabled + legacyDisabled)
       .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
   }
 

@@ -15,6 +15,7 @@ enum RootActionRequest {
   case disableApplication(mountPath: String, sourcePath: String, destinationPath: String)
   case restoreApplication(mountPath: String, sourcePath: String, destinationPath: String)
   case deleteApplication(mountPath: String, path: String)
+  case relocateDisabledApplications(mountPath: String)
   case createSnapshot(mountPath: String)
   case setLaunchService(
     label: String,
@@ -38,6 +39,7 @@ enum RootActionRequest {
     case .disableApplication: "disable-application"
     case .restoreApplication: "restore-application"
     case .deleteApplication: "delete-application"
+    case .relocateDisabledApplications: "relocate-disabled-applications"
     case .createSnapshot: "create-snapshot"
     case .setLaunchService: "set-launch-service"
     case .removeSystemComponent: "remove-system-component"
@@ -58,6 +60,7 @@ enum RootActionRequest {
     case .disableApplication(_, let source, _): "Disabling \(appName(source))"
     case .restoreApplication(_, let source, _): "Restoring \(appName(source))"
     case .deleteApplication(_, let path): "Deleting \(appName(path))"
+    case .relocateDisabledApplications: "Moving hidden applications out of Launch Services"
     case .createSnapshot: "Creating a bootable system snapshot"
     case .setLaunchService(let label, _, _, let enabled):
       "\(enabled ? "Enabling" : "Disabling") service \(label)"
@@ -105,6 +108,8 @@ enum RootActionRequest {
         mountPath: try required("mount-path", in: options),
         path: try required("path", in: options)
       )
+    case "relocate-disabled-applications":
+      return .relocateDisabledApplications(mountPath: try required("mount-path", in: options))
     case "create-snapshot":
       return .createSnapshot(mountPath: try required("mount-path", in: options))
     case "set-launch-service":

@@ -63,6 +63,8 @@ final class OptimizationExecutor {
       ]
     case .deleteSystemApplication(let path):
       ["delete-application", "--mount-path", mountPath, "--path", path]
+    case .relocateDisabledApplications:
+      ["relocate-disabled-applications", "--mount-path", mountPath]
     case .createSystemSnapshot:
       ["create-snapshot", "--mount-path", mountPath]
     case .unmountSystemVolume:

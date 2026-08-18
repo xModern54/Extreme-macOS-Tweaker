@@ -98,6 +98,7 @@ enum OptimizationInterpreter {
 
     if !systemVolumeSteps.isEmpty {
       steps.append(.mountSystemVolume)
+      steps.append(.relocateDisabledApplications)
       steps.append(contentsOf: systemVolumeSteps)
       steps.append(.createSystemSnapshot)
       steps.append(.unmountSystemVolume)

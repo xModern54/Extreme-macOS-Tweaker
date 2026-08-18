@@ -53,6 +53,9 @@ enum RootActions {
     case .deleteApplication(let mountPath, let path):
       return try deleteApplication(mountPath: mountPath, path: path, context: context)
 
+    case .relocateDisabledApplications(let mountPath):
+      return try relocateDisabledApplications(mountPath: mountPath, context: context)
+
     case .createSnapshot(let mountPath):
       return try createSnapshot(mountPath, context)
 
@@ -898,6 +901,47 @@ enum RootActions {
       )
     }
     return ("Application was deleted", true, ["path": path])
+  }
+
+  private static func relocateDisabledApplications(
+    mountPath: String,
+    context: RootActionContext
+  ) throws -> (String, Bool, [String: String]) {
+    let legacy = try SystemVolume.mountedLegacyDisabledApplicationsDirectory(root: mountPath)
+    let destination = try SystemVolume.mountedDisabledApplicationsDirectory(root: mountPath)
+    let fileManager = FileManager.default
+
+    guard fileManager.fileExists(atPath: legacy) else {
+      return ("Hidden applications are already outside Launch Services", false, ["moved": "0"])
+    }
+
+    let contents = (try? fileManager.contentsOfDirectory(atPath: legacy)) ?? []
+    let apps = contents.filter { $0.lowercased().hasSuffix(".app") }
+    guard !apps.isEmpty else {
+      _ = try context.commands.run("/bin/rmdir", [legacy])
+      return ("Hidden applications are already outside Launch Services", false, ["moved": "0"])
+    }
+
+    context.events.progress(0.3, "Preparing the hidden-applications directory")
+    _ = try context.commands.requireSuccess("/bin/mkdir", ["-p", destination])
+
+    for (index, app) in apps.enumerated() {
+      let fraction = 0.35 + 0.55 * Double(index) / Double(max(apps.count, 1))
+      context.events.progress(fraction, "Relocating \(app)")
+      let source = URL(fileURLWithPath: legacy).appendingPathComponent(app).path
+      let target = URL(fileURLWithPath: destination).appendingPathComponent(app).path
+      if fileManager.fileExists(atPath: target) {
+        _ = try context.commands.requireSuccess("/bin/rm", ["-rf", "--", target])
+      }
+      _ = try context.commands.requireSuccess("/bin/mv", [source, target])
+    }
+
+    _ = try context.commands.run("/bin/rm", ["-rf", "--", legacy])
+    return (
+      "Hidden applications were moved out of Launch Services",
+      true,
+      ["moved": String(apps.count)]
+    )
   }
 
   private static func createSnapshot(

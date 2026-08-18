@@ -55,6 +55,7 @@ enum ExecutionStep: Identifiable, Sendable {
   case disableSystemApplication(sourcePath: String, destinationPath: String)
   case restoreSystemApplication(sourcePath: String, destinationPath: String)
   case deleteSystemApplication(path: String)
+  case relocateDisabledApplications
   case setLaunchService(
     id: String,
     label: String,
@@ -84,6 +85,8 @@ enum ExecutionStep: Identifiable, Sendable {
       "Restore \(URL(fileURLWithPath: source).deletingPathExtension().lastPathComponent)"
     case .deleteSystemApplication(let path):
       "Delete \(URL(fileURLWithPath: path).deletingPathExtension().lastPathComponent)"
+    case .relocateDisabledApplications:
+      "Move hidden applications out of Launch Services"
     case .setLaunchService(_, let label, _, let enabled):
       "\(enabled ? "Enabling" : "Disabling") service \(label)"
     case .setSecurityFeature(let id, let enabled):

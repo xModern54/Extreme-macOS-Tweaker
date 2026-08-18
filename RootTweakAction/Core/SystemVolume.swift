@@ -3,7 +3,8 @@ import Foundation
 enum SystemVolume {
   static let allowedMountPath = "/Volumes/SystemRW"
   static let applicationsDirectory = "/System/Applications"
-  static let disabledApplicationsDirectory = "/System/Applications/.disabled"
+  static let disabledApplicationsDirectory = "/System/Library/TweakerDisabledApplications"
+  static let legacyDisabledApplicationsDirectory = "/System/Applications/.disabled"
   static let dequarantineBinaryPath = "/usr/libexec/extrememactweaker.dequarantine"
   static let dequarantinePlistPath =
     "/System/Library/LaunchDaemons/com.extrememactweaker.dequarantine.plist"
@@ -50,12 +51,24 @@ enum SystemVolume {
     }
 
     let parent = url.deletingLastPathComponent().path
-    guard parent == applicationsDirectory || parent == disabledApplicationsDirectory else {
+    guard
+      parent == applicationsDirectory
+        || parent == disabledApplicationsDirectory
+        || parent == legacyDisabledApplicationsDirectory
+    else {
       throw RootActionError.invalidArguments(
-        "Application path is outside /System/Applications: \(systemPath)"
+        "Application path is outside the allowed system application locations: \(systemPath)"
       )
     }
     return standardized
+  }
+
+  static func mountedDisabledApplicationsDirectory(root mountPath: String) throws -> String {
+    try mountedAllowedPath(root: mountPath, systemPath: disabledApplicationsDirectory)
+  }
+
+  static func mountedLegacyDisabledApplicationsDirectory(root mountPath: String) throws -> String {
+    try mountedAllowedPath(root: mountPath, systemPath: legacyDisabledApplicationsDirectory)
   }
 
   static func mountedPath(root mountPath: String, systemPath: String) throws -> String {
