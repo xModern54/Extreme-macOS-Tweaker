@@ -632,7 +632,7 @@ enum RootActions {
         if reportsProgress {
           context.events.progress(0.8, "Stopping the running launchd service")
         }
-        _ = try context.commands.requireSuccess(launchctl, ["bootout", serviceTarget])
+        _ = try context.commands.run(launchctl, ["bootout", serviceTarget])
       }
     } else {
       if reportsProgress {
@@ -676,11 +676,13 @@ enum RootActions {
     }
 
     if let plistPath = findLaunchdPlist(label: label, domain: domain) {
-      _ = try context.commands.requireSuccess(
+      let bootstrap = try context.commands.run(
         launchctl,
         ["bootstrap", domainTarget, plistPath]
       )
-      return true
+      if bootstrap.exitCode == 0 {
+        return true
+      }
     }
 
     let kickstart = try context.commands.run(launchctl, ["kickstart", "-k", serviceTarget])
