@@ -10,15 +10,17 @@ enum HostMetricsScanner {
 
   private static func collect() -> HostMetrics {
     let memory = memorySnapshot()
-    let tasks = userTaskCounts()
+    let mach = machTaskCounts()
+    let processCount = mach?.processes ?? visibleTaskCounts().processes
+    let threadCount = userSpaceThreadCount() ?? mach?.threads ?? 0
 
     return HostMetrics(
       processorName: processorName(),
       coreCount: sysctlInt("hw.physicalcpu") ?? ProcessInfo.processInfo.processorCount,
       memoryBytes: memory.total,
       usedMemoryBytes: memory.used,
-      processCount: tasks.processes,
-      threadCount: tasks.threads
+      processCount: processCount,
+      threadCount: threadCount
     )
   }
 
@@ -80,27 +82,50 @@ enum HostMetricsScanner {
     return (total, usedBytes)
   }
 
-  private static func userTaskCounts() -> (processes: Int, threads: Int) {
-    let uid = UInt32(geteuid())
-    let requiredBytes = proc_listpids(UInt32(PROC_UID_ONLY), uid, nil, 0)
+  private static func machTaskCounts() -> (processes: Int, threads: Int)? {
+    var pset = processor_set_name_t(MACH_PORT_NULL)
+    var info = processor_set_load_info()
+    var count = mach_msg_type_number_t(
+      MemoryLayout<processor_set_load_info>.stride / MemoryLayout<natural_t>.stride
+    )
+
+    var status = processor_set_default(mach_host_self(), &pset)
+    if status == KERN_SUCCESS {
+      status = withUnsafeMutablePointer(to: &info) { pointer in
+        pointer.withMemoryRebound(to: integer_t.self, capacity: Int(count)) { rebound in
+          processor_set_statistics(pset, PROCESSOR_SET_LOAD_INFO, rebound, &count)
+        }
+      }
+    }
+
+    if pset != MACH_PORT_NULL {
+      mach_port_deallocate(mach_task_self_, pset)
+    }
+
+    guard status == KERN_SUCCESS else { return nil }
+    return (Int(info.task_count), Int(info.thread_count))
+  }
+
+  private static func visibleTaskCounts() -> (processes: Int, threads: Int) {
+    let requiredBytes = proc_listpids(UInt32(PROC_ALL_PIDS), 0, nil, 0)
     guard requiredBytes > 0 else { return (0, 0) }
 
-    var pids = [pid_t](repeating: 0, count: Int(requiredBytes) / MemoryLayout<pid_t>.size)
+    var pids = [pid_t](repeating: 0, count: Int(requiredBytes) / MemoryLayout<pid_t>.stride)
     let writtenBytes = pids.withUnsafeMutableBytes { buffer in
-      proc_listpids(UInt32(PROC_UID_ONLY), uid, buffer.baseAddress, Int32(buffer.count))
+      proc_listpids(UInt32(PROC_ALL_PIDS), 0, buffer.baseAddress, Int32(buffer.count))
     }
     guard writtenBytes > 0 else { return (0, 0) }
 
-    let count = min(Int(writtenBytes) / MemoryLayout<pid_t>.size, pids.count)
+    let count = min(Int(writtenBytes) / MemoryLayout<pid_t>.stride, pids.count)
     var processes = 0
     var threads = 0
-    let infoSize = Int32(MemoryLayout<proc_taskinfo>.size)
+    let infoSize = MemoryLayout<proc_taskinfo>.stride
 
     for pid in pids.prefix(count) where pid > 0 {
       var info = proc_taskinfo()
       let result = withUnsafeMutablePointer(to: &info) { pointer in
-        pointer.withMemoryRebound(to: CChar.self, capacity: Int(infoSize)) { rebound in
-          proc_pidinfo(pid, PROC_PIDTASKINFO, 0, rebound, infoSize)
+        pointer.withMemoryRebound(to: CChar.self, capacity: infoSize) { rebound in
+          proc_pidinfo(pid, PROC_PIDTASKINFO, 0, rebound, Int32(infoSize))
         }
       }
       guard result == infoSize else { continue }
@@ -109,6 +134,40 @@ enum HostMetricsScanner {
     }
 
     return (processes, threads)
+  }
+
+  // Unprivileged PROC_PIDTASKINFO is same-UID only, so it cannot see
+  // other users' Mach threads. `ps -axM` lists one row per user-space
+  // thread for every process and omits kernel_task.
+  private static func userSpaceThreadCount() -> Int? {
+    let process = Process()
+    let outputPipe = Pipe()
+    process.executableURL = URL(fileURLWithPath: "/bin/ps")
+    process.arguments = ["-axM"]
+    process.standardOutput = outputPipe
+    process.standardError = FileHandle.nullDevice
+
+    do {
+      try process.run()
+      let data = outputPipe.fileHandleForReading.readDataToEndOfFile()
+      process.waitUntilExit()
+      guard process.terminationStatus == 0 else { return nil }
+
+      var count = 0
+      var skippedHeader = false
+      String(decoding: data, as: UTF8.self).enumerateLines { line, _ in
+        if !skippedHeader {
+          skippedHeader = true
+          return
+        }
+        if !line.isEmpty {
+          count += 1
+        }
+      }
+      return skippedHeader ? count : nil
+    } catch {
+      return nil
+    }
   }
 
   private static func sysctlString(_ name: String) -> String? {
