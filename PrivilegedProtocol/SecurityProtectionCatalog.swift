@@ -12,6 +12,7 @@ struct SecurityProtection: Identifiable, Hashable, Sendable {
   let question: String
   let summary: String
   let disableConsequence: String
+  let applyGuidance: String
   let systemImage: String
   let kind: Kind
   let services: [SecurityProtectionService]
@@ -40,6 +41,7 @@ enum SecurityProtectionCatalog {
       question: "Turn off Gatekeeper application assessment?",
       summary: "Stops signature and notarization checks before downloaded applications are opened.",
       disableConsequence: "Applications from unidentified developers can be opened without Gatekeeper assessment.",
+      applyGuidance: "Apply this if you regularly open unsigned or unnotarized apps and do not want macOS to block them. Leave it off if you still want Apple's developer-signature and notarization checks.",
       systemImage: "checkmark.seal",
       kind: .gatekeeper,
       services: [],
@@ -52,6 +54,7 @@ enum SecurityProtectionCatalog {
       question: "Stop Apple's built-in malware scanner?",
       summary: "Turns off background signature scans and malware cleanup jobs.",
       disableConsequence: "XProtect will stop scanning for and remediating known malware.",
+      applyGuidance: "Apply this if you do not want Apple's built-in malware scanner running in the background. Leave it off if you still want XProtect to scan for and remove known malware.",
       systemImage: "shield.lefthalf.filled",
       kind: .launchServices,
       services: [
@@ -107,6 +110,7 @@ enum SecurityProtectionCatalog {
       question: "Stop unknown-app prompts and LaunchServices quarantine?",
       summary: "Turns off syspolicyd, the service behind \"Are you sure you want to open this app?\"",
       disableConsequence: "syspolicyd is stopped and LaunchServices quarantine is turned off. Global Item Whitelist is turned on with this option.",
+      applyGuidance: "Apply this if you do not want \"Are you sure you want to open this app?\" prompts. This also turns on Global Item Whitelist. Leave it off if you still want those prompts.",
       systemImage: "lock.shield",
       kind: .launchServices,
       services: [
@@ -121,12 +125,26 @@ enum SecurityProtectionCatalog {
       confirmsBeforeDisable: true
     ),
     SecurityProtection(
+      id: "download-whitelist",
+      title: "Global Item Whitelist",
+      question: "Treat every file that lands in Downloads as fully trusted?",
+      summary: "Installs a system LaunchDaemon that strips the quarantine flag from files in Downloads as soon as they appear.",
+      disableConsequence: "Built-in antivirus, Gatekeeper, and quarantine checks no longer apply to files that land in Downloads. Every file that arrives is treated as fully trusted and can launch like a normal local item. A system LaunchDaemon is written to the signed system volume and starts at boot with launchd. A restart is required.",
+      applyGuidance: "Apply this if you want every download to be trusted automatically, with no quarantine prompt and no extra scan. Leave it off if you still want macOS to mark new files as untrusted until you open them yourself.",
+      systemImage: "tray.and.arrow.down",
+      kind: .dequarantine,
+      services: [],
+      requiresSIPDisabledToDisable: true,
+      confirmsBeforeDisable: true
+    ),
+    SecurityProtection(
       id: "user-autostarts",
       title: "Disable Any Autostarts",
       question: "Turn off user-space software autostarts?",
       summary: "Shuts down Background Task Management, the user-space subsystem that loads third-party LaunchAgents and login items.",
-      disableConsequence: "Fully disables the user-space autostart system. Other apps cannot add custom launch agents, and existing user-space launch agents will stop starting. Use this only when you do not need third-party autostarts and do not want other software installing its own.",
-      systemImage: "autostartstop",
+      disableConsequence: "Fully disables the user-space autostart system. Other apps cannot add custom launch agents, and existing user-space launch agents will stop starting.",
+      applyGuidance: "Apply this only when you do not need third-party autostarts and do not want other software adding LaunchAgents. Leave it off if you use apps that must start in the background.",
+      systemImage: "powerplug",
       kind: .launchServices,
       services: [
         service(
@@ -142,18 +160,6 @@ enum SecurityProtectionCatalog {
           "/System/Library/LaunchAgents/com.apple.backgroundtaskmanagement.agent.plist"
         ),
       ],
-      requiresSIPDisabledToDisable: true,
-      confirmsBeforeDisable: true
-    ),
-    SecurityProtection(
-      id: "download-whitelist",
-      title: "Global Item Whitelist",
-      question: "Strip the quarantine flag from everything in Downloads?",
-      summary: "Installs a system LaunchDaemon that clears quarantine on files that land in Downloads.",
-      disableConsequence: "A system LaunchDaemon is written to the signed system volume and starts at boot with launchd. New files in Downloads lose their quarantine flag. A restart is required.",
-      systemImage: "folder.badge.checkmark",
-      kind: .dequarantine,
-      services: [],
       requiresSIPDisabledToDisable: true,
       confirmsBeforeDisable: true
     ),

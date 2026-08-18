@@ -207,6 +207,7 @@ private struct SecurityProtectionInspector: View {
         VStack(alignment: .leading, spacing: 18) {
           inspectorHeader
           behaviorSection
+          guidanceSection
           implementationSection
         }
         .frame(width: max(0, geometry.size.width - 32), alignment: .leading)
@@ -251,6 +252,17 @@ private struct SecurityProtectionInspector: View {
       sectionTitle(isApplied ? "When Applied" : "Default")
 
       Text(isApplied ? protection.disableConsequence : idleDescription)
+        .font(.subheadline)
+        .foregroundStyle(.secondary)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+  }
+
+  private var guidanceSection: some View {
+    VStack(alignment: .leading, spacing: 8) {
+      sectionTitle("When to Apply")
+
+      Text(protection.applyGuidance)
         .font(.subheadline)
         .foregroundStyle(.secondary)
         .fixedSize(horizontal: false, vertical: true)

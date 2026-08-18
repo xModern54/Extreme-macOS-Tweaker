@@ -52,7 +52,7 @@ enum SystemDebloatCatalog {
       title: "Photos Clean Up Models",
       summary: "Machine-learning assets used to remove objects from photos.",
       consequence: "Clean Up in Photos will be unavailable until its models are downloaded again.",
-      systemImage: "photo.badge.eraser",
+      systemImage: "photo",
       category: .intelligence,
       paths: assetPaths([
         "com_apple_MobileAsset_UAF_Photos_MagicCleanup"
