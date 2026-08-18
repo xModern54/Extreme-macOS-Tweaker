@@ -37,7 +37,7 @@ struct TweakCatalogService: Decodable, Identifiable, Sendable {
     case gui
   }
 
-  enum Kind: String, Decodable, Sendable {
+  enum Kind: String, Decodable, Equatable, Sendable {
     case daemon
     case agent
     case xpcService

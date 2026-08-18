@@ -56,7 +56,7 @@ enum RootActionRequest {
     case .deleteApplication(_, let path): "Deleting \(appName(path))"
     case .createSnapshot: "Creating a bootable system snapshot"
     case .setLaunchService(let label, _, _, let enabled):
-      "\(enabled ? "Enabling" : "Disabling") \(label)"
+      "\(enabled ? "Enabling" : "Disabling") service \(label)"
     case .removeSystemComponent(let id):
       "Removing \(SystemDebloatCatalog.component(withID: id)?.title ?? "system component")"
     case .setSecurityProtection(let id, _, let enabled):

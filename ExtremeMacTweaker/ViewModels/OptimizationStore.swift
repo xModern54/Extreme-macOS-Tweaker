@@ -144,12 +144,30 @@ final class OptimizationStore: ObservableObject {
         onStep: { [weak self] index, step in
           guard let self else { return }
           executionMessage = step.description
+          if case .setLaunchService = step {
+            executionLog.append(step.description)
+          }
           executionProgress = Double(index) / Double(max(plan.steps.count, 1))
         },
         onEvent: { [weak self] index, event in
           guard let self else { return }
-          executionMessage = event.message
-          executionLog.append(event.message)
+          let isLaunchServiceStep: Bool
+          if case .setLaunchService = plan.steps[index] {
+            isLaunchServiceStep = true
+          } else {
+            isLaunchServiceStep = false
+          }
+
+          if isLaunchServiceStep {
+            if event.type == .failed {
+              executionMessage = event.message
+              executionLog.append(event.message)
+            }
+          } else {
+            executionMessage = event.message
+            executionLog.append(event.message)
+          }
+
           if event.result?.values["requiresConfirmation"] == "true" {
             gatekeeperConfirmationRequired = true
           }
@@ -333,6 +351,46 @@ final class OptimizationStore: ObservableObject {
       }
     }
     persistPendingChanges()
+  }
+
+  func canQueueRestoreAppliedLaunchTweaks(
+    catalog: TweakCatalog?,
+    store: TweakCatalogStore
+  ) -> Bool {
+    guard let catalog else { return false }
+    return catalog.features.contains { feature in
+      let services = store.services(for: feature)
+      guard !services.isEmpty else { return false }
+      let currentlyEnabled = launchServicesAreCurrentlyEnabled(
+        services,
+        defaultEnabled: feature.defaultEnabled
+      )
+      let effectiveEnabled = launchServicesAreEnabled(
+        services,
+        defaultEnabled: feature.defaultEnabled
+      )
+      return !currentlyEnabled && !effectiveEnabled
+    }
+  }
+
+  func queueRestoreAppliedLaunchTweaks(using store: TweakCatalogStore) {
+    guard let catalog = store.catalog else { return }
+    for feature in catalog.features {
+      let services = store.services(for: feature)
+      guard !services.isEmpty else { continue }
+      let currentlyEnabled = launchServicesAreCurrentlyEnabled(
+        services,
+        defaultEnabled: feature.defaultEnabled
+      )
+      guard !currentlyEnabled else { continue }
+      setLaunchServices(
+        services,
+        enabled: true,
+        defaultEnabled: feature.defaultEnabled,
+        featureID: feature.id,
+        featureTitle: feature.localizedTitle
+      )
+    }
   }
 
   func appliedTweakProgress(catalog: TweakCatalog?, store: TweakCatalogStore) -> (applied: Int, total: Int) {

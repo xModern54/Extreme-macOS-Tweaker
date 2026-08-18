@@ -4,9 +4,13 @@ struct LaunchServiceRuntimeState: Equatable, Sendable {
   let isPersistentlyDisabled: Bool
   let isLoaded: Bool
   let isRunning: Bool
+  let kind: TweakCatalogService.Kind
 
   var isEffectivelyActive: Bool {
-    !isPersistentlyDisabled || isLoaded
+    if kind == .xpcService {
+      return !isPersistentlyDisabled || isRunning
+    }
+    return !isPersistentlyDisabled || isLoaded
   }
 }
 
@@ -36,7 +40,8 @@ enum LaunchServiceStateScanner {
           states[service.id] = LaunchServiceRuntimeState(
             isPersistentlyDisabled: disabledLabels.contains(service.label),
             isLoaded: printOutput != nil,
-            isRunning: (processID ?? 0) > 0
+            isRunning: (processID ?? 0) > 0,
+            kind: service.kind
           )
         }
       }

@@ -3184,7 +3184,7 @@
         "spotlight-core"
       ],
       "impact": {
-        "estimatedMemoryMB": 400,
+        "estimatedMemoryMB": 500,
         "estimatedProcessReduction": 59
       },
       "order": 100
@@ -3202,7 +3202,7 @@
         "quicklook"
       ],
       "impact": {
-        "estimatedMemoryMB": 120,
+        "estimatedMemoryMB": 150,
         "estimatedProcessReduction": 3
       },
       "order": 200
@@ -3220,7 +3220,7 @@
         "widgets-chrono"
       ],
       "impact": {
-        "estimatedMemoryMB": 160,
+        "estimatedMemoryMB": 200,
         "estimatedProcessReduction": 6
       },
       "order": 300
@@ -3292,7 +3292,7 @@
         "apple-intelligence"
       ],
       "impact": {
-        "estimatedMemoryMB": 165,
+        "estimatedMemoryMB": 206,
         "estimatedProcessReduction": 10
       },
       "order": 200
@@ -3311,7 +3311,7 @@
         "biome-streams"
       ],
       "impact": {
-        "estimatedMemoryMB": 152,
+        "estimatedMemoryMB": 190,
         "estimatedProcessReduction": 10
       },
       "order": 300
@@ -3348,7 +3348,7 @@
         "appintents-linkd"
       ],
       "impact": {
-        "estimatedMemoryMB": 144,
+        "estimatedMemoryMB": 180,
         "estimatedProcessReduction": 12
       },
       "order": 100
@@ -3403,7 +3403,7 @@
         "continuity-remainder"
       ],
       "impact": {
-        "estimatedMemoryMB": 120,
+        "estimatedMemoryMB": 150,
         "estimatedProcessReduction": 17
       },
       "order": 400
@@ -3530,7 +3530,7 @@
         "appstore-stage-b"
       ],
       "impact": {
-        "estimatedMemoryMB": 160,
+        "estimatedMemoryMB": 200,
         "estimatedProcessReduction": 12
       },
       "order": 600
@@ -3692,7 +3692,7 @@
         "camera-cmio"
       ],
       "impact": {
-        "estimatedMemoryMB": 119,
+        "estimatedMemoryMB": 149,
         "estimatedProcessReduction": 13
       },
       "order": 300
@@ -3729,7 +3729,7 @@
         "weather-maps-tails"
       ],
       "impact": {
-        "estimatedMemoryMB": 106,
+        "estimatedMemoryMB": 132,
         "estimatedProcessReduction": 13
       },
       "order": 500
@@ -3765,7 +3765,7 @@
         "homekit"
       ],
       "impact": {
-        "estimatedMemoryMB": 95,
+        "estimatedMemoryMB": 119,
         "estimatedProcessReduction": 5
       },
       "order": 100
@@ -3982,7 +3982,7 @@
         "notifications-core"
       ],
       "impact": {
-        "estimatedMemoryMB": 98,
+        "estimatedMemoryMB": 123,
         "estimatedProcessReduction": 4
       },
       "order": 1200
@@ -4126,7 +4126,7 @@
         "accessibility-tts"
       ],
       "impact": {
-        "estimatedMemoryMB": 148,
+        "estimatedMemoryMB": 185,
         "estimatedProcessReduction": 6
       },
       "order": 100
@@ -4162,7 +4162,7 @@
         "accessibility-ui-overlays"
       ],
       "impact": {
-        "estimatedMemoryMB": 98,
+        "estimatedMemoryMB": 122,
         "estimatedProcessReduction": 3
       },
       "order": 300

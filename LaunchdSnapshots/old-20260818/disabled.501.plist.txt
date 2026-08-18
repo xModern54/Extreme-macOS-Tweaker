@@ -1,0 +1,6 @@
+{
+  "com.apple.FolderActionsDispatcher" => true
+  "com.apple.ManagedClientAgent.enrollagent" => true
+  "com.apple.ScriptMenuApp" => true
+  "com.apple.Siri.agent" => true
+}

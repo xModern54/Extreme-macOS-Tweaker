@@ -4,6 +4,7 @@ import SwiftUI
 struct SidebarView: View {
   @Binding var selection: AppSection?
   @EnvironmentObject private var optimizationStore: OptimizationStore
+  @EnvironmentObject private var catalogStore: TweakCatalogStore
 
   var body: some View {
     VStack(spacing: 0) {
@@ -49,6 +50,18 @@ struct SidebarView: View {
           Spacer(minLength: 0)
         }
 
+        if appliedTweakCount > 0 {
+          Button(action: restoreAppliedChanges) {
+            Label("Restore Changes", systemImage: "arrow.uturn.backward")
+              .frame(maxWidth: .infinity)
+          }
+          .buttonStyle(.bordered)
+          .controlSize(.large)
+          .disabled(!canRestoreAppliedChanges || optimizationStore.isExecuting)
+          .help(restoreHelp)
+          .transition(.opacity.combined(with: .move(edge: .bottom)))
+        }
+
         Button(action: applyChanges) {
           Label("Apply", systemImage: "checkmark.circle.fill")
             .frame(maxWidth: .infinity)
@@ -59,6 +72,7 @@ struct SidebarView: View {
         .help("Review and apply pending changes")
       }
       .padding(14)
+      .animation(.easeInOut(duration: 0.2), value: appliedTweakCount > 0)
     }
     .background {
       VisualEffectView(
@@ -78,9 +92,34 @@ struct SidebarView: View {
     optimizationStore.presentReview()
   }
 
+  private func restoreAppliedChanges() {
+    optimizationStore.queueRestoreAppliedLaunchTweaks(using: catalogStore)
+  }
+
   private var pendingChangesLabel: String {
     let count = optimizationStore.pendingCount
     return count == 0 ? "No Pending Changes" : "\(count) Pending Change\(count == 1 ? "" : "s")"
+  }
+
+  private var appliedTweakCount: Int {
+    optimizationStore.appliedTweakProgress(
+      catalog: catalogStore.catalog,
+      store: catalogStore
+    ).applied
+  }
+
+  private var canRestoreAppliedChanges: Bool {
+    optimizationStore.canQueueRestoreAppliedLaunchTweaks(
+      catalog: catalogStore.catalog,
+      store: catalogStore
+    )
+  }
+
+  private var restoreHelp: String {
+    let count = appliedTweakCount
+    return "Queue a rollback of \(count) applied System Tweaker change"
+      + (count == 1 ? "" : "s")
+      + ". Apply to put the services back."
   }
 }
 
@@ -199,16 +238,26 @@ private struct ApplyReviewView: View {
       Text(optimizationStore.executionMessage)
         .font(.headline)
 
-      List(optimizationStore.executionLog.indices, id: \.self) { index in
-        Label(
-          optimizationStore.executionLog[index],
-          systemImage: index == optimizationStore.executionLog.indices.last
-            ? "chevron.right.circle.fill"
-            : "checkmark.circle"
-        )
-        .foregroundStyle(index == optimizationStore.executionLog.indices.last ? .primary : .secondary)
+      ScrollViewReader { proxy in
+        List(optimizationStore.executionLog.indices, id: \.self) { index in
+          Label(
+            optimizationStore.executionLog[index],
+            systemImage: index == optimizationStore.executionLog.indices.last
+              ? "chevron.right.circle.fill"
+              : "checkmark.circle"
+          )
+          .foregroundStyle(
+            index == optimizationStore.executionLog.indices.last ? .primary : .secondary
+          )
+          .id(index)
+        }
+        .listStyle(.inset)
+        .defaultScrollAnchor(.bottom)
+        .onChange(of: optimizationStore.executionLog.count) { _, count in
+          guard count > 0 else { return }
+          proxy.scrollTo(count - 1, anchor: .bottom)
+        }
       }
-      .listStyle(.inset)
 
       if optimizationStore.executionPhase == .succeeded,
         optimizationStore.executionRequiresReboot
@@ -359,5 +408,6 @@ private struct SidebarRow: View {
 
   SidebarView(selection: $selection)
     .environmentObject(OptimizationStore())
+    .environmentObject(TweakCatalogStore())
     .frame(width: 232, height: 592)
 }

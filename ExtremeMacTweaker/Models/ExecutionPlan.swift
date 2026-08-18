@@ -73,7 +73,7 @@ enum ExecutionStep: Identifiable, Sendable {
     case .deleteSystemApplication(let path):
       "Delete \(URL(fileURLWithPath: path).deletingPathExtension().lastPathComponent)"
     case .setLaunchService(_, let label, _, let enabled):
-      "\(enabled ? "Enable" : "Disable") service \(label)"
+      "\(enabled ? "Enabling" : "Disabling") service \(label)"
     case .setSecurityFeature(let id, let enabled):
       "\(enabled ? "Enable" : "Disable") "
         + (SecurityProtectionCatalog.protection(withID: id)?.title ?? id)

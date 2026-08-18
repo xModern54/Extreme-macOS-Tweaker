@@ -492,7 +492,7 @@ enum RootActions {
     userID: uid_t,
     enabled: Bool,
     context: RootActionContext,
-    reportsProgress: Bool = true
+    reportsProgress: Bool = false
   ) throws -> (String, Bool, [String: String]) {
     let allowedCharacters = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "._-"))
     guard
@@ -553,7 +553,7 @@ enum RootActions {
 
     let changed = wasDisabled != shouldDisable || wasLoaded || started
     return (
-      "Launch service was \(enabled ? "enabled" : "disabled")",
+      "\(enabled ? "Enabled" : "Disabled") service \(label)",
       changed,
       [
         "label": label,

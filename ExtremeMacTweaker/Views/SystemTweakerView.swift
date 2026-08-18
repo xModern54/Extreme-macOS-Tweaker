@@ -86,13 +86,23 @@ struct SystemTweakerView: View {
 
   private var featureBrowser: some View {
     VStack(alignment: .leading, spacing: 0) {
-      VStack(alignment: .leading, spacing: 6) {
-        Text("System Tweaker")
-          .font(.title2.weight(.semibold))
+      HStack(alignment: .center, spacing: 18) {
+        VStack(alignment: .leading, spacing: 4) {
+          Text("System Tweaker")
+            .font(.title2.weight(.semibold))
 
-        Text("Select the macOS features you use.")
-          .font(.subheadline)
-          .foregroundStyle(.secondary)
+          Text("Select the macOS features you use.")
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+        }
+
+        Spacer()
+
+        Button("Select All") {
+          selectAllFeaturesForDisable()
+        }
+        .disabled(features.isEmpty || allFeaturesMarkedDisable)
+        .help("Select every feature for disabling")
       }
       .padding(.horizontal, 24)
       .padding(.top, 20)
@@ -167,6 +177,22 @@ struct SystemTweakerView: View {
         )
       }
     )
+  }
+
+  private var allFeaturesMarkedDisable: Bool {
+    !features.isEmpty && features.allSatisfy { choice(for: $0) == .disable }
+  }
+
+  private func selectAllFeaturesForDisable() {
+    for feature in features {
+      optimizationStore.setLaunchServices(
+        catalogStore.services(for: feature),
+        enabled: false,
+        defaultEnabled: feature.defaultEnabled,
+        featureID: feature.id,
+        featureTitle: feature.localizedTitle
+      )
+    }
   }
 
   private func selectFirstFeatureIfNeeded() {
