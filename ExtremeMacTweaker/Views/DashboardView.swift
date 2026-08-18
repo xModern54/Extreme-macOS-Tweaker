@@ -162,8 +162,10 @@ struct DashboardView: View {
       "Service Slayer"
     case ..<95:
       "Extreme"
-    default:
+    case ..<100:
       "Ultimate"
+    default:
+      "Absolute"
     }
   }
 
