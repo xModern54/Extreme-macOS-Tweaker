@@ -8,7 +8,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-APP_PATH="$PROJECT_ROOT/.build/DerivedData/Build/Products/Release/Tweaker.app"
+APP_PATH="$PROJECT_ROOT/Tweaker.app"
 COMMIT_MESSAGE="$*"
 
 cd "$PROJECT_ROOT"

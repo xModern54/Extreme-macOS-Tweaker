@@ -7,6 +7,7 @@ PROJECT_PATH="$PROJECT_ROOT/ExtremeMacTweaker.xcodeproj"
 CONFIGURATION="Release"
 DERIVED_DATA_PATH="$PROJECT_ROOT/.build/DerivedData"
 APP_PATH="$DERIVED_DATA_PATH/Build/Products/$CONFIGURATION/Tweaker.app"
+RELEASE_APP_PATH="$PROJECT_ROOT/Tweaker.app"
 EMBEDDED_HELPER="$APP_PATH/Contents/Resources/Helpers/RootTweakAction"
 BUILD_LOG="$(mktemp -t extreme-mac-tweaker-build.XXXXXX)"
 
@@ -97,6 +98,18 @@ if xcodebuild \
   sign_adhoc "$APP_PATH"
   if ! codesign --verify "$WATCHER_OUT" "$EMBEDDED_HELPER" "$APP_PATH"; then
     echo "Adhoc signature verification failed." >&2
+    exit 1
+  fi
+
+  pkill -x ExtremeMacTweaker >/dev/null 2>&1 || true
+  pkill -x Tweaker >/dev/null 2>&1 || true
+  rm -rf "$RELEASE_APP_PATH"
+  if ! ditto "$APP_PATH" "$RELEASE_APP_PATH"; then
+    echo "Failed to copy Tweaker.app to the project root." >&2
+    exit 1
+  fi
+  if ! codesign --verify "$RELEASE_APP_PATH"; then
+    echo "Adhoc signature verification failed after copy." >&2
     exit 1
   fi
 
