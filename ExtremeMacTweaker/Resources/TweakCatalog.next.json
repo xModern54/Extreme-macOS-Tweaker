@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.19.2",
+  "catalogVersion": "2026.08.19.3",
   "compatibility": {
     "minimumMacOSMajor": 15,
     "maximumMacOSMajor": 27,
@@ -111,14 +111,14 @@
     {
       "id": "metadata-mdbulkimport",
       "label": "com.apple.metadata.mdbulkimport",
-      "domain": "system",
-      "kind": "daemon"
+      "domain": "gui",
+      "kind": "agent"
     },
     {
       "id": "metadata-mdwrite",
       "label": "com.apple.metadata.mdwrite",
-      "domain": "system",
-      "kind": "daemon"
+      "domain": "gui",
+      "kind": "agent"
     },
     {
       "id": "chronod",
@@ -243,8 +243,8 @@
     {
       "id": "speech-datainstallerd",
       "label": "com.apple.speech.speechdatainstallerd",
-      "domain": "system",
-      "kind": "daemon"
+      "domain": "gui",
+      "kind": "agent"
     },
     {
       "id": "siri-tts-training",
@@ -267,12 +267,6 @@
     {
       "id": "accessibility-heard",
       "label": "com.apple.accessibility.heard",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
-      "id": "accessibility-uiserver",
-      "label": "com.apple.AccessibilityUIServer",
       "domain": "gui",
       "kind": "agent"
     },
@@ -323,12 +317,6 @@
       "label": "com.apple.triald",
       "domain": "gui",
       "kind": "agent"
-    },
-    {
-      "id": "triald-system",
-      "label": "com.apple.triald_system",
-      "domain": "system",
-      "kind": "daemon"
     },
     {
       "id": "biome-agent",
@@ -393,8 +381,8 @@
     {
       "id": "ospredictiond",
       "label": "com.apple.ospredictiond",
-      "domain": "gui",
-      "kind": "agent"
+      "domain": "system",
+      "kind": "daemon"
     },
     {
       "id": "analyticsd",
@@ -423,20 +411,14 @@
     {
       "id": "geoanalyticsd",
       "label": "com.apple.geoanalyticsd",
-      "domain": "system",
-      "kind": "daemon"
+      "domain": "gui",
+      "kind": "agent"
     },
     {
       "id": "metrickitd",
       "label": "com.apple.metrickitd",
-      "domain": "system",
-      "kind": "daemon"
-    },
-    {
-      "id": "inputanalyticsd",
-      "label": "com.apple.inputanalyticsd",
-      "domain": "system",
-      "kind": "daemon"
+      "domain": "gui",
+      "kind": "agent"
     },
     {
       "id": "inputanalyticsd-user",
@@ -477,8 +459,8 @@
     {
       "id": "ecosystemd",
       "label": "com.apple.ecosystemd",
-      "domain": "gui",
-      "kind": "agent"
+      "domain": "system",
+      "kind": "daemon"
     },
     {
       "id": "aslmanager",
@@ -569,12 +551,6 @@
       "label": "com.apple.telephonyutilities.callservicesd",
       "domain": "gui",
       "kind": "agent"
-    },
-    {
-      "id": "avconferenced",
-      "label": "com.apple.avconferenced",
-      "domain": "system",
-      "kind": "daemon"
     },
     {
       "id": "sharingd",
@@ -695,6 +671,12 @@
       "label": "com.apple.findmymacmessenger",
       "domain": "system",
       "kind": "daemon"
+    },
+    {
+      "id": "findmymacmessenger-user",
+      "label": "com.apple.findmymacmessenger",
+      "domain": "gui",
+      "kind": "agent"
     },
     {
       "id": "searchpartyd",
@@ -961,6 +943,12 @@
       "kind": "agent"
     },
     {
+      "id": "cloudd-system",
+      "label": "com.apple.cloudd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
       "id": "syncdefaultsd",
       "label": "com.apple.syncdefaultsd",
       "domain": "gui",
@@ -1183,6 +1171,12 @@
       "kind": "daemon"
     },
     {
+      "id": "assetcache-locator-user",
+      "label": "com.apple.AssetCacheLocatorService",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
       "id": "assetcache-manager",
       "label": "com.apple.AssetCacheManagerService",
       "domain": "system",
@@ -1251,12 +1245,6 @@
     {
       "id": "gamesaved",
       "label": "com.apple.gamesaved",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
-      "id": "game-overlay-ui",
-      "label": "com.apple.GameOverlayUI",
       "domain": "gui",
       "kind": "agent"
     },
@@ -1437,14 +1425,20 @@
     {
       "id": "icdd",
       "label": "com.apple.icdd",
-      "domain": "system",
-      "kind": "daemon"
+      "domain": "gui",
+      "kind": "agent"
     },
     {
       "id": "ctkd",
       "label": "com.apple.ctkd",
       "domain": "system",
       "kind": "daemon"
+    },
+    {
+      "id": "ctkd-user",
+      "label": "com.apple.ctkd",
+      "domain": "gui",
+      "kind": "agent"
     },
     {
       "id": "commcenter",
@@ -1713,8 +1707,8 @@
     {
       "id": "metadata-mds-index-readonly",
       "label": "com.apple.metadata.mds.index.readonly",
-      "domain": "gui",
-      "kind": "agent"
+      "domain": "system",
+      "kind": "daemon"
     },
     {
       "id": "metadata-mds-spindump",
@@ -1825,12 +1819,6 @@
       "kind": "daemon"
     },
     {
-      "id": "messages-action-extension",
-      "label": "com.apple.MobileSMS.MessagesActionExtension",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
       "id": "im-auto-history-deletion",
       "label": "com.apple.imautomatichistorydeletionagent",
       "domain": "gui",
@@ -1867,14 +1855,8 @@
       "kind": "agent"
     },
     {
-      "id": "useractivityd-short",
-      "label": "com.apple.useractivityd",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
       "id": "sidecar-hid-relay",
-      "label": "com.apple.sidecar-hid-relay",
+      "label": "com.apple.sidecar-display-agent",
       "domain": "gui",
       "kind": "agent"
     },
@@ -1898,13 +1880,13 @@
     },
     {
       "id": "ss-invitation-agent",
-      "label": "com.apple.SSInvitationAgent",
+      "label": "com.apple.ssinvitationagent",
       "domain": "gui",
       "kind": "agent"
     },
     {
       "id": "cloudpaird",
-      "label": "com.apple.cloudpaird",
+      "label": "com.apple.BTServer.cloudpairing",
       "domain": "gui",
       "kind": "agent"
     },
@@ -1921,20 +1903,8 @@
       "kind": "agent"
     },
     {
-      "id": "maps-pushdaemon",
-      "label": "com.apple.Maps.pushdaemon",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
       "id": "maps-destinationd",
       "label": "com.apple.maps.destinationd",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
-      "id": "maps-mapssyncd-lower",
-      "label": "com.apple.maps.mapssyncd",
       "domain": "gui",
       "kind": "agent"
     },
@@ -2115,12 +2085,6 @@
     {
       "id": "unc-loginwindow",
       "label": "com.apple.UserNotificationCenterAgent-LoginWindow",
-      "domain": "system",
-      "kind": "daemon"
-    },
-    {
-      "id": "icloud-user-notifications",
-      "label": "com.apple.iCloudUserNotifications",
       "domain": "gui",
       "kind": "agent"
     },
@@ -2269,20 +2233,8 @@
       "kind": "agent"
     },
     {
-      "id": "wifi-agent-legacy",
-      "label": "com.apple.WiFiAgent",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
       "id": "ftp-proxy",
       "label": "com.apple.ftp-proxy",
-      "domain": "system",
-      "kind": "daemon"
-    },
-    {
-      "id": "ftpd",
-      "label": "com.apple.ftpd",
       "domain": "system",
       "kind": "daemon"
     },
@@ -2307,12 +2259,6 @@
     {
       "id": "safari-launch-agent",
       "label": "com.apple.SafariLaunchAgent",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
-      "id": "coreservices-uiagent-legacy",
-      "label": "com.apple.CoreServicesUIAgent",
       "domain": "gui",
       "kind": "agent"
     },
@@ -2472,7 +2418,6 @@
     {
       "id": "accessibility-ui-overlays",
       "services": [
-        "accessibility-uiserver",
         "accessibility-visuals",
         "motion-tracking-agent"
       ]
@@ -2496,7 +2441,6 @@
       "id": "apple-trial",
       "services": [
         "triald",
-        "triald-system",
         "triald-dot-system"
       ]
     },
@@ -2536,7 +2480,6 @@
     {
       "id": "telemetry-tails",
       "services": [
-        "inputanalyticsd",
         "inputanalyticsd-user",
         "audioanalyticsd",
         "systemstats-analysis",
@@ -2575,7 +2518,6 @@
         "callhistory-sync",
         "callhistory-plugin",
         "screensharing-messages",
-        "messages-action-extension",
         "im-auto-history-deletion"
       ]
     },
@@ -2589,7 +2531,6 @@
       "id": "facetime-callkit",
       "services": [
         "callservicesd",
-        "avconferenced",
         "callintelligenced",
         "videoconference-camera"
       ]
@@ -2609,8 +2550,7 @@
         "intelligentroutingd",
         "airplay-ui-agent",
         "airplay-xpc-helper",
-        "replicatord",
-        "useractivityd-short"
+        "replicatord"
       ]
     },
     {
@@ -2644,7 +2584,8 @@
         "findmymacmessenger",
         "searchpartyd",
         "searchpartyuseragent",
-        "findmydevice-user-agent"
+        "findmydevice-user-agent",
+        "findmymacmessenger-user"
       ]
     },
     {
@@ -2733,7 +2674,6 @@
         "aos-push-relay",
         "me-notification-service",
         "unc-loginwindow",
-        "icloud-user-notifications",
         "mobile-notification-proxy",
         "noticeboard-agent",
         "keychain-circle-notification"
@@ -2750,7 +2690,8 @@
     {
       "id": "cloudkit-hub",
       "services": [
-        "cloudd"
+        "cloudd",
+        "cloudd-system"
       ]
     },
     {
@@ -2849,7 +2790,8 @@
         "assetcache-locator-system",
         "assetcache-manager",
         "assetcache-tetherator",
-        "assetcache-agent"
+        "assetcache-agent",
+        "assetcache-locator-user"
       ]
     },
     {
@@ -2870,7 +2812,6 @@
         "gamecontrolleragentd",
         "gamed",
         "gamesaved",
-        "game-overlay-ui",
         "sportsd"
       ]
     },
@@ -2891,9 +2832,7 @@
         "weatherd",
         "maps-mapspushd",
         "maps-mapssyncd",
-        "maps-pushdaemon",
         "maps-destinationd",
-        "maps-mapssyncd-lower",
         "navd"
       ]
     },
@@ -3003,7 +2942,8 @@
         "ctkd",
         "cryptotokenkit-ahp",
         "cryptotokenkit-ahp-agent",
-        "ctkbind"
+        "ctkbind",
+        "ctkd-user"
       ]
     },
     {
@@ -3024,8 +2964,7 @@
     {
       "id": "wifi-menu-agent",
       "services": [
-        "wifi-agent",
-        "wifi-agent-legacy"
+        "wifi-agent"
       ]
     },
     {
@@ -3039,8 +2978,7 @@
       "services": [
         "netbiosd",
         "dhcp6d",
-        "ftp-proxy",
-        "ftpd"
+        "ftp-proxy"
       ]
     },
     {
@@ -3160,8 +3098,7 @@
     {
       "id": "download-quarantine",
       "services": [
-        "coreservices-uiagent",
-        "coreservices-uiagent-legacy"
+        "coreservices-uiagent"
       ]
     }
   ],
