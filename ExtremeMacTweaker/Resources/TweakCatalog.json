@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.19.1",
+  "catalogVersion": "2026.08.19.2",
   "compatibility": {
     "minimumMacOSMajor": 15,
     "maximumMacOSMajor": 27,
@@ -837,8 +837,8 @@
     {
       "id": "dmd",
       "label": "com.apple.dmd",
-      "domain": "system",
-      "kind": "daemon"
+      "domain": "gui",
+      "kind": "agent"
     },
     {
       "id": "askpermissiond",
@@ -1401,8 +1401,8 @@
     {
       "id": "networkserviceproxy",
       "label": "com.apple.networkserviceproxy",
-      "domain": "system",
-      "kind": "daemon"
+      "domain": "gui",
+      "kind": "agent"
     },
     {
       "id": "captiveagent",
@@ -1527,8 +1527,8 @@
     {
       "id": "mobilerepaird",
       "label": "com.apple.mobilerepaird",
-      "domain": "system",
-      "kind": "daemon"
+      "domain": "gui",
+      "kind": "agent"
     },
     {
       "id": "perfpower-services",
