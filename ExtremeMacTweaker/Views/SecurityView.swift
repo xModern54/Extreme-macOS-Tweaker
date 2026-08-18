@@ -317,7 +317,7 @@ private struct SecurityProtectionInspector: View {
     case .gatekeeper:
       "spctl --global-\(isApplied ? "disable" : "enable")"
     case .dequarantine:
-      "/usr/libexec/extrememactweaker.dequarantine"
+      "/usr/libexec/dqd"
     case .launchServices:
       ""
     }

@@ -24,7 +24,7 @@ enum SecurityProtectionStateScanner {
 
         case .dequarantine:
           states[protection.id] = FileManager.default.isExecutableFile(
-            atPath: "/usr/libexec/extrememactweaker.dequarantine"
+            atPath: "/usr/libexec/dqd"
           )
         }
       }

@@ -256,7 +256,7 @@ enum RootActions {
       root: mountPath,
       systemPath: SystemVolume.dequarantinePlistPath
     )
-    let source = try helperSiblingNamed("dequarantine-watcher")
+    let source = try helperSiblingNamed("dqd")
 
     context.events.progress(0.2, "Clearing quarantine on existing Downloads")
     try FileManager.default.createDirectory(
@@ -273,6 +273,13 @@ enum RootActions {
     _ = try context.commands.requireSuccess("/bin/cp", [source.path, mountedBinary])
     _ = try context.commands.requireSuccess("/bin/chmod", ["755", mountedBinary])
     _ = try context.commands.run("/usr/sbin/chown", ["root:wheel", mountedBinary])
+    let mountedLegacyBinary = try SystemVolume.mountedDequarantinePath(
+      root: mountPath,
+      systemPath: SystemVolume.legacyDequarantineBinaryPath
+    )
+    if FileManager.default.fileExists(atPath: mountedLegacyBinary) {
+      _ = try context.commands.requireSuccess("/bin/rm", ["-f", "--", mountedLegacyBinary])
+    }
 
     context.events.progress(0.7, "Installing the system LaunchDaemon")
     // Adaptive keeps the job out of the interactive band while it waits.
@@ -309,6 +316,10 @@ enum RootActions {
       root: mountPath,
       systemPath: SystemVolume.dequarantineBinaryPath
     )
+    let mountedLegacyBinary = try SystemVolume.mountedDequarantinePath(
+      root: mountPath,
+      systemPath: SystemVolume.legacyDequarantineBinaryPath
+    )
     let mountedPlist = try SystemVolume.mountedDequarantinePath(
       root: mountPath,
       systemPath: SystemVolume.dequarantinePlistPath
@@ -321,7 +332,8 @@ enum RootActions {
 
     var removed = false
     context.events.progress(0.5, "Removing the system dequarantine daemon")
-    for path in [mountedBinary, mountedPlist] where FileManager.default.fileExists(atPath: path) {
+    for path in [mountedBinary, mountedLegacyBinary, mountedPlist]
+    where FileManager.default.fileExists(atPath: path) {
       _ = try context.commands.requireSuccess("/bin/rm", ["-f", "--", path])
       removed = true
     }
@@ -354,7 +366,7 @@ enum RootActions {
     guard FileManager.default.isExecutableFile(atPath: sibling.path) else {
       throw RootActionError.operationFailed(
         code: "watcher_missing",
-        message: "dequarantine-watcher is missing from the application bundle."
+        message: "dqd is missing from the application bundle."
       )
     }
     return sibling

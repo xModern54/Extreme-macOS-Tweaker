@@ -5,7 +5,8 @@ enum SystemVolume {
   static let applicationsDirectory = "/System/Applications"
   static let disabledApplicationsDirectory = "/System/Library/TweakerDisabledApplications"
   static let legacyDisabledApplicationsDirectory = "/System/Applications/.disabled"
-  static let dequarantineBinaryPath = "/usr/libexec/extrememactweaker.dequarantine"
+  static let dequarantineBinaryPath = "/usr/libexec/dqd"
+  static let legacyDequarantineBinaryPath = "/usr/libexec/extrememactweaker.dequarantine"
   static let dequarantinePlistPath =
     "/System/Library/LaunchDaemons/com.extrememactweaker.dequarantine.plist"
 
@@ -83,7 +84,11 @@ enum SystemVolume {
     systemPath: String
   ) throws -> String {
     let standardized = standardizedPath(systemPath)
-    guard standardized == dequarantineBinaryPath || standardized == dequarantinePlistPath else {
+    guard
+      standardized == dequarantineBinaryPath
+        || standardized == legacyDequarantineBinaryPath
+        || standardized == dequarantinePlistPath
+    else {
       throw RootActionError.invalidArguments(
         "Path is outside the allowed dequarantine locations: \(systemPath)"
       )

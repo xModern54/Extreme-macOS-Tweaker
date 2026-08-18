@@ -34,18 +34,18 @@ if xcodebuild \
   fi
 
   APP_PATH="$DERIVED_DATA_PATH/Build/Products/Release/Tweaker.app"
-  WATCHER_OUT="$APP_PATH/Contents/Resources/Helpers/dequarantine-watcher"
+  WATCHER_OUT="$APP_PATH/Contents/Resources/Helpers/dqd"
   if ! clang -O2 -Wall -Wextra -arch arm64 \
     -framework CoreServices \
     -framework CoreFoundation \
     -o "$WATCHER_OUT" \
     "$PROJECT_ROOT/DequarantineWatcher/main.c"; then
-    echo "Failed to build dequarantine-watcher." >&2
+    echo "Failed to build dqd." >&2
     exit 1
   fi
   chmod 755 "$WATCHER_OUT"
   if ! /usr/bin/lipo "$WATCHER_OUT" -verify_arch arm64 >/dev/null 2>&1; then
-    echo "Embedded dequarantine-watcher is not an ARM64 executable." >&2
+    echo "Embedded dqd is not an ARM64 executable." >&2
     exit 1
   fi
 
