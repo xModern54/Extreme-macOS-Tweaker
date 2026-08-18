@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.18.6",
+  "catalogVersion": "2026.08.19.1",
   "compatibility": {
     "minimumMacOSMajor": 15,
     "maximumMacOSMajor": 27,
@@ -1563,8 +1563,8 @@
     {
       "id": "swtransparencyd",
       "label": "com.apple.swtransparencyd",
-      "domain": "system",
-      "kind": "daemon"
+      "domain": "gui",
+      "kind": "agent"
     },
     {
       "id": "safari-platform-helper",
