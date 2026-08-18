@@ -6,12 +6,22 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BUILD_SCRIPT="$PROJECT_ROOT/Scripts/Build.sh"
 APP_PATH="$PROJECT_ROOT/Tweaker.app"
 APP_BINARY="$APP_PATH/Contents/MacOS/Tweaker"
+VOLUME_NAME="Extreme Mac Tweaker"
+MOUNT_POINT="/Volumes/${VOLUME_NAME}"
 STAGE=""
+RW_DMG=""
 LOG="$(mktemp -t extreme-mac-tweaker-release.XXXXXX)"
 
 cleanup() {
+  if [[ -d "$MOUNT_POINT" ]]; then
+    /usr/bin/hdiutil detach "$MOUNT_POINT" >/dev/null 2>&1 || \
+      /usr/bin/hdiutil detach -force "$MOUNT_POINT" >/dev/null 2>&1 || true
+  fi
   if [[ -n "$STAGE" && -d "$STAGE" ]]; then
     rm -rf "$STAGE"
+  fi
+  if [[ -n "$RW_DMG" && -f "$RW_DMG" ]]; then
+    rm -f "$RW_DMG"
   fi
   rm -f "$LOG"
 }
@@ -58,20 +68,105 @@ DMG_NAME="ExtremeMacTweaker-v${VERSION}-${DMG_ARCH}.dmg"
 DMG_PATH="$PROJECT_ROOT/$DMG_NAME"
 
 STAGE="$(mktemp -d -t extreme-mac-tweaker-dmg)"
+RW_DMG="${STAGE}.udrw.dmg"
 if ! /usr/bin/ditto "$APP_PATH" "$STAGE/Tweaker.app"; then
   fail "Failed to stage Tweaker.app for the disk image."
 fi
 ln -s /Applications "$STAGE/Applications"
+VOLUME_ICON="$APP_PATH/Contents/Resources/AppIcon.icns"
 
-hdiutil detach "/Volumes/Extreme Mac Tweaker" >/dev/null 2>&1 || true
-rm -f "$DMG_PATH"
+/usr/bin/hdiutil detach "$MOUNT_POINT" >/dev/null 2>&1 || true
+rm -f "$DMG_PATH" "$RW_DMG"
 if ! /usr/bin/hdiutil create \
-  -volname "Extreme Mac Tweaker" \
+  -volname "$VOLUME_NAME" \
   -srcfolder "$STAGE" \
   -ov \
+  -format UDRW \
+  -fs HFS+ \
+  "$RW_DMG" >"$LOG" 2>&1; then
+  fail "Failed to create the writable disk image."
+fi
+
+if ! /usr/bin/hdiutil resize -size 64m "$RW_DMG" >"$LOG" 2>&1; then
+  fail "Failed to resize the writable disk image."
+fi
+
+if ! /usr/bin/hdiutil attach \
+  -readwrite \
+  -noverify \
+  -noautoopen \
+  "$RW_DMG" >"$LOG" 2>&1; then
+  fail "Failed to mount the writable disk image."
+fi
+
+for _ in $(seq 1 50); do
+  if [[ -d "$MOUNT_POINT/Tweaker.app" && -e "$MOUNT_POINT/Applications" ]]; then
+    break
+  fi
+  sleep 0.1
+done
+if [[ ! -d "$MOUNT_POINT/Tweaker.app" ]]; then
+  fail "The writable disk image did not mount at ${MOUNT_POINT}."
+fi
+
+if [[ -f "$VOLUME_ICON" ]]; then
+  cp "$VOLUME_ICON" "$MOUNT_POINT/.VolumeIcon.icns"
+  if [[ -x /usr/bin/SetFile ]]; then
+    /usr/bin/SetFile -c icnC "$MOUNT_POINT/.VolumeIcon.icns" >/dev/null 2>&1 || true
+    /usr/bin/SetFile -a C "$MOUNT_POINT" >/dev/null 2>&1 || true
+  fi
+fi
+
+if ! /usr/bin/osascript >"$LOG" 2>&1 <<EOF
+tell application "Finder"
+  tell disk "$VOLUME_NAME"
+    open
+    set current view of container window to icon view
+    set toolbar visible of container window to false
+    set statusbar visible of container window to false
+    set sidebar width of container window to 0
+    set the bounds of container window to {360, 180, 960, 580}
+    set viewOptions to the icon view options of container window
+    set arrangement of viewOptions to not arranged
+    set icon size of viewOptions to 128
+    delay 0.4
+    set position of item "Tweaker.app" of container window to {160, 200}
+    set position of item "Applications" of container window to {440, 200}
+    delay 0.4
+    set position of item "Tweaker.app" of container window to {160, 200}
+    set position of item "Applications" of container window to {440, 200}
+    close
+    open
+    update without registering applications
+    delay 2
+    close
+  end tell
+end tell
+EOF
+then
+  fail "Failed to apply the Finder window layout. Allow Automation access for Finder if prompted."
+fi
+
+if [[ -x /usr/sbin/bless ]]; then
+  /usr/sbin/bless --folder "$MOUNT_POINT" --openfolder "$MOUNT_POINT" >/dev/null 2>&1 || true
+fi
+
+sync
+/usr/bin/osascript -e "tell application \"Finder\" to eject disk \"${VOLUME_NAME}\"" >/dev/null 2>&1 || true
+sleep 1
+if [[ -d "$MOUNT_POINT" ]]; then
+  if ! /usr/bin/hdiutil detach "$MOUNT_POINT" >"$LOG" 2>&1; then
+    /usr/bin/hdiutil detach -force "$MOUNT_POINT" >"$LOG" 2>&1 || \
+      fail "Failed to unmount the writable disk image."
+  fi
+fi
+
+if ! /usr/bin/hdiutil convert \
+  "$RW_DMG" \
   -format UDZO \
   -imagekey zlib-level=9 \
-  "$DMG_PATH" >"$LOG" 2>&1; then
+  -ov \
+  -o "$DMG_PATH" >"$LOG" 2>&1; then
   fail "Failed to create $DMG_NAME."
 fi
 
