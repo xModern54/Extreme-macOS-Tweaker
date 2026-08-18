@@ -11,12 +11,18 @@ struct SidebarView: View {
       Color.clear
         .frame(height: 40)
 
-      Text("Tweaker")
-        .font(.title2.weight(.bold))
-        .padding(.horizontal, 18)
-        .padding(.top, 4)
-        .padding(.bottom, 8)
-        .frame(maxWidth: .infinity, alignment: .leading)
+      VStack(alignment: .leading, spacing: 2) {
+        Text("Tweaker")
+          .font(.title2.weight(.bold))
+
+        Text(appVersion)
+          .font(.caption)
+          .foregroundStyle(.secondary)
+      }
+      .padding(.horizontal, 18)
+      .padding(.top, 4)
+      .padding(.bottom, 8)
+      .frame(maxWidth: .infinity, alignment: .leading)
 
       List(selection: $selection) {
         SidebarRow(section: .dashboard)
@@ -94,6 +100,11 @@ struct SidebarView: View {
 
   private func restoreAppliedChanges() {
     optimizationStore.queueRestoreAppliedLaunchTweaks(using: catalogStore)
+  }
+
+  private var appVersion: String {
+    Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+      ?? "0.1.0"
   }
 
   private var pendingChangesLabel: String {
