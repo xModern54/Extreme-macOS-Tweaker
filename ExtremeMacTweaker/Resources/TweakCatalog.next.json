@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.18.5",
+  "catalogVersion": "2026.08.18.6",
   "compatibility": {
     "minimumMacOSMajor": 15,
     "maximumMacOSMajor": 27,
@@ -437,6 +437,12 @@
       "label": "com.apple.inputanalyticsd",
       "domain": "system",
       "kind": "daemon"
+    },
+    {
+      "id": "inputanalyticsd-user",
+      "label": "com.apple.inputanalyticsd",
+      "domain": "gui",
+      "kind": "agent"
     },
     {
       "id": "audioanalyticsd",
@@ -2543,6 +2549,7 @@
       "id": "telemetry-tails",
       "services": [
         "inputanalyticsd",
+        "inputanalyticsd-user",
         "audioanalyticsd",
         "systemstats-analysis",
         "systemstats-daily",
@@ -4044,7 +4051,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 45,
-        "estimatedProcessReduction": 14
+        "estimatedProcessReduction": 15
       },
       "order": 200
     },
