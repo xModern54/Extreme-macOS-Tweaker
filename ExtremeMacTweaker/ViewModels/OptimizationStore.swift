@@ -172,10 +172,13 @@ final class OptimizationStore: ObservableObject {
       executionMessage = gatekeeperConfirmationRequired
         ? "Confirmation is required in Privacy & Security"
         : "Changes were applied successfully"
-      if plan.requiresReboot {
-        privilegedSession = session
-        executionLog.append("Restart macOS to boot from the new system snapshot")
-      }
+      privilegedSession = session
+      executionRequiresReboot = true
+      executionLog.append(
+        plan.requiresReboot
+          ? "Restart macOS to boot from the new system snapshot"
+          : "Restart macOS to finish applying these changes"
+      )
       executionPhase = .succeeded
     } catch {
       executionError = error.localizedDescription

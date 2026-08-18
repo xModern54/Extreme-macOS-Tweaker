@@ -268,16 +268,12 @@ private struct ApplyReviewView: View {
         }
         .buttonStyle(.borderedProminent)
         .disabled(!optimizationStore.canStartExecution)
-      } else if optimizationStore.executionPhase == .succeeded,
-        optimizationStore.gatekeeperConfirmationRequired
-      {
-        Button("Open Privacy & Security") {
-          openPrivacyAndSecuritySettings()
+      } else if optimizationStore.executionPhase == .succeeded {
+        if optimizationStore.gatekeeperConfirmationRequired {
+          Button("Open Privacy & Security") {
+            openPrivacyAndSecuritySettings()
+          }
         }
-        .buttonStyle(.borderedProminent)
-      } else if optimizationStore.executionPhase == .succeeded,
-        optimizationStore.executionRequiresReboot
-      {
         Button("Restart Now") {
           Task { await optimizationStore.restartSystemWithoutReopeningApplications() }
         }
