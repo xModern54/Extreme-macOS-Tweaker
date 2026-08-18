@@ -1567,18 +1567,6 @@
       "kind": "daemon"
     },
     {
-      "id": "backgroundtaskmanagementd",
-      "label": "com.apple.backgroundtaskmanagementd",
-      "domain": "system",
-      "kind": "daemon"
-    },
-    {
-      "id": "backgroundtaskmanagement-agent",
-      "label": "com.apple.backgroundtaskmanagement.agent",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
       "id": "safari-platform-helper",
       "label": "com.apple.SafariPlatformSupport.Helper",
       "domain": "system",
@@ -3102,13 +3090,6 @@
       ]
     },
     {
-      "id": "background-task-ui",
-      "services": [
-        "backgroundtaskmanagementd",
-        "backgroundtaskmanagement-agent"
-      ]
-    },
-    {
       "id": "safari-helpers",
       "services": [
         "safari-platform-helper",
@@ -4468,24 +4449,6 @@
         "estimatedProcessReduction": 1
       },
       "order": 1600
-    },
-    {
-      "id": "login-item-banners",
-      "categoryID": "system-network",
-      "title": "Login Item Banners",
-      "question": "Show banners when apps add background login items?",
-      "description": "Background Task Management agent and daemon for login-item notifications.",
-      "disableGuidance": "Disable this to suppress login-item addition banners and related telemetry.",
-      "systemImage": "list.bullet.rectangle",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "background-task-ui"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 18,
-        "estimatedProcessReduction": 2
-      },
-      "order": 1700
     },
     {
       "id": "apfs-volume-banners",

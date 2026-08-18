@@ -121,6 +121,31 @@ enum SecurityProtectionCatalog {
       confirmsBeforeDisable: true
     ),
     SecurityProtection(
+      id: "user-autostarts",
+      title: "Disable Any Autostarts",
+      question: "Turn off user-space software autostarts?",
+      summary: "Shuts down Background Task Management, the user-space subsystem that loads third-party LaunchAgents and login items.",
+      disableConsequence: "Fully disables the user-space autostart system. Other apps cannot add custom launch agents, and existing user-space launch agents will stop starting. Use this only when you do not need third-party autostarts and do not want other software installing its own.",
+      systemImage: "autostartstop",
+      kind: .launchServices,
+      services: [
+        service(
+          "backgroundtaskmanagementd",
+          "com.apple.backgroundtaskmanagementd",
+          .system,
+          "/System/Library/LaunchDaemons/com.apple.backgroundtaskmanagementd.plist"
+        ),
+        service(
+          "backgroundtaskmanagement-agent",
+          "com.apple.backgroundtaskmanagement.agent",
+          .gui,
+          "/System/Library/LaunchAgents/com.apple.backgroundtaskmanagement.agent.plist"
+        ),
+      ],
+      requiresSIPDisabledToDisable: true,
+      confirmsBeforeDisable: true
+    ),
+    SecurityProtection(
       id: "download-whitelist",
       title: "Global Item Whitelist",
       question: "Strip the quarantine flag from everything in Downloads?",
