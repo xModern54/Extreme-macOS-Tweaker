@@ -32,9 +32,11 @@ final class OptimizationStore: ObservableObject {
   @Published private(set) var observedLaunchServiceStates: [String: LaunchServiceRuntimeState] = [:]
   @Published private(set) var observedSecurityProtectionStates: [String: Bool] = [:]
   @Published private(set) var gatekeeperConfirmationRequired = false
+  @Published private(set) var savedStorage = SavedStorageLedger.empty
 
   private let persistenceURL: URL?
   private let launchServiceStatesURL: URL?
+  private let savedStorageURL: URL?
   private var privilegedSession: PrivilegedExecutionSession?
 
   init() {
@@ -47,9 +49,13 @@ final class OptimizationStore: ObservableObject {
     persistenceURL = tweakerDirectory?.appendingPathComponent("pending-changes.json")
     launchServiceStatesURL = tweakerDirectory?
       .appendingPathComponent("launch-service-states.json")
+    savedStorageURL = tweakerDirectory?.appendingPathComponent("saved-storage.json")
     restoreAppliedLaunchServiceStates()
     restorePendingChanges()
+    restoreSavedStorage()
   }
+
+  var savedStorageBytes: Int64 { savedStorage.totalBytes }
 
   var pendingCount: Int { pendingChangeSummaries.count }
   var canApply: Bool { !pendingChanges.isEmpty && !isExecuting }
@@ -139,6 +145,7 @@ final class OptimizationStore: ObservableObject {
       executionMessage = "Authorization granted"
       executionLog.append("Authorization granted")
 
+      let storageSavings = await resolvedStorageSavings(from: plan.changes)
       let executor = OptimizationExecutor(session: session)
       try await executor.execute(
         plan: plan,
@@ -186,6 +193,7 @@ final class OptimizationStore: ObservableObject {
       )
 
       recordAppliedLaunchServiceChanges(plan.changes)
+      recordAppliedStorageSavings(storageSavings)
       clearPendingChanges()
       executionProgress = 1
       executionMessage = gatekeeperConfirmationRequired
@@ -267,7 +275,8 @@ final class OptimizationStore: ObservableObject {
         applicationID: application.id,
         name: application.name,
         sourcePath: application.url.path,
-        action: action
+        action: action,
+        sizeInBytes: application.sizeInBytes ?? 0
       )
     )
 
@@ -316,9 +325,17 @@ final class OptimizationStore: ObservableObject {
     }
   }
 
-  func setSystemComponent(_ component: SystemDebloatComponent, selected: Bool) {
+  func setSystemComponent(
+    _ component: SystemDebloatComponent,
+    sizeInBytes: Int64,
+    selected: Bool
+  ) {
     let change = OptimizationChange.systemComponent(
-      SystemComponentChange(componentID: component.id, title: component.title)
+      SystemComponentChange(
+        componentID: component.id,
+        title: component.title,
+        sizeInBytes: sizeInBytes
+      )
     )
     if selected {
       upsert(change)
@@ -571,6 +588,97 @@ final class OptimizationStore: ObservableObject {
     }
     if changed {
       persistAppliedLaunchServiceStates()
+    }
+  }
+
+  private struct PreparedStorageSavings {
+    var deletedApplications: [String: Int64] = [:]
+    var deblobBytes: Int64 = 0
+
+    var isEmpty: Bool { deletedApplications.isEmpty && deblobBytes == 0 }
+  }
+
+  private func resolvedStorageSavings(
+    from changes: [OptimizationChange]
+  ) async -> PreparedStorageSavings {
+    var savings = PreparedStorageSavings()
+
+    for change in changes {
+      switch change {
+      case .systemApplication(let application) where application.action == .delete:
+        let bytes = await resolvedApplicationSize(application)
+        if bytes > 0 {
+          savings.deletedApplications[application.applicationID] = bytes
+        }
+      case .systemComponent(let component):
+        savings.deblobBytes += await resolvedComponentSize(component)
+      default:
+        continue
+      }
+    }
+
+    return savings
+  }
+
+  private func recordAppliedStorageSavings(_ savings: PreparedStorageSavings) {
+    guard !savings.isEmpty else { return }
+
+    var ledger = savedStorage
+    for (applicationID, bytes) in savings.deletedApplications {
+      ledger.recordDeletedApplication(id: applicationID, bytes: bytes)
+    }
+    ledger.recordRemovedDebloat(bytes: savings.deblobBytes)
+
+    guard ledger != savedStorage else { return }
+    savedStorage = ledger
+    persistSavedStorage()
+  }
+
+  private func resolvedApplicationSize(_ application: SystemApplicationChange) async -> Int64 {
+    if application.sizeInBytes > 0 {
+      return application.sizeInBytes
+    }
+
+    let url = URL(fileURLWithPath: application.sourcePath)
+    return await Task.detached(priority: .utility) {
+      SystemApplicationsScanner.allocatedSize(of: url) ?? 0
+    }.value
+  }
+
+  private func resolvedComponentSize(_ component: SystemComponentChange) async -> Int64 {
+    if component.sizeInBytes > 0 {
+      return component.sizeInBytes
+    }
+
+    let componentID = component.componentID
+    return await Task.detached(priority: .utility) {
+      SystemDebloatScanner.allocatedSize(ofComponentID: componentID)
+    }.value
+  }
+
+  private func restoreSavedStorage() {
+    guard
+      let savedStorageURL,
+      let data = try? Data(contentsOf: savedStorageURL),
+      let decoded = try? JSONDecoder().decode(SavedStorageLedger.self, from: data)
+    else {
+      return
+    }
+    savedStorage = decoded
+  }
+
+  private func persistSavedStorage() {
+    guard let savedStorageURL else { return }
+
+    do {
+      try FileManager.default.createDirectory(
+        at: savedStorageURL.deletingLastPathComponent(),
+        withIntermediateDirectories: true
+      )
+      let data = try JSONEncoder().encode(savedStorage)
+      try data.write(to: savedStorageURL, options: .atomic)
+    } catch {
+      // Dashboard savings stay in memory if the cache cannot be written.
     }
   }
 

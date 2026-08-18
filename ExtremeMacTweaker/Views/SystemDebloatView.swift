@@ -119,7 +119,11 @@ struct SystemDebloatView: View {
 
   private func setAllSelected(_ selected: Bool) {
     for item in model.items {
-      optimizationStore.setSystemComponent(item.component, selected: selected)
+      optimizationStore.setSystemComponent(
+        item.component,
+        sizeInBytes: item.sizeInBytes,
+        selected: selected
+      )
     }
   }
 
@@ -192,7 +196,13 @@ private struct SystemDebloatRow: View {
   private var selectionBinding: Binding<Bool> {
     Binding(
       get: { isSelected },
-      set: { optimizationStore.setSystemComponent(item.component, selected: $0) }
+      set: {
+        optimizationStore.setSystemComponent(
+          item.component,
+          sizeInBytes: item.sizeInBytes,
+          selected: $0
+        )
+      }
     )
   }
 }

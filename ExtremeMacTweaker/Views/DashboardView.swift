@@ -57,7 +57,7 @@ struct DashboardView: View {
               )
               DashboardMetricTile(
                 title: "Storage",
-                value: "0.00 GB",
+                value: formattedSavingsBytes(optimizationStore.savedStorageBytes),
                 detail: "Apps and assets removed",
                 systemImage: "internaldrive"
               )
@@ -170,12 +170,19 @@ struct DashboardView: View {
   }
 
   private func formattedSavingsMemory(_ megabytes: Int) -> String {
+    formattedSavingsGigabytes(Double(megabytes) / 1024)
+  }
+
+  private func formattedSavingsBytes(_ bytes: Int64) -> String {
+    formattedSavingsGigabytes(Double(bytes) / 1_073_741_824)
+  }
+
+  private func formattedSavingsGigabytes(_ gigabytes: Double) -> String {
     let formatter = NumberFormatter()
     formatter.locale = .current
     formatter.numberStyle = .decimal
     formatter.minimumFractionDigits = 2
     formatter.maximumFractionDigits = 2
-    let gigabytes = Double(megabytes) / 1024
     let number = formatter.string(from: NSNumber(value: gigabytes)) ?? "0.00"
     return "\(number) GB"
   }

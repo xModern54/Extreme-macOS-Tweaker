@@ -3,12 +3,21 @@ import Foundation
 enum SystemDebloatScanner {
   static func scan() -> [SystemDebloatItem] {
     SystemDebloatCatalog.components.compactMap { component in
-      let size = component.paths.reduce(Int64(0)) { total, path in
-        total + allocatedSize(atPath: path)
-      }
+      let size = allocatedSize(of: component)
       guard size > 0 else { return nil }
       return SystemDebloatItem(component: component, sizeInBytes: size)
     }
+  }
+
+  static func allocatedSize(of component: SystemDebloatComponent) -> Int64 {
+    component.paths.reduce(Int64(0)) { total, path in
+      total + allocatedSize(atPath: path)
+    }
+  }
+
+  static func allocatedSize(ofComponentID componentID: String) -> Int64 {
+    guard let component = SystemDebloatCatalog.component(withID: componentID) else { return 0 }
+    return allocatedSize(of: component)
   }
 
   private static func allocatedSize(atPath path: String) -> Int64 {

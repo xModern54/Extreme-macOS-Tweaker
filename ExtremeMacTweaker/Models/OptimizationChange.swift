@@ -32,6 +32,34 @@ struct SystemApplicationChange: Codable, Hashable, Sendable {
   let name: String
   let sourcePath: String
   let action: SystemApplicationAction
+  let sizeInBytes: Int64
+
+  private enum CodingKeys: String, CodingKey {
+    case applicationID, name, sourcePath, action, sizeInBytes
+  }
+
+  init(
+    applicationID: String,
+    name: String,
+    sourcePath: String,
+    action: SystemApplicationAction,
+    sizeInBytes: Int64 = 0
+  ) {
+    self.applicationID = applicationID
+    self.name = name
+    self.sourcePath = sourcePath
+    self.action = action
+    self.sizeInBytes = sizeInBytes
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    applicationID = try container.decode(String.self, forKey: .applicationID)
+    name = try container.decode(String.self, forKey: .name)
+    sourcePath = try container.decode(String.self, forKey: .sourcePath)
+    action = try container.decode(SystemApplicationAction.self, forKey: .action)
+    sizeInBytes = try container.decodeIfPresent(Int64.self, forKey: .sizeInBytes) ?? 0
+  }
 }
 
 struct LaunchServiceChange: Codable, Hashable, Sendable {
@@ -61,6 +89,24 @@ struct SecurityFeatureChange: Codable, Hashable, Sendable {
 struct SystemComponentChange: Codable, Hashable, Sendable {
   let componentID: String
   let title: String
+  let sizeInBytes: Int64
+
+  private enum CodingKeys: String, CodingKey {
+    case componentID, title, sizeInBytes
+  }
+
+  init(componentID: String, title: String, sizeInBytes: Int64 = 0) {
+    self.componentID = componentID
+    self.title = title
+    self.sizeInBytes = sizeInBytes
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    componentID = try container.decode(String.self, forKey: .componentID)
+    title = try container.decode(String.self, forKey: .title)
+    sizeInBytes = try container.decodeIfPresent(Int64.self, forKey: .sizeInBytes) ?? 0
+  }
 }
 
 enum OptimizationChange: Codable, Hashable, Identifiable, Sendable {
