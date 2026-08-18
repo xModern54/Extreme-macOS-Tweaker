@@ -275,11 +275,16 @@ enum RootActions {
     _ = try context.commands.run("/usr/sbin/chown", ["root:wheel", mountedBinary])
 
     context.events.progress(0.7, "Installing the system LaunchDaemon")
+    // Adaptive keeps the job out of the interactive band while it waits.
+    // LowPriorityIO covers the boot catch-up walk. Do not use
+    // ProcessType=Background: jetsam would restart us into another full scan.
     let plist: [String: Any] = [
       "Label": dequarantineDaemonLabel,
       "ProgramArguments": [SystemVolume.dequarantineBinaryPath, downloads],
       "RunAtLoad": true,
       "KeepAlive": true,
+      "ProcessType": "Adaptive",
+      "LowPriorityIO": true,
     ]
     let data = try PropertyListSerialization.data(fromPropertyList: plist, format: .xml, options: 0)
     try data.write(to: URL(fileURLWithPath: mountedPlist), options: .atomic)
