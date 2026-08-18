@@ -477,26 +477,22 @@ enum RootActions {
     userID: uid_t,
     context: RootActionContext
   ) throws {
-    let restartScript = "tell application \"System Events\" to restart"
-    let sessionRestart = try context.commands.run(
-      "/bin/launchctl",
-      ["asuser", String(userID), "/usr/bin/osascript", "-e", restartScript]
+    let scriptURL = URL(fileURLWithPath: "/tmp/com.extrememactweaker.clean-restart.sh")
+    let script = """
+    #!/bin/sh
+    sleep 3
+    /bin/launchctl asuser \(userID) /usr/bin/osascript -e 'tell application "System Events" to restart'
+    if [ "$?" -ne 0 ]; then
+      /sbin/shutdown -r now
+    fi
+    rm -f /tmp/com.extrememactweaker.clean-restart.sh
+    """
+    try script.write(to: scriptURL, atomically: true, encoding: .utf8)
+    _ = try context.commands.requireSuccess("/bin/chmod", ["755", scriptURL.path])
+    _ = try context.commands.requireSuccess(
+      "/bin/sh",
+      ["-c", "nohup \(scriptURL.path) >/dev/null 2>&1 &"]
     )
-    if sessionRestart.exitCode == 0 {
-      return
-    }
-
-    if let owner = userName(for: userID) {
-      let ownedRestart = try context.commands.run(
-        "/usr/bin/sudo",
-        ["-u", owner, "/usr/bin/osascript", "-e", restartScript]
-      )
-      if ownedRestart.exitCode == 0 {
-        return
-      }
-    }
-
-    _ = try context.commands.requireSuccess("/sbin/shutdown", ["-r", "now"])
   }
 
   private static func writeUserDefault(

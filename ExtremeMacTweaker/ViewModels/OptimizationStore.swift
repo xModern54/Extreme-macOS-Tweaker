@@ -1,3 +1,4 @@
+import AppKit
 import Combine
 import Foundation
 
@@ -237,6 +238,8 @@ final class OptimizationStore: ObservableObject {
       ) {
         executionMessage = event.message
       }
+      executionMessage = "Quitting Tweaker so it cannot block the restart"
+      NSApplication.shared.terminate(nil)
     } catch {
       restartInProgress = false
       executionError = error.localizedDescription
