@@ -16,6 +16,14 @@ struct ExtremeMacTweakerApp: App {
         )
         .onAppear {
           PostRestartOpenAgent.consumeIfPresent()
+          Task {
+            let applications = try? await Task.detached(priority: .utility) {
+              try SystemApplicationsScanner.discoverApplications()
+            }.value
+            if let applications {
+              HiddenApplicationLaunchCleanup.retract(applications: applications)
+            }
+          }
         }
     }
     .defaultSize(width: 920, height: 592)

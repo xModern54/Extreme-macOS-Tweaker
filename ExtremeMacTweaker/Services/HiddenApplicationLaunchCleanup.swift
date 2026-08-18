@@ -36,18 +36,11 @@ enum HiddenApplicationLaunchCleanup {
   }
 
   private static func removeDockTiles(paths: [String], bundleIdentifiers: Set<String>) {
-    let dockURL = FileManager.default.homeDirectoryForCurrentUser
-      .appendingPathComponent("Library/Preferences/com.apple.dock.plist")
-    guard
-      let data = try? Data(contentsOf: dockURL),
-      var plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any]
-    else {
-      return
-    }
+    guard let defaults = UserDefaults(suiteName: "com.apple.dock") else { return }
 
     var changed = false
     for key in ["persistent-apps", "persistent-others"] {
-      guard let tiles = plist[key] as? [[String: Any]] else { continue }
+      guard let tiles = defaults.array(forKey: key) as? [[String: Any]] else { continue }
       let filtered = tiles.filter { tile in
         !tilePointsToHiddenApplication(
           tile,
@@ -56,24 +49,13 @@ enum HiddenApplicationLaunchCleanup {
         )
       }
       if filtered.count != tiles.count {
-        plist[key] = filtered
+        defaults.set(filtered, forKey: key)
         changed = true
       }
     }
 
     guard changed else { return }
-
-    guard
-      let output = try? PropertyListSerialization.data(
-        fromPropertyList: plist,
-        format: .binary,
-        options: 0
-      )
-    else {
-      return
-    }
-
-    try? output.write(to: dockURL, options: .atomic)
+    defaults.synchronize()
     restartDock()
   }
 
