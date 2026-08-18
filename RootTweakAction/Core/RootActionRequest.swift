@@ -24,7 +24,7 @@ enum RootActionRequest {
   )
   case removeSystemComponent(id: String)
   case setSecurityProtection(id: String, userID: uid_t, enabled: Bool)
-  case restartSystem(userID: uid_t)
+  case restartSystem(userID: uid_t, appPath: String?)
 
   var name: String {
     switch self {
@@ -139,7 +139,7 @@ enum RootActionRequest {
       guard let userID = uid_t(userIDValue) else {
         throw RootActionError.invalidArguments("Invalid user ID: \(userIDValue)")
       }
-      return .restartSystem(userID: userID)
+      return .restartSystem(userID: userID, appPath: options["app-path"])
     default:
       throw RootActionError.invalidArguments("Unknown action: \(command)")
     }

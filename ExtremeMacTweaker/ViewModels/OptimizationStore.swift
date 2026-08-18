@@ -234,11 +234,15 @@ final class OptimizationStore: ObservableObject {
 
     do {
       for try await event in session.events(
-        arguments: ["restart-system", "--user-id", String(getuid())]
+        arguments: [
+          "restart-system",
+          "--user-id", String(getuid()),
+          "--app-path", Bundle.main.bundlePath,
+        ]
       ) {
         executionMessage = event.message
       }
-      executionMessage = "Quitting Tweaker so it cannot block the restart"
+      executionMessage = "Tweaker will open again after login"
       NSApplication.shared.terminate(nil)
     } catch {
       restartInProgress = false

@@ -14,9 +14,31 @@ struct ExtremeMacTweakerApp: App {
         .background(
           InitialWindowConfiguration(width: 920, height: 592)
         )
+        .onAppear {
+          PostRestartOpenAgent.consumeIfPresent()
+        }
     }
     .defaultSize(width: 920, height: 592)
     .windowResizability(.contentMinSize)
     .windowStyle(.hiddenTitleBar)
+  }
+}
+
+private enum PostRestartOpenAgent {
+  static let label = "com.extrememactweaker.open-after-restart"
+
+  static func consumeIfPresent() {
+    let plist = FileManager.default.homeDirectoryForCurrentUser
+      .appendingPathComponent("Library/LaunchAgents/\(label).plist")
+    guard FileManager.default.fileExists(atPath: plist.path) else { return }
+
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: "/bin/launchctl")
+    process.arguments = ["bootout", "gui/\(getuid())/\(label)"]
+    process.standardOutput = FileHandle.nullDevice
+    process.standardError = FileHandle.nullDevice
+    try? process.run()
+    process.waitUntilExit()
+    try? FileManager.default.removeItem(at: plist)
   }
 }

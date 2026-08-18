@@ -76,8 +76,8 @@ enum RootActions {
         context: context
       )
 
-    case .restartSystem(let userID):
-      return try restartSystem(userID: userID, context)
+    case .restartSystem(let userID, let appPath):
+      return try restartSystem(userID: userID, appPath: appPath, context)
     }
   }
 
@@ -390,19 +390,67 @@ enum RootActions {
     )
   }
 
+  static let openAfterRestartLabel = "com.extrememactweaker.open-after-restart"
+
   private static func restartSystem(
     userID: uid_t,
+    appPath: String?,
     _ context: RootActionContext
   ) throws -> (String, Bool, [String: String]) {
-    context.events.progress(0.2, "Disabling reopen of apps after login")
+    context.events.progress(0.15, "Disabling reopen of apps after login")
     try prepareCleanLogin(userID: userID, context: context)
 
-    context.events.progress(0.55, "Clearing the saved relaunch list")
+    context.events.progress(0.4, "Clearing the saved relaunch list")
     try clearSavedRelaunchState(userID: userID, context: context)
 
-    context.events.progress(0.85, "Restarting through the login session")
-    try requestSessionRestart(userID: userID, context: context)
+    if let appPath {
+      context.events.progress(0.65, "Scheduling Tweaker to open after login")
+      try installOpenAfterRestartAgent(appPath: appPath, userID: userID, context: context)
+    }
+
+    context.events.progress(0.9, "Restarting macOS")
+    try requestDetachedReboot(context: context)
     return ("System restart was requested", true, ["userID": String(userID)])
+  }
+
+  private static func installOpenAfterRestartAgent(
+    appPath: String,
+    userID: uid_t,
+    context: RootActionContext
+  ) throws {
+    let allowed = CharacterSet.urlPathAllowed
+    guard
+      appPath.hasSuffix(".app"),
+      appPath.count <= 1024,
+      appPath.unicodeScalars.allSatisfy(allowed.contains),
+      FileManager.default.fileExists(atPath: appPath)
+    else {
+      throw RootActionError.invalidArguments("Invalid Tweaker application path.")
+    }
+
+    guard let home = homeDirectory(for: userID) else {
+      throw RootActionError.operationFailed(
+        code: "missing_home",
+        message: "Unable to locate the user home directory."
+      )
+    }
+
+    let agents = home.appendingPathComponent("Library/LaunchAgents", isDirectory: true)
+    try FileManager.default.createDirectory(at: agents, withIntermediateDirectories: true)
+    let plistURL = agents.appendingPathComponent("\(openAfterRestartLabel).plist")
+    let payload: [String: Any] = [
+      "Label": openAfterRestartLabel,
+      "LimitLoadToSessionType": "Aqua",
+      "RunAtLoad": true,
+      "LaunchOnlyOnce": true,
+      "ProgramArguments": ["/usr/bin/open", appPath],
+    ]
+    let data = try PropertyListSerialization.data(fromPropertyList: payload, format: .xml, options: 0)
+    try data.write(to: plistURL, options: .atomic)
+    if let owner = userName(for: userID) {
+      _ = try context.commands.run("/usr/sbin/chown", [owner, plistURL.path])
+    }
+    _ = try context.commands.run("/bin/chmod", ["644", plistURL.path])
   }
 
   private static func prepareCleanLogin(userID: uid_t, context: RootActionContext) throws {
@@ -473,18 +521,12 @@ enum RootActions {
     }
   }
 
-  private static func requestSessionRestart(
-    userID: uid_t,
-    context: RootActionContext
-  ) throws {
+  private static func requestDetachedReboot(context: RootActionContext) throws {
     let scriptURL = URL(fileURLWithPath: "/tmp/com.extrememactweaker.clean-restart.sh")
     let script = """
     #!/bin/sh
-    sleep 3
-    /bin/launchctl asuser \(userID) /usr/bin/osascript -e 'tell application "System Events" to restart'
-    if [ "$?" -ne 0 ]; then
-      /sbin/shutdown -r now
-    fi
+    sleep 2
+    /sbin/shutdown -r now
     rm -f /tmp/com.extrememactweaker.clean-restart.sh
     """
     try script.write(to: scriptURL, atomically: true, encoding: .utf8)
