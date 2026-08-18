@@ -4,6 +4,10 @@ import SwiftUI
 struct SystemAppsView: View {
   @StateObject private var model = SystemAppsViewModel()
   @EnvironmentObject private var optimizationStore: OptimizationStore
+  @AppStorage("tweaker.acknowledgedSystemApplicationDeletion")
+  private var hasAcknowledgedDeletion = false
+  @State private var applicationAwaitingDeleteConfirmation: SystemApplication?
+  @State private var isDeleteDisclaimerPresented = false
 
   private let columns = [
     GridItem(.adaptive(minimum: 104, maximum: 138), spacing: 18, alignment: .top)
@@ -26,6 +30,25 @@ struct SystemAppsView: View {
     }
     .task {
       await model.load()
+    }
+    .alert(
+      "Deletion is permanent",
+      isPresented: $isDeleteDisclaimerPresented
+    ) {
+      Button("Delete", role: .destructive) {
+        hasAcknowledgedDeletion = true
+        if let application = applicationAwaitingDeleteConfirmation {
+          optimizationStore.toggle(.delete, for: application)
+        }
+        applicationAwaitingDeleteConfirmation = nil
+      }
+      Button("Cancel", role: .cancel) {
+        applicationAwaitingDeleteConfirmation = nil
+      }
+    } message: {
+      Text(
+        "A deleted system application is removed forever. It cannot be restored except by reinstalling macOS. Only delete apps you are sure you will never need."
+      )
     }
   }
 
@@ -58,7 +81,10 @@ struct SystemAppsView: View {
       ScrollView {
         LazyVGrid(columns: columns, alignment: .leading, spacing: 24) {
           ForEach(model.applications) { application in
-            SystemApplicationCard(application: application)
+            SystemApplicationCard(
+              application: application,
+              onRequestDelete: requestDelete(for:)
+            )
               .environmentObject(optimizationStore)
           }
         }
@@ -66,10 +92,20 @@ struct SystemAppsView: View {
       }
     }
   }
+
+  private func requestDelete(for application: SystemApplication) {
+    if hasAcknowledgedDeletion {
+      optimizationStore.toggle(.delete, for: application)
+      return
+    }
+    applicationAwaitingDeleteConfirmation = application
+    isDeleteDisclaimerPresented = true
+  }
 }
 
 private struct SystemApplicationCard: View {
   let application: SystemApplication
+  let onRequestDelete: (SystemApplication) -> Void
   @EnvironmentObject private var optimizationStore: OptimizationStore
   @State private var isActionsPresented = false
 
@@ -116,7 +152,8 @@ private struct SystemApplicationCard: View {
       SystemApplicationActions(
         application: application,
         pendingAction: pendingAction,
-        dismiss: { isActionsPresented = false }
+        dismiss: { isActionsPresented = false },
+        onRequestDelete: onRequestDelete
       )
       .environmentObject(optimizationStore)
     }
@@ -130,6 +167,7 @@ private struct SystemApplicationActions: View {
   let application: SystemApplication
   let pendingAction: SystemApplicationAction?
   let dismiss: () -> Void
+  let onRequestDelete: (SystemApplication) -> Void
   @EnvironmentObject private var optimizationStore: OptimizationStore
 
   var body: some View {
@@ -162,8 +200,12 @@ private struct SystemApplicationActions: View {
     role: ButtonRole? = nil
   ) -> some View {
     Button(role: role) {
-      optimizationStore.toggle(action, for: application)
       dismiss()
+      if action == .delete, pendingAction != .delete {
+        onRequestDelete(application)
+      } else {
+        optimizationStore.toggle(action, for: application)
+      }
     } label: {
       HStack {
         Label(action.title, systemImage: action.systemImage)
