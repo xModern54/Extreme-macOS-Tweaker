@@ -199,6 +199,14 @@ final class OptimizationStore: ObservableObject {
       recordAppliedLaunchServiceChanges(plan.changes)
       recordAppliedSecurityFeatureChanges(plan.changes)
       recordAppliedStorageSavings(storageSavings)
+      if plan.changes.contains(where: { change in
+        if case .systemApplication = change { return true }
+        return false
+      }) {
+        if let applications = try? SystemApplicationsScanner.discoverApplications() {
+          HiddenApplicationLaunchCleanup.retract(applications: applications)
+        }
+      }
       clearPendingChanges()
       executionProgress = 1
       executionMessage = gatekeeperConfirmationRequired

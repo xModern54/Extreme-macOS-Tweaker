@@ -26,6 +26,7 @@ final class SystemAppsViewModel: ObservableObject {
 
       applications = discoveredApplications
       isLoading = false
+      HiddenApplicationLaunchCleanup.retract(applications: discoveredApplications)
 
       await calculateSizes()
     } catch {
