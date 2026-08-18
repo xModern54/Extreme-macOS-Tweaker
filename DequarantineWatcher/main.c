@@ -18,7 +18,7 @@ static const char *kQuarantineXattr = "com.apple.quarantine";
 
 // Batch a download burst into one wakeup. NoDefer is intentionally off so
 // the process stays asleep until this window closes.
-static const CFTimeInterval kEventLatencySeconds = 1.0;
+static const CFTimeInterval kEventLatencySeconds = 0.5;
 
 static char *g_watch_path = NULL;
 
