@@ -2,7 +2,7 @@
 
 set -uo pipefail
 
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PROJECT_PATH="$PROJECT_ROOT/ExtremeMacTweaker.xcodeproj"
 DERIVED_DATA_PATH="$PROJECT_ROOT/.build/DerivedData"
 EMBEDDED_HELPER="$DERIVED_DATA_PATH/Build/Products/Release/Tweaker.app/Contents/Resources/Helpers/RootTweakAction"

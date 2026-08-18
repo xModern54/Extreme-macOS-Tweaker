@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/app-icon.png" width="168" alt="Extreme macOS Tweaker">
+  <img src="Docs/app-icon.png" width="168" alt="Extreme macOS Tweaker">
 </p>
 
 <h1 align="center">Extreme macOS Tweaker</h1>

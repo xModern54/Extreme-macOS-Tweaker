@@ -3,11 +3,11 @@
 set -euo pipefail
 
 if [[ $# -eq 0 ]]; then
-  echo "Usage: ./Deploy.sh \"commit message\"" >&2
+  echo "Usage: ./Scripts/Deploy.sh \"commit message\"" >&2
   exit 64
 fi
 
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 APP_PATH="$PROJECT_ROOT/.build/DerivedData/Build/Products/Release/Tweaker.app"
 COMMIT_MESSAGE="$*"
 
@@ -19,7 +19,7 @@ if [[ ! -d .git ]]; then
 fi
 
 if [[ ! -d "$APP_PATH" ]]; then
-  echo "Built application not found. Run ./Build.sh first." >&2
+  echo "Built application not found. Run ./Scripts/Build.sh first." >&2
   exit 1
 fi
 

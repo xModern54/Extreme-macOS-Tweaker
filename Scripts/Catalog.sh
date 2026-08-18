@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SOURCE_CATALOG="$PROJECT_ROOT/ExtremeMacTweaker/Resources/TweakCatalog.json"
 EXTERNAL_DIRECTORY="$HOME/Library/Application Support/Tweaker"
 EXTERNAL_CATALOG="$EXTERNAL_DIRECTORY/TweakCatalog.json"
@@ -28,7 +28,7 @@ case "${1:-}" in
     echo "complete"
     ;;
   *)
-    echo "Usage: ./Catalog.sh {install|sync|path|validate}" >&2
+    echo "Usage: ./Scripts/Catalog.sh {install|sync|path|validate}" >&2
     exit 64
     ;;
 esac
