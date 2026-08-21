@@ -2935,8 +2935,7 @@
     {
       "id": "bluetooth-user",
       "services": [
-        "bluetoothuserd",
-        "cloudpaird"
+        "bluetoothuserd"
       ]
     },
     {
