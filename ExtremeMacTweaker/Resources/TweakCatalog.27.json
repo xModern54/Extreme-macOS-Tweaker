@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.21.2-27",
+  "catalogVersion": "2026.08.21.3-27",
   "compatibility": {
     "minimumMacOSMajor": 27,
     "maximumMacOSMajor": 27,
@@ -2666,6 +2666,13 @@
       "domain": "gui",
       "kind": "agent",
       "plistPath": "/System/Library/LaunchAgents/com.apple.synapse.contentlinkingd.plist"
+    },
+    {
+      "id": "set-store-update-service",
+      "label": "com.apple.SetStoreUpdateService",
+      "domain": "system",
+      "kind": "xpcService",
+      "assetPath": "/System/Library/PrivateFrameworks/CascadeSets.framework/Versions/A/XPCServices/SetStoreUpdateService.xpc"
     }
   ],
   "serviceGroups": [
@@ -2791,7 +2798,8 @@
         "intelligencecontextd",
         "intelligenceflowd",
         "knowledgeconstructiond",
-        "naturallanguaged"
+        "naturallanguaged",
+        "set-store-update-service"
       ]
     },
     {

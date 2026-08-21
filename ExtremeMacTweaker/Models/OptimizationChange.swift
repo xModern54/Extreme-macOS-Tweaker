@@ -75,9 +75,14 @@ struct LaunchServiceChange: Codable, Hashable, Sendable {
   let featureTitle: String?
   let action: Action
   let plistPath: String?
+  let assetPath: String?
+
+  var sweepPaths: [String] {
+    [plistPath, assetPath].compactMap { $0 }
+  }
 
   private enum CodingKeys: String, CodingKey {
-    case serviceID, label, domain, featureID, featureTitle, action, plistPath
+    case serviceID, label, domain, featureID, featureTitle, action, plistPath, assetPath
   }
 
   init(
@@ -87,7 +92,8 @@ struct LaunchServiceChange: Codable, Hashable, Sendable {
     featureID: String?,
     featureTitle: String?,
     action: Action,
-    plistPath: String? = nil
+    plistPath: String? = nil,
+    assetPath: String? = nil
   ) {
     self.serviceID = serviceID
     self.label = label
@@ -96,6 +102,7 @@ struct LaunchServiceChange: Codable, Hashable, Sendable {
     self.featureTitle = featureTitle
     self.action = action
     self.plistPath = plistPath
+    self.assetPath = assetPath
   }
 
   init(from decoder: Decoder) throws {
@@ -107,6 +114,7 @@ struct LaunchServiceChange: Codable, Hashable, Sendable {
     featureTitle = try container.decodeIfPresent(String.self, forKey: .featureTitle)
     action = try container.decode(Action.self, forKey: .action)
     plistPath = try container.decodeIfPresent(String.self, forKey: .plistPath)
+    assetPath = try container.decodeIfPresent(String.self, forKey: .assetPath)
   }
 
   func encode(to encoder: Encoder) throws {
@@ -118,6 +126,7 @@ struct LaunchServiceChange: Codable, Hashable, Sendable {
     try container.encodeIfPresent(featureTitle, forKey: .featureTitle)
     try container.encode(action, forKey: .action)
     try container.encodeIfPresent(plistPath, forKey: .plistPath)
+    try container.encodeIfPresent(assetPath, forKey: .assetPath)
   }
 }
 

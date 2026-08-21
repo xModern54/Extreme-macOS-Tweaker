@@ -896,12 +896,12 @@ enum RootActions {
     let fileManager = FileManager.default
 
     if !fileManager.fileExists(atPath: source), fileManager.fileExists(atPath: destination) {
-      return ("Launchd plist is already \(action)", false, ["path": destinationPath])
+      return ("System item is already \(action)", false, ["path": destinationPath])
     }
     guard fileManager.fileExists(atPath: source) else {
       throw RootActionError.operationFailed(
         code: "launch_plist_not_found",
-        message: "Launchd plist does not exist at \(sourcePath)."
+        message: "System item does not exist at \(sourcePath)."
       )
     }
     guard !fileManager.fileExists(atPath: destination) else {
@@ -915,16 +915,16 @@ enum RootActions {
     let destinationDirectory = URL(fileURLWithPath: destination).deletingLastPathComponent().path
     _ = try context.commands.requireSuccess("/bin/mkdir", ["-p", destinationDirectory])
 
-    context.events.progress(0.65, "Moving the launchd plist")
+    context.events.progress(0.65, "Moving the system item")
     _ = try context.commands.requireSuccess("/bin/mv", [source, destination])
     guard fileManager.fileExists(atPath: destination), !fileManager.fileExists(atPath: source)
     else {
       throw RootActionError.operationFailed(
         code: "launch_plist_move_failed",
-        message: "Launchd plist was not moved to \(destinationPath)."
+        message: "System item was not moved to \(destinationPath)."
       )
     }
-    return ("Launchd plist was \(action)", true, ["path": destinationPath])
+    return ("System item was \(action)", true, ["path": destinationPath])
   }
 
   private static func moveApplication(

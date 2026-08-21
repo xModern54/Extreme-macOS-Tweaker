@@ -48,6 +48,11 @@ struct TweakCatalogService: Decodable, Identifiable, Sendable {
   let domain: Domain
   let kind: Kind
   let plistPath: String?
+  let assetPath: String?
+
+  var sweepPaths: [String] {
+    [plistPath, assetPath].compactMap { $0 }
+  }
 }
 
 struct TweakCatalogServiceGroup: Decodable, Identifiable, Sendable {

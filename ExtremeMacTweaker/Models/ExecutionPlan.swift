@@ -13,7 +13,7 @@ struct ExecutionPlan: Sendable {
       case .launchService(let service):
         service.action == .disable
           || (TweakCatalogSelection.usesGoldenGateCatalog()
-            && service.plistPath.map(CleanSweepLayout.isSweepable) == true)
+            && service.sweepPaths.contains(where: CleanSweepLayout.isSweepable))
       case .securityFeature(let feature):
         if feature.featureID == "system-policy" || feature.featureID == "download-whitelist" {
           true
@@ -36,7 +36,7 @@ struct ExecutionPlan: Sendable {
         feature.featureID == "download-whitelist"
       case .launchService(let service):
         TweakCatalogSelection.usesGoldenGateCatalog()
-          && service.plistPath.map(CleanSweepLayout.isSweepable) == true
+          && service.sweepPaths.contains(where: CleanSweepLayout.isSweepable)
       default:
         false
       }

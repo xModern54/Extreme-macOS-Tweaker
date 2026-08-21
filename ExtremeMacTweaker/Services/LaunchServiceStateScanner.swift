@@ -55,10 +55,9 @@ enum LaunchServiceStateScanner {
   }
 
   private static func isHiddenByCleanSweep(_ service: TweakCatalogService) -> Bool {
-    guard let plistPath = service.plistPath, CleanSweepLayout.isSweepable(plistPath) else {
-      return false
-    }
-    return !FileManager.default.fileExists(atPath: plistPath)
+    let paths = service.sweepPaths.filter(CleanSweepLayout.isSweepable)
+    guard !paths.isEmpty else { return false }
+    return paths.allSatisfy { !FileManager.default.fileExists(atPath: $0) }
   }
 
   private static func commandOutput(_ arguments: [String]) -> String? {

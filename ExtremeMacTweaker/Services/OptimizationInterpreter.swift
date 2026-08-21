@@ -41,19 +41,22 @@ enum OptimizationInterpreter {
         }
 
       case .launchService(let service):
-        if TweakCatalogSelection.usesGoldenGateCatalog(),
-          let plistPath = service.plistPath,
-          let hiddenPath = CleanSweepLayout.hiddenPath(for: plistPath)
-        {
-          switch service.action {
-          case .disable:
-            systemVolumeSteps.append(
-              .hideLaunchPlist(sourcePath: plistPath, destinationPath: hiddenPath)
-            )
-          case .enable:
-            systemVolumeSteps.append(
-              .restoreLaunchPlist(sourcePath: hiddenPath, destinationPath: plistPath)
-            )
+        let sweepPairs = service.sweepPaths.compactMap { path -> (String, String)? in
+          guard let hiddenPath = CleanSweepLayout.hiddenPath(for: path) else { return nil }
+          return (path, hiddenPath)
+        }
+        if TweakCatalogSelection.usesGoldenGateCatalog(), !sweepPairs.isEmpty {
+          for (livePath, hiddenPath) in sweepPairs {
+            switch service.action {
+            case .disable:
+              systemVolumeSteps.append(
+                .hideLaunchPlist(sourcePath: livePath, destinationPath: hiddenPath)
+              )
+            case .enable:
+              systemVolumeSteps.append(
+                .restoreLaunchPlist(sourcePath: hiddenPath, destinationPath: livePath)
+              )
+            }
           }
         } else {
           launchServiceSteps.append(

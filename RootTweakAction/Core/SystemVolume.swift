@@ -85,21 +85,14 @@ enum SystemVolume {
   }
 
   static func validatedLaunchPlistPath(_ systemPath: String) throws -> String {
-    let standardized = standardizedPath(systemPath)
-    let url = URL(fileURLWithPath: standardized)
-    guard url.pathExtension.caseInsensitiveCompare("plist") == .orderedSame else {
-      throw RootActionError.invalidArguments("Path must be a launchd property list: \(systemPath)")
-    }
+    try validatedSweepPath(systemPath)
+  }
 
-    let parent = url.deletingLastPathComponent().path
-    guard
-      parent == launchDaemonsDirectory
-        || parent == launchAgentsDirectory
-        || parent == hiddenLaunchDaemonsDirectory
-        || parent == hiddenLaunchAgentsDirectory
-    else {
+  static func validatedSweepPath(_ systemPath: String) throws -> String {
+    let standardized = standardizedPath(systemPath)
+    guard isAllowedSweepPath(standardized) else {
       throw RootActionError.invalidArguments(
-        "Launchd plist path is outside the allowed locations: \(systemPath)"
+        "Path is outside the allowed Clean Sweep locations: \(systemPath)"
       )
     }
     return standardized
@@ -108,8 +101,34 @@ enum SystemVolume {
   static func mountedLaunchPlistPath(root mountPath: String, systemPath: String) throws -> String {
     try mountedAllowedPath(
       root: mountPath,
-      systemPath: try validatedLaunchPlistPath(systemPath)
+      systemPath: try validatedSweepPath(systemPath)
     )
+  }
+
+  static func isAllowedSweepPath(_ systemPath: String) -> Bool {
+    let url = URL(fileURLWithPath: systemPath)
+    let parent = url.deletingLastPathComponent().path
+
+    if url.pathExtension.caseInsensitiveCompare("plist") == .orderedSame {
+      return parent == launchDaemonsDirectory
+        || parent == launchAgentsDirectory
+        || parent == hiddenLaunchDaemonsDirectory
+        || parent == hiddenLaunchAgentsDirectory
+    }
+
+    if url.pathExtension.caseInsensitiveCompare("xpc") == .orderedSame,
+      url.deletingLastPathComponent().lastPathComponent == "XPCServices"
+    {
+      if systemPath.hasPrefix("/System/Library/"),
+        !systemPath.hasPrefix(cleanSweepDirectory + "/")
+      {
+        return true
+      }
+      let hiddenPrefix = cleanSweepDirectory + "/Library/"
+      return systemPath.hasPrefix(hiddenPrefix)
+    }
+
+    return false
   }
 
   static func mountedDequarantinePath(
