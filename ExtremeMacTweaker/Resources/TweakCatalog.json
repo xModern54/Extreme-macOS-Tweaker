@@ -2155,6 +2155,24 @@
       "kind": "daemon"
     },
     {
+      "id": "tailspind",
+      "label": "com.apple.tailspind",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "spindump",
+      "label": "com.apple.spindump",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "spindump-agent",
+      "label": "com.apple.spindump_agent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
       "id": "symptomsd-diag",
       "label": "com.apple.symptomsd-diag",
       "domain": "system",
@@ -2495,7 +2513,10 @@
         "ecosystemagent",
         "ecosystemanalyticsd",
         "powerlog-helperd",
-        "perfpowermetricd"
+        "perfpowermetricd",
+        "tailspind",
+        "spindump",
+        "spindump-agent"
       ]
     },
     {

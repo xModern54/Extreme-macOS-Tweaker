@@ -2489,6 +2489,27 @@
       "plistPath": "/System/Library/LaunchDaemons/com.apple.perfpowermetricd.plist"
     },
     {
+      "id": "tailspind",
+      "label": "com.apple.tailspind",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.tailspind.plist"
+    },
+    {
+      "id": "spindump",
+      "label": "com.apple.spindump",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.spindump.plist"
+    },
+    {
+      "id": "spindump-agent",
+      "label": "com.apple.spindump_agent",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.spindump_agent.plist"
+    },
+    {
       "id": "symptomsd-diag",
       "label": "com.apple.symptomsd-diag",
       "domain": "system",
@@ -2860,7 +2881,10 @@
         "ecosystemagent",
         "ecosystemanalyticsd",
         "powerlog-helperd",
-        "perfpowermetricd"
+        "perfpowermetricd",
+        "tailspind",
+        "spindump",
+        "spindump-agent"
       ]
     },
     {
