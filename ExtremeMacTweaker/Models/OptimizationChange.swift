@@ -33,9 +33,10 @@ struct SystemApplicationChange: Codable, Hashable, Sendable {
   let sourcePath: String
   let action: SystemApplicationAction
   let sizeInBytes: Int64
+  let bundleIdentifier: String?
 
   private enum CodingKeys: String, CodingKey {
-    case applicationID, name, sourcePath, action, sizeInBytes
+    case applicationID, name, sourcePath, action, sizeInBytes, bundleIdentifier
   }
 
   init(
@@ -43,13 +44,15 @@ struct SystemApplicationChange: Codable, Hashable, Sendable {
     name: String,
     sourcePath: String,
     action: SystemApplicationAction,
-    sizeInBytes: Int64 = 0
+    sizeInBytes: Int64 = 0,
+    bundleIdentifier: String? = nil
   ) {
     self.applicationID = applicationID
     self.name = name
     self.sourcePath = sourcePath
     self.action = action
     self.sizeInBytes = sizeInBytes
+    self.bundleIdentifier = bundleIdentifier
   }
 
   init(from decoder: Decoder) throws {
@@ -59,6 +62,17 @@ struct SystemApplicationChange: Codable, Hashable, Sendable {
     sourcePath = try container.decode(String.self, forKey: .sourcePath)
     action = try container.decode(SystemApplicationAction.self, forKey: .action)
     sizeInBytes = try container.decodeIfPresent(Int64.self, forKey: .sizeInBytes) ?? 0
+    bundleIdentifier = try container.decodeIfPresent(String.self, forKey: .bundleIdentifier)
+  }
+
+  func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(applicationID, forKey: .applicationID)
+    try container.encode(name, forKey: .name)
+    try container.encode(sourcePath, forKey: .sourcePath)
+    try container.encode(action, forKey: .action)
+    try container.encode(sizeInBytes, forKey: .sizeInBytes)
+    try container.encodeIfPresent(bundleIdentifier, forKey: .bundleIdentifier)
   }
 }
 

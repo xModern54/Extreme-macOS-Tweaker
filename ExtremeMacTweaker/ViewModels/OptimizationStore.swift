@@ -199,10 +199,12 @@ final class OptimizationStore: ObservableObject {
       recordAppliedLaunchServiceChanges(plan.changes)
       recordAppliedSecurityFeatureChanges(plan.changes)
       recordAppliedStorageSavings(storageSavings)
-      if plan.changes.contains(where: { change in
-        if case .systemApplication = change { return true }
-        return false
-      }) {
+      let applicationChanges = plan.changes.compactMap { change -> SystemApplicationChange? in
+        guard case .systemApplication(let application) = change else { return nil }
+        return application
+      }
+      if !applicationChanges.isEmpty {
+        HiddenApplicationLaunchCleanup.retract(changes: applicationChanges)
         if let applications = try? SystemApplicationsScanner.discoverApplications() {
           HiddenApplicationLaunchCleanup.retract(applications: applications)
         }
@@ -289,7 +291,8 @@ final class OptimizationStore: ObservableObject {
         name: application.name,
         sourcePath: application.url.path,
         action: action,
-        sizeInBytes: application.sizeInBytes ?? 0
+        sizeInBytes: application.sizeInBytes ?? 0,
+        bundleIdentifier: application.bundleIdentifier
       )
     )
 
