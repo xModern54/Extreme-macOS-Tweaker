@@ -56,6 +56,24 @@ enum RootActions {
     case .relocateDisabledApplications(let mountPath):
       return try relocateDisabledApplications(mountPath: mountPath, context: context)
 
+    case .hideLaunchPlist(let mountPath, let source, let destination):
+      return try moveLaunchPlist(
+        action: "hidden",
+        mountPath: mountPath,
+        sourcePath: source,
+        destinationPath: destination,
+        context: context
+      )
+
+    case .restoreLaunchPlist(let mountPath, let source, let destination):
+      return try moveLaunchPlist(
+        action: "restored",
+        mountPath: mountPath,
+        sourcePath: source,
+        destinationPath: destination,
+        context: context
+      )
+
     case .createSnapshot(let mountPath):
       return try createSnapshot(mountPath, context)
 
@@ -861,6 +879,52 @@ enum RootActions {
     context.events.progress(0.5, "Unmounting the system volume")
     _ = try context.commands.requireSuccess("/sbin/umount", [mountPath])
     return ("System volume was unmounted", true, ["mountPath": mountPath])
+  }
+
+  private static func moveLaunchPlist(
+    action: String,
+    mountPath: String,
+    sourcePath: String,
+    destinationPath: String,
+    context: RootActionContext
+  ) throws -> (String, Bool, [String: String]) {
+    let source = try SystemVolume.mountedLaunchPlistPath(root: mountPath, systemPath: sourcePath)
+    let destination = try SystemVolume.mountedLaunchPlistPath(
+      root: mountPath,
+      systemPath: destinationPath
+    )
+    let fileManager = FileManager.default
+
+    if !fileManager.fileExists(atPath: source), fileManager.fileExists(atPath: destination) {
+      return ("Launchd plist is already \(action)", false, ["path": destinationPath])
+    }
+    guard fileManager.fileExists(atPath: source) else {
+      throw RootActionError.operationFailed(
+        code: "launch_plist_not_found",
+        message: "Launchd plist does not exist at \(sourcePath)."
+      )
+    }
+    guard !fileManager.fileExists(atPath: destination) else {
+      throw RootActionError.operationFailed(
+        code: "destination_exists",
+        message: "Destination already exists at \(destinationPath)."
+      )
+    }
+
+    context.events.progress(0.3, "Preparing the Clean Sweep directory")
+    let destinationDirectory = URL(fileURLWithPath: destination).deletingLastPathComponent().path
+    _ = try context.commands.requireSuccess("/bin/mkdir", ["-p", destinationDirectory])
+
+    context.events.progress(0.65, "Moving the launchd plist")
+    _ = try context.commands.requireSuccess("/bin/mv", [source, destination])
+    guard fileManager.fileExists(atPath: destination), !fileManager.fileExists(atPath: source)
+    else {
+      throw RootActionError.operationFailed(
+        code: "launch_plist_move_failed",
+        message: "Launchd plist was not moved to \(destinationPath)."
+      )
+    }
+    return ("Launchd plist was \(action)", true, ["path": destinationPath])
   }
 
   private static func moveApplication(

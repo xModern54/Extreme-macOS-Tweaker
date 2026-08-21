@@ -9,6 +9,11 @@ enum SystemVolume {
   static let legacyDequarantineBinaryPath = "/usr/libexec/extrememactweaker.dequarantine"
   static let dequarantinePlistPath =
     "/System/Library/LaunchDaemons/com.extrememactweaker.dequarantine.plist"
+  static let cleanSweepDirectory = "/System/Library/CleanSweep"
+  static let launchDaemonsDirectory = "/System/Library/LaunchDaemons"
+  static let launchAgentsDirectory = "/System/Library/LaunchAgents"
+  static let hiddenLaunchDaemonsDirectory = cleanSweepDirectory + "/LaunchDaemons"
+  static let hiddenLaunchAgentsDirectory = cleanSweepDirectory + "/LaunchAgents"
 
   static func baseDevice(using commands: CommandRunner) throws -> String {
     let output = try commands.requireSuccess("/usr/sbin/diskutil", ["info", "-plist", "/"])
@@ -76,6 +81,34 @@ enum SystemVolume {
     try mountedAllowedPath(
       root: mountPath,
       systemPath: try validatedApplicationPath(systemPath)
+    )
+  }
+
+  static func validatedLaunchPlistPath(_ systemPath: String) throws -> String {
+    let standardized = standardizedPath(systemPath)
+    let url = URL(fileURLWithPath: standardized)
+    guard url.pathExtension.caseInsensitiveCompare("plist") == .orderedSame else {
+      throw RootActionError.invalidArguments("Path must be a launchd property list: \(systemPath)")
+    }
+
+    let parent = url.deletingLastPathComponent().path
+    guard
+      parent == launchDaemonsDirectory
+        || parent == launchAgentsDirectory
+        || parent == hiddenLaunchDaemonsDirectory
+        || parent == hiddenLaunchAgentsDirectory
+    else {
+      throw RootActionError.invalidArguments(
+        "Launchd plist path is outside the allowed locations: \(systemPath)"
+      )
+    }
+    return standardized
+  }
+
+  static func mountedLaunchPlistPath(root mountPath: String, systemPath: String) throws -> String {
+    try mountedAllowedPath(
+      root: mountPath,
+      systemPath: try validatedLaunchPlistPath(systemPath)
     )
   }
 

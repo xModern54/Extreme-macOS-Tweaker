@@ -7,6 +7,9 @@ struct LaunchServiceRuntimeState: Equatable, Sendable {
   let kind: TweakCatalogService.Kind
 
   var isEffectivelyActive: Bool {
+    if TweakCatalogSelection.usesGoldenGateCatalog(), isPersistentlyDisabled {
+      return isRunning
+    }
     if kind == .xpcService {
       return !isPersistentlyDisabled || isRunning
     }
@@ -34,11 +37,13 @@ enum LaunchServiceStateScanner {
         }
 
         let disabledLabels = parseDisabledLabels(disabledOutput)
+        let usesCleanSweep = TweakCatalogSelection.usesGoldenGateCatalog()
         for service in domainServices {
           let printOutput = commandOutput(["print", "\(target)/\(service.label)"])
           let processID = printOutput.flatMap(parseProcessID)
+          let hidden = usesCleanSweep && isHiddenByCleanSweep(service)
           states[service.id] = LaunchServiceRuntimeState(
-            isPersistentlyDisabled: disabledLabels.contains(service.label),
+            isPersistentlyDisabled: hidden || disabledLabels.contains(service.label),
             isLoaded: printOutput != nil,
             isRunning: (processID ?? 0) > 0,
             kind: service.kind
@@ -47,6 +52,13 @@ enum LaunchServiceStateScanner {
       }
       return states
     }.value
+  }
+
+  private static func isHiddenByCleanSweep(_ service: TweakCatalogService) -> Bool {
+    guard let plistPath = service.plistPath, CleanSweepLayout.isSweepable(plistPath) else {
+      return false
+    }
+    return !FileManager.default.fileExists(atPath: plistPath)
   }
 
   private static func commandOutput(_ arguments: [String]) -> String? {

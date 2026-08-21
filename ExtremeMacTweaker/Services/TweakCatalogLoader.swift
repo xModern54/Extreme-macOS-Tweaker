@@ -12,15 +12,35 @@ enum TweakCatalogSeal {
   static let expectedSHA256: String? = nil
 }
 
+enum TweakCatalogSelection {
+  static let goldenGateMajor = 27
+
+  static var hostMacOSMajor: Int {
+    ProcessInfo.processInfo.operatingSystemVersion.majorVersion
+  }
+
+  static func usesGoldenGateCatalog(major: Int = hostMacOSMajor) -> Bool {
+    major >= goldenGateMajor
+  }
+
+  static func bundledResourceName(major: Int = hostMacOSMajor) -> String {
+    usesGoldenGateCatalog(major: major) ? "TweakCatalog.27" : "TweakCatalog"
+  }
+
+  static func externalFileName(major: Int = hostMacOSMajor) -> String {
+    usesGoldenGateCatalog(major: major) ? "TweakCatalog.27.json" : "TweakCatalog.json"
+  }
+}
+
 enum TweakCatalogLoadingError: LocalizedError {
-  case bundledCatalogMissing
+  case bundledCatalogMissing(String)
   case semanticValidation([TweakCatalogValidationIssue])
   case integrityMismatch(expected: String, actual: String)
 
   var errorDescription: String? {
     switch self {
-    case .bundledCatalogMissing:
-      "TweakCatalog.json is missing from the application bundle."
+    case .bundledCatalogMissing(let name):
+      "\(name) is missing from the application bundle."
     case .semanticValidation(let issues):
       issues.map(\.message).joined(separator: "\n")
     case .integrityMismatch(let expected, let actual):
@@ -41,23 +61,29 @@ struct LoadedTweakCatalog: Sendable {
 }
 
 struct TweakCatalogLoader: Sendable {
-  static let externalCatalogURL = FileManager.default.urls(
-    for: .applicationSupportDirectory,
-    in: .userDomainMask
-  )[0]
-  .appendingPathComponent("Tweaker", isDirectory: true)
-  .appendingPathComponent("TweakCatalog.json")
+  static var externalCatalogDirectory: URL {
+    FileManager.default.urls(
+      for: .applicationSupportDirectory,
+      in: .userDomainMask
+    )[0]
+    .appendingPathComponent("Tweaker", isDirectory: true)
+  }
+
+  static var externalCatalogURL: URL {
+    externalCatalogDirectory.appendingPathComponent(TweakCatalogSelection.externalFileName())
+  }
 
   func load() throws -> LoadedTweakCatalog {
     let source: LoadedTweakCatalog.Source
     let url: URL
+    let resourceName = TweakCatalogSelection.bundledResourceName()
 
     if FileManager.default.fileExists(atPath: Self.externalCatalogURL.path) {
       url = Self.externalCatalogURL
       source = .external(url)
     } else {
-      guard let bundledURL = Bundle.main.url(forResource: "TweakCatalog", withExtension: "json") else {
-        throw TweakCatalogLoadingError.bundledCatalogMissing
+      guard let bundledURL = Bundle.main.url(forResource: resourceName, withExtension: "json") else {
+        throw TweakCatalogLoadingError.bundledCatalogMissing("\(resourceName).json")
       }
       url = bundledURL
       source = .bundled

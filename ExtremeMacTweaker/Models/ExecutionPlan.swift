@@ -12,6 +12,8 @@ struct ExecutionPlan: Sendable {
         true
       case .launchService(let service):
         service.action == .disable
+          || (TweakCatalogSelection.usesGoldenGateCatalog()
+            && service.plistPath.map(CleanSweepLayout.isSweepable) == true)
       case .securityFeature(let feature):
         if feature.featureID == "system-policy" || feature.featureID == "download-whitelist" {
           true
@@ -32,6 +34,9 @@ struct ExecutionPlan: Sendable {
         true
       case .securityFeature(let feature):
         feature.featureID == "download-whitelist"
+      case .launchService(let service):
+        TweakCatalogSelection.usesGoldenGateCatalog()
+          && service.plistPath.map(CleanSweepLayout.isSweepable) == true
       default:
         false
       }
@@ -56,6 +61,8 @@ enum ExecutionStep: Identifiable, Sendable {
   case restoreSystemApplication(sourcePath: String, destinationPath: String)
   case deleteSystemApplication(path: String)
   case relocateDisabledApplications
+  case hideLaunchPlist(sourcePath: String, destinationPath: String)
+  case restoreLaunchPlist(sourcePath: String, destinationPath: String)
   case setLaunchService(
     id: String,
     label: String,
@@ -87,6 +94,10 @@ enum ExecutionStep: Identifiable, Sendable {
       "Delete \(URL(fileURLWithPath: path).deletingPathExtension().lastPathComponent)"
     case .relocateDisabledApplications:
       "Move hidden applications out of Launch Services"
+    case .hideLaunchPlist(let source, _):
+      "Hide \(URL(fileURLWithPath: source).deletingPathExtension().lastPathComponent)"
+    case .restoreLaunchPlist(let source, _):
+      "Restore \(URL(fileURLWithPath: source).deletingPathExtension().lastPathComponent)"
     case .setLaunchService(_, let label, _, let enabled):
       "\(enabled ? "Enabling" : "Disabling") service \(label)"
     case .setSecurityFeature(let id, let enabled):

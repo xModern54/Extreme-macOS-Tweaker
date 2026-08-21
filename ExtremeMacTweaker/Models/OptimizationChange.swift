@@ -74,6 +74,51 @@ struct LaunchServiceChange: Codable, Hashable, Sendable {
   let featureID: String?
   let featureTitle: String?
   let action: Action
+  let plistPath: String?
+
+  private enum CodingKeys: String, CodingKey {
+    case serviceID, label, domain, featureID, featureTitle, action, plistPath
+  }
+
+  init(
+    serviceID: String,
+    label: String,
+    domain: TweakCatalogService.Domain,
+    featureID: String?,
+    featureTitle: String?,
+    action: Action,
+    plistPath: String? = nil
+  ) {
+    self.serviceID = serviceID
+    self.label = label
+    self.domain = domain
+    self.featureID = featureID
+    self.featureTitle = featureTitle
+    self.action = action
+    self.plistPath = plistPath
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    serviceID = try container.decode(String.self, forKey: .serviceID)
+    label = try container.decode(String.self, forKey: .label)
+    domain = try container.decode(TweakCatalogService.Domain.self, forKey: .domain)
+    featureID = try container.decodeIfPresent(String.self, forKey: .featureID)
+    featureTitle = try container.decodeIfPresent(String.self, forKey: .featureTitle)
+    action = try container.decode(Action.self, forKey: .action)
+    plistPath = try container.decodeIfPresent(String.self, forKey: .plistPath)
+  }
+
+  func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(serviceID, forKey: .serviceID)
+    try container.encode(label, forKey: .label)
+    try container.encode(domain, forKey: .domain)
+    try container.encodeIfPresent(featureID, forKey: .featureID)
+    try container.encodeIfPresent(featureTitle, forKey: .featureTitle)
+    try container.encode(action, forKey: .action)
+    try container.encodeIfPresent(plistPath, forKey: .plistPath)
+  }
 }
 
 struct SecurityFeatureChange: Codable, Hashable, Sendable {

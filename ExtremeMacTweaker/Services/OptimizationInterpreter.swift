@@ -41,14 +41,30 @@ enum OptimizationInterpreter {
         }
 
       case .launchService(let service):
-        launchServiceSteps.append(
-          .setLaunchService(
-            id: service.serviceID,
-            label: service.label,
-            domain: service.domain,
-            enabled: service.action == .enable
+        if TweakCatalogSelection.usesGoldenGateCatalog(),
+          let plistPath = service.plistPath,
+          let hiddenPath = CleanSweepLayout.hiddenPath(for: plistPath)
+        {
+          switch service.action {
+          case .disable:
+            systemVolumeSteps.append(
+              .hideLaunchPlist(sourcePath: plistPath, destinationPath: hiddenPath)
+            )
+          case .enable:
+            systemVolumeSteps.append(
+              .restoreLaunchPlist(sourcePath: hiddenPath, destinationPath: plistPath)
+            )
+          }
+        } else {
+          launchServiceSteps.append(
+            .setLaunchService(
+              id: service.serviceID,
+              label: service.label,
+              domain: service.domain,
+              enabled: service.action == .enable
+            )
           )
-        )
+        }
 
       case .securityFeature(let feature):
         if feature.featureID == "download-whitelist" {

@@ -16,6 +16,8 @@ enum RootActionRequest {
   case restoreApplication(mountPath: String, sourcePath: String, destinationPath: String)
   case deleteApplication(mountPath: String, path: String)
   case relocateDisabledApplications(mountPath: String)
+  case hideLaunchPlist(mountPath: String, sourcePath: String, destinationPath: String)
+  case restoreLaunchPlist(mountPath: String, sourcePath: String, destinationPath: String)
   case createSnapshot(mountPath: String)
   case setLaunchService(
     label: String,
@@ -40,6 +42,8 @@ enum RootActionRequest {
     case .restoreApplication: "restore-application"
     case .deleteApplication: "delete-application"
     case .relocateDisabledApplications: "relocate-disabled-applications"
+    case .hideLaunchPlist: "hide-launch-plist"
+    case .restoreLaunchPlist: "restore-launch-plist"
     case .createSnapshot: "create-snapshot"
     case .setLaunchService: "set-launch-service"
     case .removeSystemComponent: "remove-system-component"
@@ -61,6 +65,8 @@ enum RootActionRequest {
     case .restoreApplication(_, let source, _): "Restoring \(appName(source))"
     case .deleteApplication(_, let path): "Deleting \(appName(path))"
     case .relocateDisabledApplications: "Moving hidden applications out of Launch Services"
+    case .hideLaunchPlist(_, let source, _): "Hiding \(plistName(source))"
+    case .restoreLaunchPlist(_, let source, _): "Restoring \(plistName(source))"
     case .createSnapshot: "Creating a bootable system snapshot"
     case .setLaunchService(let label, _, _, let enabled):
       "\(enabled ? "Enabling" : "Disabling") service \(label)"
@@ -110,6 +116,18 @@ enum RootActionRequest {
       )
     case "relocate-disabled-applications":
       return .relocateDisabledApplications(mountPath: try required("mount-path", in: options))
+    case "hide-launch-plist":
+      return .hideLaunchPlist(
+        mountPath: try required("mount-path", in: options),
+        sourcePath: try required("source", in: options),
+        destinationPath: try required("destination", in: options)
+      )
+    case "restore-launch-plist":
+      return .restoreLaunchPlist(
+        mountPath: try required("mount-path", in: options),
+        sourcePath: try required("source", in: options),
+        destinationPath: try required("destination", in: options)
+      )
     case "create-snapshot":
       return .createSnapshot(mountPath: try required("mount-path", in: options))
     case "set-launch-service":
@@ -191,6 +209,10 @@ enum RootActionRequest {
   }
 
   private func appName(_ path: String) -> String {
+    URL(fileURLWithPath: path).deletingPathExtension().lastPathComponent
+  }
+
+  private func plistName(_ path: String) -> String {
     URL(fileURLWithPath: path).deletingPathExtension().lastPathComponent
   }
 }

@@ -462,7 +462,8 @@ final class OptimizationStore: ObservableObject {
               domain: service.domain,
               featureID: featureID,
               featureTitle: featureTitle,
-              action: action
+              action: action,
+              plistPath: service.plistPath
             )
           ),
           persist: false
@@ -627,7 +628,8 @@ final class OptimizationStore: ObservableObject {
           domain: service.domain,
           featureID: feature.id,
           featureTitle: feature.localizedTitle,
-          action: pendingService.action
+          action: pendingService.action,
+          plistPath: service.plistPath
         )
       )
     }

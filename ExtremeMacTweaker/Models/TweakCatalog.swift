@@ -47,6 +47,7 @@ struct TweakCatalogService: Decodable, Identifiable, Sendable {
   let label: String
   let domain: Domain
   let kind: Kind
+  let plistPath: String?
 }
 
 struct TweakCatalogServiceGroup: Decodable, Identifiable, Sendable {

@@ -34,7 +34,7 @@ Extreme Mac Tweaker is a macOS system optimization and customization utility des
 - Shared event/result models live in `PrivilegedProtocol/` and compile into both targets.
 - System-app plans are ordered as preflight, mount base System volume, perform all app moves/deletions, create a bootable snapshot with `bless`, and unmount.
 - The default writable mount point is `/Volumes/SystemRW`; the helper discovers the base APFS System volume dynamically from `diskutil info -plist /`.
-- Current helper commands are `identity`, `preflight`, `mount-system-volume`, `unmount-system-volume`, `disable-application`, `restore-application`, `delete-application`, and `create-snapshot`.
+- Current helper commands are `identity`, `preflight`, `mount-system-volume`, `unmount-system-volume`, `disable-application`, `restore-application`, `delete-application`, `hide-launch-plist`, `restore-launch-plist`, and `create-snapshot`.
 
 ## Empirical Data
 
@@ -55,11 +55,10 @@ Extreme Mac Tweaker is a macOS system optimization and customization utility des
 
 ## Tweak Catalog Workflow
 
-- System Tweaker categories, features, service groups, launchd services, descriptions, and impact estimates are loaded from `ExtremeMacTweaker/Resources/TweakCatalog.json`.
-- The bundled catalog currently targets macOS 15 through 27 on ARM64 and x86_64 using one universal data set.
-- Run `./Scripts/Catalog.sh install` once to create the live development override at `~/Library/Application Support/Tweaker/TweakCatalog.json`.
-- Tweaker monitors the external override and reloads successful JSON edits automatically without rebuilding or restarting the application.
-- Run `./Scripts/Catalog.sh sync` to replace the development override with the repository catalog and `./Scripts/Catalog.sh path` to print its location.
+- System Tweaker data is split by host macOS: `ExtremeMacTweaker/Resources/TweakCatalog.json` for 15–26, `ExtremeMacTweaker/Resources/TweakCatalog.27.json` for 27 and later.
+- The loader picks the matching file from the application bundle, or the same filename under `~/Library/Application Support/Tweaker/` if a development override exists.
+- Run `./Scripts/Catalog.sh install` once to create both live development overrides. Tweaker reloads successful JSON edits automatically without rebuilding or restarting.
+- Run `./Scripts/Catalog.sh sync` to replace both overrides with the repository catalogs and `./Scripts/Catalog.sh path` to print their locations.
 - English catalog copy is the fallback. Dynamic localization keys use `tweak.<feature-id>.<field>` and `category.<category-id>.title` from the `TweakCatalog` string table.
 - Semantic validation and SHA-256 integrity infrastructure exist in `TweakCatalogValidator` and `TweakCatalogLoader`, but both runtime policies are intentionally disabled during active catalog development.
 
