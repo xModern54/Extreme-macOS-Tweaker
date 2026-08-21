@@ -1883,9 +1883,10 @@
     },
     {
       "id": "audioclocksyncd",
-      "label": "com.apple.timesync.audioclocksyncd",
+      "label": "com.apple.clocksyncd",
       "domain": "system",
-      "kind": "daemon"
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.clocksyncd.plist"
     },
     {
       "id": "apfsuseragent",
