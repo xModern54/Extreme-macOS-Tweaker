@@ -14,6 +14,11 @@
   "properties": {
     "schemaVersion": { "const": 1 },
     "catalogVersion": { "type": "string" },
+    "serviceDisablePolicy": {
+      "type": "string",
+      "enum": ["launchctl", "cleanSweep"],
+      "description": "Default disable method for services that omit disableMethod."
+    },
     "compatibility": {
       "type": "object",
       "required": ["minimumMacOSMajor", "maximumMacOSMajor", "architectures"]

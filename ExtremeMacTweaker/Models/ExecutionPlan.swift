@@ -11,9 +11,7 @@ struct ExecutionPlan: Sendable {
       case .systemApplication:
         true
       case .launchService(let service):
-        service.action == .disable
-          || (TweakCatalogSelection.usesGoldenGateCatalog()
-            && service.sweepPaths.contains(where: CleanSweepLayout.isSweepable))
+        service.requiresSystemVolume || service.action == .disable
       case .securityFeature(let feature):
         if feature.featureID == "system-policy" || feature.featureID == "download-whitelist" {
           true
@@ -35,8 +33,7 @@ struct ExecutionPlan: Sendable {
       case .securityFeature(let feature):
         feature.featureID == "download-whitelist"
       case .launchService(let service):
-        TweakCatalogSelection.usesGoldenGateCatalog()
-          && service.sweepPaths.contains(where: CleanSweepLayout.isSweepable)
+        service.requiresSystemVolume
       default:
         false
       }

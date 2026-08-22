@@ -1,13 +1,49 @@
 import Foundation
 
+enum LaunchServiceDisableMethod: String, Codable, Hashable, Sendable {
+  case launchctl
+  case cleanSweep
+}
+
 struct TweakCatalog: Decodable, Sendable {
   let schemaVersion: Int
   let catalogVersion: String
+  let serviceDisablePolicy: LaunchServiceDisableMethod
   let compatibility: TweakCatalogCompatibility
   let categories: [TweakCatalogCategory]
   let services: [TweakCatalogService]
   let serviceGroups: [TweakCatalogServiceGroup]
   let features: [TweakCatalogFeature]
+
+  enum CodingKeys: String, CodingKey {
+    case schemaVersion
+    case catalogVersion
+    case serviceDisablePolicy
+    case compatibility
+    case categories
+    case services
+    case serviceGroups
+    case features
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    schemaVersion = try container.decode(Int.self, forKey: .schemaVersion)
+    catalogVersion = try container.decode(String.self, forKey: .catalogVersion)
+    serviceDisablePolicy = try container.decodeIfPresent(
+      LaunchServiceDisableMethod.self,
+      forKey: .serviceDisablePolicy
+    ) ?? .launchctl
+    compatibility = try container.decode(TweakCatalogCompatibility.self, forKey: .compatibility)
+    categories = try container.decode([TweakCatalogCategory].self, forKey: .categories)
+    services = try container.decode([TweakCatalogService].self, forKey: .services)
+    serviceGroups = try container.decode([TweakCatalogServiceGroup].self, forKey: .serviceGroups)
+    features = try container.decode([TweakCatalogFeature].self, forKey: .features)
+  }
+
+  func disableMethod(for service: TweakCatalogService) -> LaunchServiceDisableMethod {
+    service.disableMethod ?? serviceDisablePolicy
+  }
 }
 
 struct TweakCatalogCompatibility: Decodable, Sendable {
@@ -49,6 +85,7 @@ struct TweakCatalogService: Decodable, Identifiable, Sendable {
   let kind: Kind
   let plistPath: String?
   let assetPath: String?
+  let disableMethod: LaunchServiceDisableMethod?
 
   var sweepPaths: [String] {
     [plistPath, assetPath].compactMap { $0 }

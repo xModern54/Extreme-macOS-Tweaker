@@ -1,6 +1,7 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.21.1",
+  "catalogVersion": "2026.08.22.1",
+  "serviceDisablePolicy": "launchctl",
   "compatibility": {
     "minimumMacOSMajor": 15,
     "maximumMacOSMajor": 26,

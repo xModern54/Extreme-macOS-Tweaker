@@ -76,6 +76,32 @@ struct SystemApplicationChange: Codable, Hashable, Sendable {
   }
 }
 
+struct AppliedLaunchServiceState: Codable, Equatable, Sendable {
+  var enabled: Bool
+  var method: LaunchServiceDisableMethod?
+
+  private enum CodingKeys: String, CodingKey {
+    case enabled, method
+  }
+
+  init(enabled: Bool, method: LaunchServiceDisableMethod? = nil) {
+    self.enabled = enabled
+    self.method = method
+  }
+
+  init(from decoder: Decoder) throws {
+    if let enabled = try? decoder.singleValueContainer().decode(Bool.self) {
+      self.enabled = enabled
+      self.method = nil
+      return
+    }
+
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    enabled = try container.decode(Bool.self, forKey: .enabled)
+    method = try container.decodeIfPresent(LaunchServiceDisableMethod.self, forKey: .method)
+  }
+}
+
 struct LaunchServiceChange: Codable, Hashable, Sendable {
   enum Action: String, Codable, Sendable {
     case enable
@@ -90,13 +116,27 @@ struct LaunchServiceChange: Codable, Hashable, Sendable {
   let action: Action
   let plistPath: String?
   let assetPath: String?
+  let disableMethod: LaunchServiceDisableMethod
+  let healsLaunchctl: Bool
+  let healsCleanSweep: Bool
 
   var sweepPaths: [String] {
     [plistPath, assetPath].compactMap { $0 }
   }
 
+  var requiresSystemVolume: Bool {
+    let hasSweepablePath = sweepPaths.contains(where: CleanSweepLayout.isSweepable)
+    switch action {
+    case .disable:
+      return disableMethod == .cleanSweep && hasSweepablePath
+    case .enable:
+      return (disableMethod == .cleanSweep || healsCleanSweep) && hasSweepablePath
+    }
+  }
+
   private enum CodingKeys: String, CodingKey {
     case serviceID, label, domain, featureID, featureTitle, action, plistPath, assetPath
+    case disableMethod, healsLaunchctl, healsCleanSweep
   }
 
   init(
@@ -107,7 +147,10 @@ struct LaunchServiceChange: Codable, Hashable, Sendable {
     featureTitle: String?,
     action: Action,
     plistPath: String? = nil,
-    assetPath: String? = nil
+    assetPath: String? = nil,
+    disableMethod: LaunchServiceDisableMethod,
+    healsLaunchctl: Bool = false,
+    healsCleanSweep: Bool = false
   ) {
     self.serviceID = serviceID
     self.label = label
@@ -117,6 +160,9 @@ struct LaunchServiceChange: Codable, Hashable, Sendable {
     self.action = action
     self.plistPath = plistPath
     self.assetPath = assetPath
+    self.disableMethod = disableMethod
+    self.healsLaunchctl = healsLaunchctl
+    self.healsCleanSweep = healsCleanSweep
   }
 
   init(from decoder: Decoder) throws {
@@ -129,6 +175,14 @@ struct LaunchServiceChange: Codable, Hashable, Sendable {
     action = try container.decode(Action.self, forKey: .action)
     plistPath = try container.decodeIfPresent(String.self, forKey: .plistPath)
     assetPath = try container.decodeIfPresent(String.self, forKey: .assetPath)
+    disableMethod = try container.decodeIfPresent(
+      LaunchServiceDisableMethod.self,
+      forKey: .disableMethod
+    ) ?? .launchctl
+    healsLaunchctl = try container.decodeIfPresent(Bool.self, forKey: .healsLaunchctl)
+      ?? (action == .enable && disableMethod == .launchctl)
+    healsCleanSweep = try container.decodeIfPresent(Bool.self, forKey: .healsCleanSweep)
+      ?? (action == .enable && disableMethod == .cleanSweep)
   }
 
   func encode(to encoder: Encoder) throws {
@@ -141,6 +195,9 @@ struct LaunchServiceChange: Codable, Hashable, Sendable {
     try container.encode(action, forKey: .action)
     try container.encodeIfPresent(plistPath, forKey: .plistPath)
     try container.encodeIfPresent(assetPath, forKey: .assetPath)
+    try container.encode(disableMethod, forKey: .disableMethod)
+    try container.encode(healsLaunchctl, forKey: .healsLaunchctl)
+    try container.encode(healsCleanSweep, forKey: .healsCleanSweep)
   }
 }
 

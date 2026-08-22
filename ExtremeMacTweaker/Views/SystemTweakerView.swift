@@ -168,12 +168,14 @@ struct SystemTweakerView: View {
       get: { choice(for: feature) },
       set: { newValue in
         selectedFeatureID = feature.id
+        guard let catalog = catalogStore.catalog else { return }
         optimizationStore.setLaunchServices(
           catalogStore.services(for: feature),
           enabled: newValue == .keepEnabled,
           defaultEnabled: feature.defaultEnabled,
           featureID: feature.id,
-          featureTitle: feature.localizedTitle
+          featureTitle: feature.localizedTitle,
+          catalog: catalog
         )
       }
     )
@@ -184,13 +186,15 @@ struct SystemTweakerView: View {
   }
 
   private func selectAllFeaturesForDisable() {
+    guard let catalog = catalogStore.catalog else { return }
     for feature in features {
       optimizationStore.setLaunchServices(
         catalogStore.services(for: feature),
         enabled: false,
         defaultEnabled: feature.defaultEnabled,
         featureID: feature.id,
-        featureTitle: feature.localizedTitle
+        featureTitle: feature.localizedTitle,
+        catalog: catalog
       )
     }
   }
@@ -206,10 +210,12 @@ struct SystemTweakerView: View {
   }
 
   private func reconcileLegacyPendingChanges() {
+    guard let catalog = catalogStore.catalog else { return }
     for feature in features {
       optimizationStore.reconcileLegacyLaunchFeature(
         feature,
-        services: catalogStore.services(for: feature)
+        services: catalogStore.services(for: feature),
+        catalog: catalog
       )
     }
   }

@@ -7,7 +7,8 @@ enum OptimizationInterpreter {
     }
 
     var systemVolumeSteps: [ExecutionStep] = []
-    var launchServiceSteps: [ExecutionStep] = []
+    var launchctlDisableSteps: [ExecutionStep] = []
+    var launchctlEnableSteps: [ExecutionStep] = []
     var securitySteps: [ExecutionStep] = []
     var componentSteps: [ExecutionStep] = []
     let downloadsPath = FileManager.default.homeDirectoryForCurrentUser
@@ -45,28 +46,36 @@ enum OptimizationInterpreter {
           guard let hiddenPath = CleanSweepLayout.hiddenPath(for: path) else { return nil }
           return (path, hiddenPath)
         }
-        if TweakCatalogSelection.usesGoldenGateCatalog(), !sweepPairs.isEmpty {
-          for (livePath, hiddenPath) in sweepPairs {
-            switch service.action {
-            case .disable:
+        let launchctlStep = ExecutionStep.setLaunchService(
+          id: service.serviceID,
+          label: service.label,
+          domain: service.domain,
+          enabled: service.action == .enable
+        )
+
+        switch service.action {
+        case .disable:
+          if service.disableMethod == .cleanSweep {
+            for (livePath, hiddenPath) in sweepPairs {
               systemVolumeSteps.append(
                 .hideLaunchPlist(sourcePath: livePath, destinationPath: hiddenPath)
               )
-            case .enable:
+            }
+          } else {
+            launchctlDisableSteps.append(launchctlStep)
+          }
+
+        case .enable:
+          if service.disableMethod == .cleanSweep || service.healsCleanSweep {
+            for (livePath, hiddenPath) in sweepPairs {
               systemVolumeSteps.append(
                 .restoreLaunchPlist(sourcePath: hiddenPath, destinationPath: livePath)
               )
             }
           }
-        } else {
-          launchServiceSteps.append(
-            .setLaunchService(
-              id: service.serviceID,
-              label: service.label,
-              domain: service.domain,
-              enabled: service.action == .enable
-            )
-          )
+          if service.healsLaunchctl {
+            launchctlEnableSteps.append(launchctlStep)
+          }
         }
 
       case .securityFeature(let feature):
@@ -93,10 +102,7 @@ enum OptimizationInterpreter {
 
     let requiresSIPCheck =
       !componentSteps.isEmpty
-      || launchServiceSteps.contains { step in
-        if case .setLaunchService(_, _, _, let enabled) = step { return !enabled }
-        return false
-      }
+      || !launchctlDisableSteps.isEmpty
       || securitySteps.contains { step in
         guard case .setSecurityFeature(let id, let enabled) = step, !enabled else {
           return false
@@ -111,7 +117,7 @@ enum OptimizationInterpreter {
     } else if requiresSIPCheck {
       steps.append(.verifySystemIntegrityProtection)
     }
-    steps.append(contentsOf: launchServiceSteps)
+    steps.append(contentsOf: launchctlDisableSteps)
     steps.append(contentsOf: securitySteps)
     steps.append(contentsOf: componentSteps)
 
@@ -122,6 +128,7 @@ enum OptimizationInterpreter {
       steps.append(.createSystemSnapshot)
       steps.append(.unmountSystemVolume)
     }
+    steps.append(contentsOf: launchctlEnableSteps)
 
     return ExecutionPlan(changes: changes, steps: steps)
   }

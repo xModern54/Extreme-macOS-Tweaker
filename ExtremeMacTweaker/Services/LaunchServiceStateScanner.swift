@@ -1,19 +1,22 @@
 import Foundation
 
 struct LaunchServiceRuntimeState: Equatable, Sendable {
-  let isPersistentlyDisabled: Bool
+  let launchctlDisabled: Bool
+  let cleanSweepHidden: Bool
   let isLoaded: Bool
   let isRunning: Bool
   let kind: TweakCatalogService.Kind
 
+  var isPersistentlyDisabled: Bool { launchctlDisabled || cleanSweepHidden }
+
   var isEffectivelyActive: Bool {
-    if TweakCatalogSelection.usesGoldenGateCatalog(), isPersistentlyDisabled {
+    if cleanSweepHidden {
       return isRunning
     }
     if kind == .xpcService {
-      return !isPersistentlyDisabled || isRunning
+      return !launchctlDisabled || isRunning
     }
-    return !isPersistentlyDisabled || isLoaded
+    return !launchctlDisabled || isLoaded
   }
 }
 
@@ -32,18 +35,14 @@ enum LaunchServiceStateScanner {
         case .user: "user/\(userID)"
         case .gui: "gui/\(userID)"
         }
-        guard let disabledOutput = commandOutput(["print-disabled", target]) else {
-          continue
-        }
-
-        let disabledLabels = parseDisabledLabels(disabledOutput)
-        let usesCleanSweep = TweakCatalogSelection.usesGoldenGateCatalog()
+        let disabledLabels = commandOutput(["print-disabled", target]).map(parseDisabledLabels)
+          ?? []
         for service in domainServices {
           let printOutput = commandOutput(["print", "\(target)/\(service.label)"])
           let processID = printOutput.flatMap(parseProcessID)
-          let hidden = usesCleanSweep && isHiddenByCleanSweep(service)
           states[service.id] = LaunchServiceRuntimeState(
-            isPersistentlyDisabled: hidden || disabledLabels.contains(service.label),
+            launchctlDisabled: disabledLabels.contains(service.label),
+            cleanSweepHidden: isHiddenByCleanSweep(service),
             isLoaded: printOutput != nil,
             isRunning: (processID ?? 0) > 0,
             kind: service.kind
@@ -57,7 +56,7 @@ enum LaunchServiceStateScanner {
   private static func isHiddenByCleanSweep(_ service: TweakCatalogService) -> Bool {
     let paths = service.sweepPaths.filter(CleanSweepLayout.isSweepable)
     guard !paths.isEmpty else { return false }
-    return paths.allSatisfy { !FileManager.default.fileExists(atPath: $0) }
+    return paths.contains { !FileManager.default.fileExists(atPath: $0) }
   }
 
   private static func commandOutput(_ arguments: [String]) -> String? {

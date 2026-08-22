@@ -1,6 +1,7 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.21.3-27",
+  "catalogVersion": "2026.08.22.1-27",
+  "serviceDisablePolicy": "cleanSweep",
   "compatibility": {
     "minimumMacOSMajor": 27,
     "maximumMacOSMajor": 27,
@@ -1029,13 +1030,15 @@
       "id": "safari-notification-agent",
       "label": "com.apple.SafariNotificationAgent",
       "domain": "gui",
-      "kind": "agent"
+      "kind": "agent",
+      "disableMethod": "launchctl"
     },
     {
       "id": "webpushd",
       "label": "com.apple.webkit.webpushd",
       "domain": "gui",
-      "kind": "agent"
+      "kind": "agent",
+      "disableMethod": "launchctl"
     },
     {
       "id": "usbnotificationagent",
@@ -1111,13 +1114,15 @@
       "id": "safari-bookmarks-sync",
       "label": "com.apple.SafariBookmarksSyncAgent",
       "domain": "gui",
-      "kind": "agent"
+      "kind": "agent",
+      "disableMethod": "launchctl"
     },
     {
       "id": "safari-history",
       "label": "com.apple.Safari.History",
       "domain": "gui",
-      "kind": "agent"
+      "kind": "agent",
+      "disableMethod": "launchctl"
     },
     {
       "id": "feature-access-agent",
@@ -1221,19 +1226,22 @@
       "id": "store-privileged-odr",
       "label": "com.apple.AppStoreDaemon.StorePrivilegedODRService",
       "domain": "system",
-      "kind": "xpcService"
+      "kind": "xpcService",
+      "disableMethod": "launchctl"
     },
     {
       "id": "store-privileged-task",
       "label": "com.apple.AppStoreDaemon.StorePrivilegedTaskService",
       "domain": "system",
-      "kind": "xpcService"
+      "kind": "xpcService",
+      "disableMethod": "launchctl"
     },
     {
       "id": "store-ae-service",
       "label": "com.apple.AppStoreDaemon.StoreAEService",
       "domain": "system",
-      "kind": "xpcService"
+      "kind": "xpcService",
+      "disableMethod": "launchctl"
     },
     {
       "id": "storereceiptinstaller",
@@ -1470,7 +1478,8 @@
       "id": "geod",
       "label": "com.apple.geod",
       "domain": "gui",
-      "kind": "xpcService"
+      "kind": "xpcService",
+      "disableMethod": "launchctl"
     },
     {
       "id": "countryd",
@@ -1525,7 +1534,8 @@
       "id": "uvc-assistant",
       "label": "com.apple.cmio.uvcassistantextension",
       "domain": "system",
-      "kind": "xpcService"
+      "kind": "xpcService",
+      "disableMethod": "launchctl"
     },
     {
       "id": "email-maild",
@@ -1804,7 +1814,8 @@
       "id": "safari-platform-helper",
       "label": "com.apple.SafariPlatformSupport.Helper",
       "domain": "system",
-      "kind": "xpcService"
+      "kind": "xpcService",
+      "disableMethod": "launchctl"
     },
     {
       "id": "safari-safebrowsing",
@@ -1817,13 +1828,15 @@
       "id": "auth-services-agent",
       "label": "com.apple.AuthenticationServicesCore.AuthenticationServicesAgent",
       "domain": "gui",
-      "kind": "agent"
+      "kind": "agent",
+      "disableMethod": "launchctl"
     },
     {
       "id": "cursor-ui-view",
       "label": "com.apple.TextInputUI.xpc.CursorUIViewService",
       "domain": "gui",
-      "kind": "xpcService"
+      "kind": "xpcService",
+      "disableMethod": "launchctl"
     },
     {
       "id": "quicklookd",
@@ -2424,7 +2437,8 @@
       "id": "noticeboard-agent",
       "label": "com.apple.noticeboard.agent",
       "domain": "gui",
-      "kind": "agent"
+      "kind": "agent",
+      "disableMethod": "launchctl"
     },
     {
       "id": "keychain-circle-notification",
@@ -2619,19 +2633,22 @@
       "id": "safari-password-breach",
       "label": "com.apple.Safari.PasswordBreachAgent",
       "domain": "gui",
-      "kind": "agent"
+      "kind": "agent",
+      "disableMethod": "launchctl"
     },
     {
       "id": "safari-history-service",
       "label": "com.apple.SafariHistoryServiceAgent",
       "domain": "gui",
-      "kind": "agent"
+      "kind": "agent",
+      "disableMethod": "launchctl"
     },
     {
       "id": "safari-launch-agent",
       "label": "com.apple.SafariLaunchAgent",
       "domain": "gui",
-      "kind": "agent"
+      "kind": "agent",
+      "disableMethod": "launchctl"
     },
     {
       "id": "siri-agent",

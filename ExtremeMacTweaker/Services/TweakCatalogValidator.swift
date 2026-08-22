@@ -28,6 +28,28 @@ enum TweakCatalogValidator {
     let serviceIDs = Set(catalog.services.map(\.id))
     let serviceGroupIDs = Set(catalog.serviceGroups.map(\.id))
 
+    for service in catalog.services {
+      if catalog.disableMethod(for: service) == .cleanSweep {
+        let paths = service.sweepPaths
+        if paths.isEmpty {
+          issues.append(
+            issue(
+              "service-\(service.id)-clean-sweep-path",
+              "Service \(service.id) uses cleanSweep but has no plistPath or assetPath."
+            )
+          )
+        }
+        for path in paths where !CleanSweepLayout.isSweepable(path) {
+          issues.append(
+            issue(
+              "service-\(service.id)-clean-sweep-path",
+              "Service \(service.id) uses cleanSweep but \(path) is not a sweepable system item."
+            )
+          )
+        }
+      }
+    }
+
     for group in catalog.serviceGroups {
       for serviceID in group.services where !serviceIDs.contains(serviceID) {
         issues.append(

@@ -26,7 +26,7 @@ final class OptimizationStore: ObservableObject {
   @Published private(set) var executionLog: [String] = []
   @Published private(set) var executionError: String?
   @Published private(set) var executionRequiresReboot = false
-  @Published private(set) var appliedLaunchServiceStates: [String: Bool] = [:]
+  @Published private(set) var appliedLaunchServiceStates: [String: AppliedLaunchServiceState] = [:]
   @Published private(set) var systemProtectionCheck: SystemProtectionCheckState = .notRequired
   @Published private(set) var restartInProgress = false
   @Published private(set) var observedLaunchServiceStates: [String: LaunchServiceRuntimeState] = [:]
@@ -447,12 +447,14 @@ final class OptimizationStore: ObservableObject {
     enabled: Bool,
     defaultEnabled: Bool,
     featureID: String,
-    featureTitle: String
+    featureTitle: String,
+    catalog: TweakCatalog
   ) {
     let action: LaunchServiceChange.Action = enabled ? .enable : .disable
     for service in services {
+      let method = catalog.disableMethod(for: service)
       let baselineEnabled = observedLaunchServiceStates[service.id]?.isEffectivelyActive
-        ?? appliedLaunchServiceStates[service.id]
+        ?? appliedLaunchServiceStates[service.id]?.enabled
         ?? defaultEnabled
       if enabled == baselineEnabled {
         pendingChanges.removeAll { $0.id == "launch-service:\(service.id)" }
@@ -467,7 +469,12 @@ final class OptimizationStore: ObservableObject {
               featureTitle: featureTitle,
               action: action,
               plistPath: service.plistPath,
-              assetPath: service.assetPath
+              assetPath: service.assetPath,
+              disableMethod: method,
+              healsLaunchctl: action == .enable
+                && shouldHealLaunchctl(serviceID: service.id, method: method),
+              healsCleanSweep: action == .enable
+                && shouldHealCleanSweep(serviceID: service.id, method: method)
             )
           ),
           persist: false
@@ -512,7 +519,8 @@ final class OptimizationStore: ObservableObject {
         enabled: true,
         defaultEnabled: feature.defaultEnabled,
         featureID: feature.id,
-        featureTitle: feature.localizedTitle
+        featureTitle: feature.localizedTitle,
+        catalog: catalog
       )
     }
   }
@@ -546,7 +554,7 @@ final class OptimizationStore: ObservableObject {
     guard !services.isEmpty else { return defaultEnabled }
     return services.contains { service in
       observedLaunchServiceStates[service.id]?.isEffectivelyActive
-        ?? appliedLaunchServiceStates[service.id]
+        ?? appliedLaunchServiceStates[service.id]?.enabled
         ?? defaultEnabled
     }
   }
@@ -564,7 +572,7 @@ final class OptimizationStore: ObservableObject {
     let effectiveStates = services.map { service in
       pendingStates[service.id]
         ?? observedLaunchServiceStates[service.id]?.isEffectivelyActive
-        ?? appliedLaunchServiceStates[service.id]
+        ?? appliedLaunchServiceStates[service.id]?.enabled
         ?? defaultEnabled
     }
     return effectiveStates.contains(true)
@@ -583,7 +591,8 @@ final class OptimizationStore: ObservableObject {
 
   func reconcileLegacyLaunchFeature(
     _ feature: TweakCatalogFeature,
-    services: [TweakCatalogService]
+    services: [TweakCatalogService],
+    catalog: TweakCatalog
   ) {
     let serviceIDs = Set(services.map(\.id))
     let hasLegacyChanges = pendingChanges.contains { change in
@@ -616,9 +625,13 @@ final class OptimizationStore: ObservableObject {
         continue
       }
 
+      let method = catalog.disableMethod(for: service)
       if let disabledLabels = disabledLabelsByDomain[service.domain] {
         let currentlyEnabled = !disabledLabels.contains(service.label)
-        appliedLaunchServiceStates[service.id] = currentlyEnabled
+        appliedLaunchServiceStates[service.id] = AppliedLaunchServiceState(
+          enabled: currentlyEnabled,
+          method: method
+        )
         if (pendingService.action == .enable) == currentlyEnabled {
           pendingChanges.remove(at: index)
           continue
@@ -634,7 +647,12 @@ final class OptimizationStore: ObservableObject {
           featureTitle: feature.localizedTitle,
           action: pendingService.action,
           plistPath: service.plistPath,
-          assetPath: service.assetPath
+          assetPath: service.assetPath,
+          disableMethod: method,
+          healsLaunchctl: pendingService.action == .enable
+            && shouldHealLaunchctl(serviceID: service.id, method: method),
+          healsCleanSweep: pendingService.action == .enable
+            && shouldHealCleanSweep(serviceID: service.id, method: method)
         )
       )
     }
@@ -684,7 +702,10 @@ final class OptimizationStore: ObservableObject {
     var changed = false
     for change in changes {
       guard case .launchService(let service) = change else { continue }
-      appliedLaunchServiceStates[service.serviceID] = service.action == .enable
+      appliedLaunchServiceStates[service.serviceID] = AppliedLaunchServiceState(
+        enabled: service.action == .enable,
+        method: service.disableMethod
+      )
       observedLaunchServiceStates.removeValue(forKey: service.serviceID)
       changed = true
     }
@@ -784,11 +805,37 @@ final class OptimizationStore: ObservableObject {
     }
   }
 
+  private func shouldHealLaunchctl(
+    serviceID: String,
+    method: LaunchServiceDisableMethod
+  ) -> Bool {
+    if let observed = observedLaunchServiceStates[serviceID] {
+      return observed.launchctlDisabled
+    }
+    if let applied = appliedLaunchServiceStates[serviceID], let appliedMethod = applied.method {
+      return appliedMethod == .launchctl && !applied.enabled
+    }
+    return method == .launchctl
+  }
+
+  private func shouldHealCleanSweep(
+    serviceID: String,
+    method: LaunchServiceDisableMethod
+  ) -> Bool {
+    if let observed = observedLaunchServiceStates[serviceID] {
+      return observed.cleanSweepHidden
+    }
+    if let applied = appliedLaunchServiceStates[serviceID], let appliedMethod = applied.method {
+      return appliedMethod == .cleanSweep && !applied.enabled
+    }
+    return method == .cleanSweep
+  }
+
   private func restoreAppliedLaunchServiceStates() {
     guard
       let launchServiceStatesURL,
       let data = try? Data(contentsOf: launchServiceStatesURL),
-      let decoded = try? JSONDecoder().decode([String: Bool].self, from: data)
+      let decoded = try? JSONDecoder().decode([String: AppliedLaunchServiceState].self, from: data)
     else {
       return
     }
