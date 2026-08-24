@@ -1886,12 +1886,6 @@
       "kind": "agent"
     },
     {
-      "id": "cloudpaird",
-      "label": "com.apple.BTServer.cloudpairing",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
       "id": "maps-mapspushd",
       "label": "com.apple.Maps.mapspushd",
       "domain": "gui",

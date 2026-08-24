@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.22.1",
+  "catalogVersion": "2026.08.25.1",
   "serviceDisablePolicy": "launchctl",
   "compatibility": {
     "minimumMacOSMajor": 15,
@@ -1882,12 +1882,6 @@
     {
       "id": "ss-invitation-agent",
       "label": "com.apple.ssinvitationagent",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
-      "id": "cloudpaird",
-      "label": "com.apple.BTServer.cloudpairing",
       "domain": "gui",
       "kind": "agent"
     },

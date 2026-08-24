@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.24.3-27",
+  "catalogVersion": "2026.08.25.1-27",
   "serviceDisablePolicy": "cleanSweep",
   "compatibility": {
     "minimumMacOSMajor": 27,
@@ -2210,13 +2210,6 @@
       "plistPath": "/System/Library/LaunchAgents/com.apple.SSInvitationAgent.plist"
     },
     {
-      "id": "cloudpaird",
-      "label": "com.apple.BTServer.cloudpairing",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.cloudpaird.plist"
-    },
-    {
       "id": "maps-mapspushd",
       "label": "com.apple.Maps.mapspushd",
       "domain": "gui",
@@ -2840,6 +2833,69 @@
       "domain": "gui",
       "kind": "agent",
       "plistPath": "/System/Library/LaunchAgents/com.apple.betaenrollmentagent.plist"
+    },
+    {
+      "id": "powerchime",
+      "label": "com.apple.powerchime",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.powerchime.plist"
+    },
+    {
+      "id": "secure-backup-daemon",
+      "label": "com.apple.SecureBackupDaemon",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.SecureBackupDaemon.plist"
+    },
+    {
+      "id": "corekdld",
+      "label": "com.apple.corekdld",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.corekdld.plist"
+    },
+    {
+      "id": "managedappsd",
+      "label": "com.apple.devicemanagementclient.managedappsd",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.devicemanagementclient.managedappsd.plist"
+    },
+    {
+      "id": "teslad",
+      "label": "com.apple.devicemanagementclient.teslad",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.devicemanagementclient.teslad.plist"
+    },
+    {
+      "id": "managed-apps-agent",
+      "label": "com.apple.devicemanagementclient.ManagedAppsAgent",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.devicemanagementclient.ManagedAppsAgent.plist"
+    },
+    {
+      "id": "device-management-alertagent",
+      "label": "com.apple.devicemanagementclient.alertagent",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.devicemanagementclient.alertagent.plist"
+    },
+    {
+      "id": "backgroundtaskmanagementd",
+      "label": "com.apple.backgroundtaskmanagementd",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.backgroundtaskmanagementd.plist"
+    },
+    {
+      "id": "backgroundtaskmanagement-agent",
+      "label": "com.apple.backgroundtaskmanagement.agent",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.backgroundtaskmanagement.agent.plist"
     }
   ],
   "serviceGroups": [
@@ -3134,7 +3190,8 @@
         "financed",
         "passd",
         "nfcd",
-        "seld"
+        "seld",
+        "corekdld"
       ]
     },
     {
@@ -3447,7 +3504,11 @@
         "deviceconfigurationd",
         "device-configuration-agent",
         "betaenrollmentd",
-        "betaenrollmentagent"
+        "betaenrollmentagent",
+        "managedappsd",
+        "teslad",
+        "managed-apps-agent",
+        "device-management-alertagent"
       ]
     },
     {
@@ -3631,6 +3692,25 @@
         "audioclocksyncd",
         "folder-actions-dispatcher",
         "script-menu-app"
+      ]
+    },
+    {
+      "id": "power-chime",
+      "services": [
+        "powerchime"
+      ]
+    },
+    {
+      "id": "icloud-secure-backup",
+      "services": [
+        "secure-backup-daemon"
+      ]
+    },
+    {
+      "id": "background-task-management",
+      "services": [
+        "backgroundtaskmanagementd",
+        "backgroundtaskmanagement-agent"
       ]
     },
     {
@@ -4003,6 +4083,24 @@
         "estimatedProcessReduction": 3
       },
       "order": 400
+    },
+    {
+      "id": "icloud-secure-backup",
+      "categoryID": "icloud-store",
+      "title": "iCloud Keychain Escrow",
+      "question": "Back up iCloud Keychain recovery material to Apple?",
+      "description": "Secure Backup daemon that escrows encrypted iCloud Keychain records and account recovery tokens.",
+      "disableGuidance": "Disable this if this Mac does not recover iCloud Keychain from Apple’s escrow. Local keychain login still works.",
+      "systemImage": "lock.icloud",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "icloud-secure-backup"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 6,
+        "estimatedProcessReduction": 1
+      },
+      "order": 450
     },
     {
       "id": "private-relay",
@@ -4390,7 +4488,7 @@
       "categoryID": "apple-apps",
       "title": "Wallet & Apple Pay",
       "question": "Do you use Wallet, Apple Pay, or passes on this Mac?",
-      "description": "FinanceKit, PassKit, NFC, and secure element related services.",
+      "description": "FinanceKit, PassKit, NFC, CoreKDL, and secure element related services.",
       "disableGuidance": "Disable this if payments and passes are never used on this Mac.",
       "systemImage": "creditcard",
       "defaultEnabled": true,
@@ -4398,8 +4496,8 @@
         "wallet-applepay"
       ],
       "impact": {
-        "estimatedMemoryMB": 42,
-        "estimatedProcessReduction": 4
+        "estimatedMemoryMB": 48,
+        "estimatedProcessReduction": 5
       },
       "order": 700
     },
@@ -4704,8 +4802,8 @@
         "mdm-remote-management"
       ],
       "impact": {
-        "estimatedMemoryMB": 62,
-        "estimatedProcessReduction": 18
+        "estimatedMemoryMB": 75,
+        "estimatedProcessReduction": 22
       },
       "order": 200
     },
@@ -4926,6 +5024,24 @@
       "order": 1400
     },
     {
+      "id": "power-chime",
+      "categoryID": "system-network",
+      "title": "Charging Sound",
+      "question": "Play the MagSafe charging chime when a power cable is connected?",
+      "description": "PowerChime agent that plays the charger-connected sound. Charging, battery status, and MagSafe LED stay available without it.",
+      "disableGuidance": "Disable this to silence the charger chime and reclaim idle memory. Power management is unaffected.",
+      "systemImage": "bolt.fill",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "power-chime"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 37,
+        "estimatedProcessReduction": 1
+      },
+      "order": 1450
+    },
+    {
       "id": "spellcheck",
       "categoryID": "system-network",
       "title": "System Spell Check",
@@ -5050,6 +5166,24 @@
         "estimatedProcessReduction": 1
       },
       "order": 2200
+    },
+    {
+      "id": "background-task-management",
+      "categoryID": "system-network",
+      "title": "Login Item Alerts",
+      "question": "Show alerts when apps add login items or background tasks?",
+      "description": "Background Task Management daemon and agent that track login items and post “items added that can run in the background” banners.",
+      "disableGuidance": "Disable this to stop login-item telemetry and banners. Apps that already launch at login keep launching through launchd.",
+      "systemImage": "list.bullet.rectangle",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "background-task-management"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 18,
+        "estimatedProcessReduction": 2
+      },
+      "order": 2250
     },
     {
       "id": "misc-trims",
