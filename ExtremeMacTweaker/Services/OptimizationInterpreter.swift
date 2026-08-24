@@ -58,7 +58,11 @@ enum OptimizationInterpreter {
           if service.disableMethod == .cleanSweep {
             for (livePath, hiddenPath) in sweepPairs {
               systemVolumeSteps.append(
-                .hideLaunchPlist(sourcePath: livePath, destinationPath: hiddenPath)
+                .hideLaunchPlist(
+                  sourcePath: livePath,
+                  destinationPath: hiddenPath,
+                  label: service.label
+                )
               )
             }
           } else {
@@ -69,7 +73,11 @@ enum OptimizationInterpreter {
           if service.disableMethod == .cleanSweep || service.healsCleanSweep {
             for (livePath, hiddenPath) in sweepPairs {
               systemVolumeSteps.append(
-                .restoreLaunchPlist(sourcePath: hiddenPath, destinationPath: livePath)
+                .restoreLaunchPlist(
+                  sourcePath: hiddenPath,
+                  destinationPath: livePath,
+                  label: service.label
+                )
               )
             }
           }

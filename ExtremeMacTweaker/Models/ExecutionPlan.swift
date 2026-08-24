@@ -58,8 +58,8 @@ enum ExecutionStep: Identifiable, Sendable {
   case restoreSystemApplication(sourcePath: String, destinationPath: String)
   case deleteSystemApplication(path: String)
   case relocateDisabledApplications
-  case hideLaunchPlist(sourcePath: String, destinationPath: String)
-  case restoreLaunchPlist(sourcePath: String, destinationPath: String)
+  case hideLaunchPlist(sourcePath: String, destinationPath: String, label: String)
+  case restoreLaunchPlist(sourcePath: String, destinationPath: String, label: String)
   case setLaunchService(
     id: String,
     label: String,
@@ -91,10 +91,10 @@ enum ExecutionStep: Identifiable, Sendable {
       "Delete \(URL(fileURLWithPath: path).deletingPathExtension().lastPathComponent)"
     case .relocateDisabledApplications:
       "Move hidden applications out of Launch Services"
-    case .hideLaunchPlist(let source, _):
-      "Hide \(URL(fileURLWithPath: source).deletingPathExtension().lastPathComponent)"
-    case .restoreLaunchPlist(let source, _):
-      "Restore \(URL(fileURLWithPath: source).deletingPathExtension().lastPathComponent)"
+    case .hideLaunchPlist(_, _, let label):
+      "Disabling service \(label)"
+    case .restoreLaunchPlist(_, _, let label):
+      "Enabling service \(label)"
     case .setLaunchService(_, let label, _, let enabled):
       "\(enabled ? "Enabling" : "Disabling") service \(label)"
     case .setSecurityFeature(let id, let enabled):
@@ -111,6 +111,15 @@ enum ExecutionStep: Identifiable, Sendable {
       "Create a new bootable system snapshot"
     case .unmountSystemVolume:
       "Unmount the writable system volume"
+    }
+  }
+
+  var logsOnceAsService: Bool {
+    switch self {
+    case .hideLaunchPlist, .restoreLaunchPlist, .setLaunchService:
+      true
+    default:
+      false
     }
   }
 }

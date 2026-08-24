@@ -157,21 +157,16 @@ final class OptimizationStore: ObservableObject {
         onStep: { [weak self] index, step in
           guard let self else { return }
           executionMessage = step.description
-          if case .setLaunchService = step {
+          if step.logsOnceAsService {
             executionLog.append(step.description)
           }
           executionProgress = Double(index) / Double(max(plan.steps.count, 1))
         },
         onEvent: { [weak self] index, event in
           guard let self else { return }
-          let isLaunchServiceStep: Bool
-          if case .setLaunchService = plan.steps[index] {
-            isLaunchServiceStep = true
-          } else {
-            isLaunchServiceStep = false
-          }
+          let logsOnceAsService = plan.steps[index].logsOnceAsService
 
-          if isLaunchServiceStep {
+          if logsOnceAsService {
             if event.type == .failed {
               executionMessage = event.message
               executionLog.append(event.message)
