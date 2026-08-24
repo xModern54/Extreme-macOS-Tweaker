@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.24.2-27",
+  "catalogVersion": "2026.08.24.3-27",
   "serviceDisablePolicy": "cleanSweep",
   "compatibility": {
     "minimumMacOSMajor": 27,
@@ -926,7 +926,24 @@
       "label": "com.apple.liveactivitiesd",
       "domain": "gui",
       "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.liveactivitiesd.plist"
+      "plistPath": "/System/Library/LaunchAgents/com.apple.liveactivitiesd.plist",
+      "disableMethod": "cleanSweep"
+    },
+    {
+      "id": "liveactivitiesd-support",
+      "label": "com.apple.liveactivitiesd.support",
+      "domain": "system",
+      "kind": "binary",
+      "assetPath": "/System/Library/PrivateFrameworks/SessionCore.framework/Support/liveactivitiesd",
+      "disableMethod": "cleanSweep"
+    },
+    {
+      "id": "liveentity-xpc",
+      "label": "com.apple.appintents.LiveEntityService",
+      "domain": "system",
+      "kind": "xpcService",
+      "assetPath": "/System/Library/PrivateFrameworks/AppIntentsLiveEntitySupport.framework/XPCServices/AppIntentsLiveEntityService.xpc",
+      "disableMethod": "cleanSweep"
     },
     {
       "id": "sociallayerd",
@@ -3165,11 +3182,18 @@
       "services": [
         "screentime-agent",
         "usage-tracking-agent",
-        "liveactivitiesd",
         "sociallayerd",
         "managed-settings-agent",
         "dmd",
         "askpermissiond"
+      ]
+    },
+    {
+      "id": "live-activities",
+      "services": [
+        "liveactivitiesd",
+        "liveactivitiesd-support",
+        "liveentity-xpc"
       ]
     },
     {
@@ -3688,6 +3712,24 @@
         "estimatedProcessReduction": 6
       },
       "order": 300
+    },
+    {
+      "id": "live-activities",
+      "categoryID": "search-desktop",
+      "title": "Live Activities",
+      "question": "Do you use Live Activities such as timers, sports scores, or delivery status?",
+      "description": "ActivityKit session daemon, the SessionCore liveactivitiesd binary, and the App Intents Live Entity XPC that keep Live Activities updated.",
+      "disableGuidance": "Disable this if you do not use Live Activities. Static widgets, Notification Center banners, and audio playback keep working.",
+      "systemImage": "rectangle.stack",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "live-activities"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 25,
+        "estimatedProcessReduction": 3
+      },
+      "order": 350
     },
     {
       "id": "document-versions",
@@ -4238,9 +4280,9 @@
       "id": "screen-time",
       "categoryID": "apple-apps",
       "title": "Screen Time",
-      "question": "Do you use Screen Time, Live Activities, or app usage limits?",
-      "description": "Tracks usage, Live Activities, social layer suggestions, and managed settings.",
-      "disableGuidance": "Disable this if you do not use Screen Time reports, Downtime, or Live Activities.",
+      "question": "Do you use Screen Time or app usage limits?",
+      "description": "Tracks app usage, Downtime, social layer suggestions, and managed settings.",
+      "disableGuidance": "Disable this if you do not use Screen Time reports or Downtime.",
       "systemImage": "hourglass",
       "defaultEnabled": true,
       "disableServiceGroups": [

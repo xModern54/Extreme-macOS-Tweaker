@@ -77,6 +77,7 @@ struct TweakCatalogService: Decodable, Identifiable, Sendable {
     case daemon
     case agent
     case xpcService
+    case binary
   }
 
   let id: String

@@ -13,7 +13,7 @@ struct LaunchServiceRuntimeState: Equatable, Sendable {
     if cleanSweepHidden {
       return isRunning
     }
-    if kind == .xpcService {
+    if kind == .xpcService || kind == .binary {
       return !launchctlDisabled || isRunning
     }
     return !launchctlDisabled || isLoaded

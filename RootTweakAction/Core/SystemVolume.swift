@@ -106,29 +106,7 @@ enum SystemVolume {
   }
 
   static func isAllowedSweepPath(_ systemPath: String) -> Bool {
-    let url = URL(fileURLWithPath: systemPath)
-    let parent = url.deletingLastPathComponent().path
-
-    if url.pathExtension.caseInsensitiveCompare("plist") == .orderedSame {
-      return parent == launchDaemonsDirectory
-        || parent == launchAgentsDirectory
-        || parent == hiddenLaunchDaemonsDirectory
-        || parent == hiddenLaunchAgentsDirectory
-    }
-
-    if url.pathExtension.caseInsensitiveCompare("xpc") == .orderedSame,
-      url.deletingLastPathComponent().lastPathComponent == "XPCServices"
-    {
-      if systemPath.hasPrefix("/System/Library/"),
-        !systemPath.hasPrefix(cleanSweepDirectory + "/")
-      {
-        return true
-      }
-      let hiddenPrefix = cleanSweepDirectory + "/Library/"
-      return systemPath.hasPrefix(hiddenPrefix)
-    }
-
-    return false
+    CleanSweepPathPolicy.isAllowedSweepPath(systemPath)
   }
 
   static func mountedDequarantinePath(
