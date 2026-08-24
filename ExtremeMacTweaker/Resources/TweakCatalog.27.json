@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.24.1-27",
+  "catalogVersion": "2026.08.24.2-27",
   "serviceDisablePolicy": "cleanSweep",
   "compatibility": {
     "minimumMacOSMajor": 27,
@@ -1878,28 +1878,32 @@
       "label": "com.apple.warmd",
       "domain": "system",
       "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.warmd.plist"
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.warmd.plist",
+      "disableMethod": "launchctl"
     },
     {
       "id": "dasd",
       "label": "com.apple.dasd",
       "domain": "system",
       "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.dasd-OSX.plist"
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.dasd-OSX.plist",
+      "disableMethod": "launchctl"
     },
     {
       "id": "imklaunchagent",
       "label": "com.apple.imklaunchagent",
       "domain": "gui",
       "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.imklaunchagent.plist"
+      "plistPath": "/System/Library/LaunchAgents/com.apple.imklaunchagent.plist",
+      "disableMethod": "launchctl"
     },
     {
       "id": "audioclocksyncd",
       "label": "com.apple.clocksyncd",
       "domain": "system",
       "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.clocksyncd.plist"
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.clocksyncd.plist",
+      "disableMethod": "launchctl"
     },
     {
       "id": "apfsuseragent",
@@ -2669,14 +2673,16 @@
       "label": "com.apple.FolderActionsDispatcher",
       "domain": "gui",
       "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.FolderActionsDispatcher.plist"
+      "plistPath": "/System/Library/LaunchAgents/com.apple.FolderActionsDispatcher.plist",
+      "disableMethod": "launchctl"
     },
     {
       "id": "script-menu-app",
       "label": "com.apple.ScriptMenuApp",
       "domain": "gui",
       "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ScriptMenuApp.plist"
+      "plistPath": "/System/Library/LaunchAgents/com.apple.ScriptMenuApp.plist",
+      "disableMethod": "launchctl"
     },
     {
       "id": "seedusaged-postinstall",
