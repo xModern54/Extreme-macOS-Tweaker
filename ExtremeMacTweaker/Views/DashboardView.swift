@@ -78,7 +78,10 @@ struct DashboardView: View {
     }
     .task(id: catalogStore.catalog?.catalogVersion) {
       while !Task.isCancelled {
-        await optimizationStore.refreshLaunchServiceStates(catalogStore.catalog?.services ?? [])
+        await optimizationStore.refreshLaunchServiceStates(
+          catalogStore.catalog?.services ?? [],
+          catalog: catalogStore.catalog
+        )
         try? await Task.sleep(nanoseconds: 5_000_000_000)
       }
     }

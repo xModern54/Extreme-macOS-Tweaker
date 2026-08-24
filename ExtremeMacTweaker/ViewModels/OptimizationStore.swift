@@ -40,6 +40,7 @@ final class OptimizationStore: ObservableObject {
   private let dequarantineStateURL: URL?
   private var recordedDequarantineState: Bool?
   private var privilegedSession: PrivilegedExecutionSession?
+  private var pendingCatalogVersion: String?
 
   init() {
     let applicationSupport = FileManager.default.urls(
@@ -578,7 +579,13 @@ final class OptimizationStore: ObservableObject {
     return effectiveStates.contains(true)
   }
 
-  func refreshLaunchServiceStates(_ services: [TweakCatalogService]) async {
+  func refreshLaunchServiceStates(
+    _ services: [TweakCatalogService],
+    catalog: TweakCatalog? = nil
+  ) async {
+    if let catalog {
+      discardStaleLaunchPendingChanges(for: catalog)
+    }
     guard !services.isEmpty else {
       observedLaunchServiceStates = [:]
       return
@@ -587,6 +594,27 @@ final class OptimizationStore: ObservableObject {
       services: services,
       userID: getuid()
     )
+    prunePendingLaunchChangesMatchingObservedState()
+  }
+
+  func discardStaleLaunchPendingChanges(for catalog: TweakCatalog) {
+    let versionChanged = pendingCatalogVersion != catalog.catalogVersion
+    let servicesByID = Dictionary(uniqueKeysWithValues: catalog.services.map { ($0.id, $0) })
+    let before = pendingChanges.count
+    pendingChanges.removeAll { change in
+      guard case .launchService(let pending) = change else { return false }
+      if versionChanged {
+        return true
+      }
+      guard let service = servicesByID[pending.serviceID] else {
+        return true
+      }
+      return pending.disableMethod != catalog.disableMethod(for: service)
+    }
+    pendingCatalogVersion = catalog.catalogVersion
+    if pendingChanges.count != before || versionChanged {
+      persistPendingChanges()
+    }
   }
 
   func reconcileLegacyLaunchFeature(
@@ -684,16 +712,49 @@ final class OptimizationStore: ObservableObject {
   private func restorePendingChanges() {
     guard
       let persistenceURL,
-      let data = try? Data(contentsOf: persistenceURL),
-      let decoded = try? JSONDecoder().decode([OptimizationChange].self, from: data)
+      let data = try? Data(contentsOf: persistenceURL)
     else {
       return
     }
-    pendingChanges = decoded.filter { change in
+
+    let decodedChanges: [OptimizationChange]
+    if let envelope = try? JSONDecoder().decode(PendingChangesEnvelope.self, from: data) {
+      pendingCatalogVersion = envelope.catalogVersion
+      decodedChanges = envelope.changes
+    } else if let changes = try? JSONDecoder().decode([OptimizationChange].self, from: data) {
+      pendingCatalogVersion = nil
+      decodedChanges = changes
+    } else {
+      return
+    }
+
+    pendingChanges = decodedChanges.filter { change in
       guard case .launchService(let service) = change else { return true }
       return service.featureID != "xprotect" && service.featureID != "gatekeeper"
     }
-    if pendingChanges.count != decoded.count {
+    if pendingChanges.count != decodedChanges.count {
+      persistPendingChanges()
+    }
+  }
+
+  private func prunePendingLaunchChangesMatchingObservedState() {
+    let before = pendingChanges.count
+    pendingChanges.removeAll { change in
+      guard case .launchService(let pending) = change else { return false }
+      guard let observed = observedLaunchServiceStates[pending.serviceID] else { return false }
+      let desiredEnabled = pending.action == .enable
+      if desiredEnabled == observed.isEffectivelyActive {
+        return true
+      }
+      if pending.action == .enable,
+        observed.cleanSweepHidden,
+        !pending.healsCleanSweep
+      {
+        return true
+      }
+      return false
+    }
+    if pendingChanges.count != before {
       persistPendingChanges()
     }
   }
@@ -890,10 +951,20 @@ final class OptimizationStore: ObservableObject {
         at: persistenceURL.deletingLastPathComponent(),
         withIntermediateDirectories: true
       )
-      let data = try JSONEncoder().encode(pendingChanges)
+      let data = try JSONEncoder().encode(
+        PendingChangesEnvelope(
+          catalogVersion: pendingCatalogVersion,
+          changes: pendingChanges
+        )
+      )
       try data.write(to: persistenceURL, options: .atomic)
     } catch {
       // Pending state is useful across launches, but persistence must never block editing.
     }
+  }
+
+  private struct PendingChangesEnvelope: Codable {
+    var catalogVersion: String?
+    var changes: [OptimizationChange]
   }
 }

@@ -35,11 +35,11 @@ struct SystemTweakerView: View {
     }
     .onAppear {
       selectFirstFeatureIfNeeded()
-      reconcileLegacyPendingChanges()
+      reconcileCatalogPendingChanges()
     }
     .onChange(of: catalogStore.catalog?.catalogVersion) {
       selectFirstFeatureIfNeeded()
-      reconcileLegacyPendingChanges()
+      reconcileCatalogPendingChanges()
     }
     .task(id: catalogStore.catalog?.catalogVersion) {
       areIconsPrepared = false
@@ -54,7 +54,8 @@ struct SystemTweakerView: View {
 
       while !Task.isCancelled {
         await optimizationStore.refreshLaunchServiceStates(
-          catalogStore.catalog?.services ?? []
+          catalogStore.catalog?.services ?? [],
+          catalog: catalogStore.catalog
         )
         try? await Task.sleep(nanoseconds: 5_000_000_000)
       }
@@ -209,8 +210,9 @@ struct SystemTweakerView: View {
     }
   }
 
-  private func reconcileLegacyPendingChanges() {
+  private func reconcileCatalogPendingChanges() {
     guard let catalog = catalogStore.catalog else { return }
+    optimizationStore.discardStaleLaunchPendingChanges(for: catalog)
     for feature in features {
       optimizationStore.reconcileLegacyLaunchFeature(
         feature,
@@ -307,6 +309,27 @@ private struct SystemTweakInspector: View {
     .background(Color(nsColor: .controlBackgroundColor).opacity(0.72))
   }
 
+  private var isCurrentlyEnabled: Bool {
+    optimizationStore.launchServicesAreCurrentlyEnabled(
+      services,
+      defaultEnabled: feature.defaultEnabled
+    )
+  }
+
+  private var statusTitle: String {
+    if isCurrentlyEnabled == (choice == .keepEnabled) {
+      return isCurrentlyEnabled ? "Kept enabled" : "Disabled"
+    }
+    return choice == .keepEnabled ? "Selected for enabling" : "Selected for disabling"
+  }
+
+  private var statusColor: Color {
+    if isCurrentlyEnabled == (choice == .keepEnabled) {
+      return isCurrentlyEnabled ? Color.green : Color.secondary
+    }
+    return Color.orange
+  }
+
   private var inspectorHeader: some View {
     VStack(alignment: .leading, spacing: 10) {
       HStack(alignment: .top, spacing: 12) {
@@ -322,9 +345,9 @@ private struct SystemTweakInspector: View {
             .lineLimit(2)
             .minimumScaleFactor(0.8)
 
-          Text(choice == .disable ? "Selected for disabling" : "Kept enabled")
+          Text(statusTitle)
             .font(.caption.weight(.medium))
-            .foregroundStyle(choice == .disable ? Color.orange : Color.green)
+            .foregroundStyle(statusColor)
         }
       }
 
