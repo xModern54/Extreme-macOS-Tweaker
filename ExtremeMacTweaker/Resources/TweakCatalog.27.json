@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.22.1-27",
+  "catalogVersion": "2026.08.24.1-27",
   "serviceDisablePolicy": "cleanSweep",
   "compatibility": {
     "minimumMacOSMajor": 27,
@@ -2712,6 +2712,111 @@
       "domain": "system",
       "kind": "xpcService",
       "assetPath": "/System/Library/PrivateFrameworks/CascadeSets.framework/Versions/A/XPCServices/SetStoreUpdateService.xpc"
+    },
+    {
+      "id": "campo",
+      "label": "com.apple.campo",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.campo.plist"
+    },
+    {
+      "id": "siriappintentsd",
+      "label": "com.apple.siriappintentsd",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.siriappintentsd.plist"
+    },
+    {
+      "id": "hybridsearchd",
+      "label": "com.apple.hybridsearchd",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.hybridsearchd.plist"
+    },
+    {
+      "id": "intelligencetasksd",
+      "label": "com.apple.intelligencetasksd",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.intelligencetasksd.plist"
+    },
+    {
+      "id": "generative-functions-agentstored",
+      "label": "com.apple.GenerativeFunctions.agentstored",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.GenerativeFunctions.agentstored.plist"
+    },
+    {
+      "id": "visualintelligenced",
+      "label": "com.apple.visualintelligenced",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.visualintelligenced.plist"
+    },
+    {
+      "id": "managedclient",
+      "label": "com.apple.ManagedClient",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.ManagedClient.plist"
+    },
+    {
+      "id": "managedclient-startup",
+      "label": "com.apple.ManagedClient.startup",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.ManagedClient.startup.plist"
+    },
+    {
+      "id": "managedclient-enroll",
+      "label": "com.apple.ManagedClient.enroll",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.ManagedClient.enroll.plist"
+    },
+    {
+      "id": "managedclient-mechanism",
+      "label": "com.apple.ManagedClient.mechanism",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.ManagedClient.mechanism.plist"
+    },
+    {
+      "id": "managedclient-agent",
+      "label": "com.apple.ManagedClientAgent.agent",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.ManagedClientAgent.agent.plist"
+    },
+    {
+      "id": "deviceconfigurationd",
+      "label": "com.apple.deviceconfigurationd",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.deviceconfigurationd.plist"
+    },
+    {
+      "id": "device-configuration-agent",
+      "label": "com.apple.DeviceConfigurationAgent",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.DeviceConfigurationAgent.plist"
+    },
+    {
+      "id": "betaenrollmentd",
+      "label": "com.apple.betaenrollmentd",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.betaenrollmentd.plist"
+    },
+    {
+      "id": "betaenrollmentagent",
+      "label": "com.apple.betaenrollmentagent",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.betaenrollmentagent.plist"
     }
   ],
   "serviceGroups": [
@@ -2803,7 +2908,9 @@
         "siriknowledged",
         "sirittsd",
         "speechsynthesisd-x86-64",
-        "siri-agent"
+        "siri-agent",
+        "campo",
+        "siriappintentsd"
       ]
     },
     {
@@ -2838,7 +2945,11 @@
         "intelligenceflowd",
         "knowledgeconstructiond",
         "naturallanguaged",
-        "set-store-update-service"
+        "set-store-update-service",
+        "hybridsearchd",
+        "intelligencetasksd",
+        "generative-functions-agentstored",
+        "visualintelligenced"
       ]
     },
     {
@@ -3297,7 +3408,16 @@
         "managedappdistributiond",
         "managedeventsd",
         "managedclient-enrollagent",
-        "mdmclient-runatboot"
+        "mdmclient-runatboot",
+        "managedclient",
+        "managedclient-startup",
+        "managedclient-enroll",
+        "managedclient-mechanism",
+        "managedclient-agent",
+        "deviceconfigurationd",
+        "device-configuration-agent",
+        "betaenrollmentd",
+        "betaenrollmentagent"
       ]
     },
     {
@@ -3612,8 +3732,8 @@
         "speech-siri"
       ],
       "impact": {
-        "estimatedMemoryMB": 80,
-        "estimatedProcessReduction": 16
+        "estimatedMemoryMB": 199,
+        "estimatedProcessReduction": 18
       },
       "order": 100
     },
@@ -3630,8 +3750,8 @@
         "apple-intelligence"
       ],
       "impact": {
-        "estimatedMemoryMB": 165,
-        "estimatedProcessReduction": 10
+        "estimatedMemoryMB": 229,
+        "estimatedProcessReduction": 14
       },
       "order": 200
     },
@@ -4536,8 +4656,8 @@
         "mdm-remote-management"
       ],
       "impact": {
-        "estimatedMemoryMB": 40,
-        "estimatedProcessReduction": 9
+        "estimatedMemoryMB": 62,
+        "estimatedProcessReduction": 18
       },
       "order": 200
     },
