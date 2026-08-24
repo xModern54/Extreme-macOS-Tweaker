@@ -108,9 +108,9 @@ enum SecurityProtectionCatalog {
       id: "system-policy",
       title: "Disable Unknown App Protection",
       question: "Stop unknown-app prompts and LaunchServices quarantine?",
-      summary: "Turns off syspolicyd, the service behind \"Are you sure you want to open this app?\"",
-      disableConsequence: "syspolicyd is stopped and LaunchServices quarantine is turned off. Global Item Whitelist is turned on with this option.",
-      applyGuidance: "Apply this if you do not want \"Are you sure you want to open this app?\" prompts. This also turns on Global Item Whitelist. Leave it off if you still want those prompts.",
+      summary: "Turns off syspolicyd and the CoreServices UI agent behind \"Are you sure you want to open this app?\" and download quarantine alerts.",
+      disableConsequence: "syspolicyd is stopped, LaunchServices quarantine is turned off, and the CoreServices quarantine UI agent is disabled. Global Item Whitelist is turned on with this option.",
+      applyGuidance: "Apply this if you do not want \"Are you sure you want to open this app?\" or download-quarantine dialogs. This also turns on Global Item Whitelist. Leave it off if you still want those prompts.",
       systemImage: "lock.shield",
       kind: .launchServices,
       services: [
@@ -119,7 +119,13 @@ enum SecurityProtectionCatalog {
           "com.apple.security.syspolicy",
           .system,
           "/System/Library/LaunchDaemons/com.apple.security.syspolicy.plist"
-        )
+        ),
+        service(
+          "coreservices-uiagent",
+          "com.apple.coreservices.uiagent",
+          .gui,
+          "/System/Library/LaunchAgents/com.apple.coreservices.uiagent.plist"
+        ),
       ],
       requiresSIPDisabledToDisable: true,
       confirmsBeforeDisable: true

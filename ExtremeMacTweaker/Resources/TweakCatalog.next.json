@@ -866,12 +866,6 @@
       "kind": "agent"
     },
     {
-      "id": "user-notification-center",
-      "label": "com.apple.UserNotificationCenter",
-      "domain": "system",
-      "kind": "daemon"
-    },
-    {
       "id": "icloud-notification-agent",
       "label": "com.apple.iCloudNotificationAgent",
       "domain": "gui",
@@ -1606,12 +1600,6 @@
     {
       "id": "followupd",
       "label": "com.apple.followupd",
-      "domain": "gui",
-      "kind": "agent"
-    },
-    {
-      "id": "coreservices-uiagent",
-      "label": "com.apple.coreservices.uiagent",
       "domain": "gui",
       "kind": "agent"
     },
@@ -2677,8 +2665,6 @@
       "id": "notifications-peripheral",
       "services": [
         "su-notification-manager",
-        "user-notification-center-agent",
-        "user-notification-center",
         "icloud-notification-agent",
         "icloud-usernotificationsd",
         "familynotificationd",
@@ -3111,9 +3097,9 @@
       ]
     },
     {
-      "id": "download-quarantine",
+      "id": "system-permission-popups",
       "services": [
-        "coreservices-uiagent"
+        "user-notification-center-agent"
       ]
     }
   ],
@@ -3947,10 +3933,28 @@
         "notifications-peripheral"
       ],
       "impact": {
-        "estimatedMemoryMB": 43,
-        "estimatedProcessReduction": 11
+        "estimatedMemoryMB": 40,
+        "estimatedProcessReduction": 9
       },
       "order": 1300
+    },
+    {
+      "id": "system-permission-popups",
+      "categoryID": "apple-apps",
+      "title": "System Permission Popups",
+      "question": "Show the visual sheets when apps ask for Camera, Microphone, Files, or other privacy access?",
+      "description": "UserNotificationCenterAgent draws those permission popups. The TCC permission engine itself stays running, so apps can still be granted access in System Settings > Privacy & Security.",
+      "disableGuidance": "Disable this on a power-user profile if you do not want in-app permission sheets. You will approve access in Settings instead. Notification Center, banners, Focus, and the actual TCC allow/deny logic are not affected.",
+      "systemImage": "checkmark.shield",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "system-permission-popups"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 8,
+        "estimatedProcessReduction": 1
+      },
+      "order": 1400
     },
     {
       "id": "analytics",
@@ -4437,24 +4441,6 @@
         "estimatedProcessReduction": 1
       },
       "order": 1900
-    },
-    {
-      "id": "download-quarantine",
-      "categoryID": "system-network",
-      "title": "Download Quarantine Alerts",
-      "question": "Show “this file was downloaded from the Internet” and Gatekeeper warning dialogs?",
-      "description": "CoreServices UI agent that presents quarantine and unidentified-developer alerts.",
-      "disableGuidance": "Disable this on a power-user machine if you do not want those warning dialogs. Gatekeeper policy itself is controlled on the Security tab.",
-      "systemImage": "exclamationmark.shield",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "download-quarantine"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 35,
-        "estimatedProcessReduction": 2
-      },
-      "order": 2000
     },
     {
       "id": "safari-helpers",

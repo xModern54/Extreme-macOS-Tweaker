@@ -147,7 +147,7 @@ struct SecurityView: View {
     case "download-whitelist":
       "This writes a system LaunchDaemon onto the signed system volume that strips the quarantine flag from files in Downloads. A restart is required."
     case "system-policy":
-      "This stops syspolicyd, turns off LaunchServices quarantine, and also turns on Global Item Whitelist. Power users only."
+      "This stops syspolicyd, disables the CoreServices quarantine UI agent, turns off LaunchServices quarantine, and also turns on Global Item Whitelist. Power users only."
     case "user-autostarts":
       "This fully disables user-space software autostarts. Other apps will not be able to add LaunchAgents, and existing user-space launch agents will stop starting."
     default:
