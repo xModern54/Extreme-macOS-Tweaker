@@ -48,6 +48,9 @@ enum SecurityProtectionStateScanner {
 
       let disabledLabels = parseDisabledLabels(disabledOutput)
       states.append(contentsOf: domainServices.map { service in
+        if isHiddenByCleanSweep(service) {
+          return false
+        }
         let loaded = commandOutput(
           "/bin/launchctl",
           ["print", "\(target)/\(service.label)"]
@@ -56,6 +59,13 @@ enum SecurityProtectionStateScanner {
       })
     }
     return states
+  }
+
+  private static func isHiddenByCleanSweep(_ service: SecurityProtectionService) -> Bool {
+    guard let path = service.launchdPlistPath, CleanSweepLayout.isSweepable(path) else {
+      return false
+    }
+    return !FileManager.default.fileExists(atPath: path)
   }
 
   private static func domainTarget(

@@ -99,10 +99,11 @@ enum SystemVolume {
   }
 
   static func mountedLaunchPlistPath(root mountPath: String, systemPath: String) throws -> String {
-    try mountedAllowedPath(
-      root: mountPath,
-      systemPath: try validatedSweepPath(systemPath)
-    )
+    let standardized = try validatedSweepPath(systemPath)
+    if CleanSweepPathPolicy.isDataVolumeSweepPath(standardized) {
+      return standardized
+    }
+    return try mountedAllowedPath(root: mountPath, systemPath: standardized)
   }
 
   static func isAllowedSweepPath(_ systemPath: String) -> Bool {

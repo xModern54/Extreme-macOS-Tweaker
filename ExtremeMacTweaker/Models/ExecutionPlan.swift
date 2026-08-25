@@ -13,7 +13,10 @@ struct ExecutionPlan: Sendable {
       case .launchService(let service):
         service.requiresSystemVolume || service.action == .disable
       case .securityFeature(let feature):
-        if feature.featureID == "system-policy" || feature.featureID == "download-whitelist" {
+        if feature.featureID == "system-policy"
+          || feature.featureID == "download-whitelist"
+          || Self.securityFeatureUsesCleanSweep(feature)
+        {
           true
         } else {
           feature.action == .disable
@@ -32,6 +35,7 @@ struct ExecutionPlan: Sendable {
         true
       case .securityFeature(let feature):
         feature.featureID == "download-whitelist"
+          || Self.securityFeatureUsesCleanSweep(feature)
       case .launchService(let service):
         service.requiresSystemVolume
       default:
@@ -42,6 +46,13 @@ struct ExecutionPlan: Sendable {
   var requiresSystemProtectionCheck: Bool {
     requiresSystemIntegrityProtectionDisabled || requiresAuthenticatedRootDisabled
   }
+  private static func securityFeatureUsesCleanSweep(_ feature: SecurityFeatureChange) -> Bool {
+    guard let protection = SecurityProtectionCatalog.protection(withID: feature.featureID) else {
+      return false
+    }
+    return SecurityProtectionCatalog.usesCleanSweepDisable(for: protection)
+  }
+
   var requiresReboot: Bool {
     steps.contains { step in
       if case .createSystemSnapshot = step { return true }

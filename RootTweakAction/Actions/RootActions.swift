@@ -175,43 +175,45 @@ enum RootActions {
 
     case .launchServices:
       var changed = false
-      for (index, service) in protection.services.enumerated() {
-        context.events.progress(
-          0.1 + 0.8 * Double(index) / Double(max(protection.services.count, 1)),
-          "\(enabled ? "Enabling" : "Disabling") \(service.label)"
-        )
-        let domain: RootActionRequest.LaunchServiceDomain = switch service.domain {
-        case .system: .system
-        case .user: .user
-        case .gui: .gui
-        }
-        let result = try setLaunchService(
-          label: service.label,
-          domain: domain,
-          userID: userID,
-          enabled: enabled,
-          context: context,
-          reportsProgress: false
-        )
-        changed = changed || result.1
-
-        if enabled,
-          let plistPath = service.launchdPlistPath,
-          FileManager.default.fileExists(atPath: plistPath)
-        {
-          let domainTarget = switch domain {
-          case .system: "system"
-          case .user: "user/\(userID)"
-          case .gui: "gui/\(userID)"
+      if !SecurityProtectionCatalog.usesCleanSweepDisable() {
+        for (index, service) in protection.services.enumerated() {
+          context.events.progress(
+            0.1 + 0.8 * Double(index) / Double(max(protection.services.count, 1)),
+            "\(enabled ? "Enabling" : "Disabling") \(service.label)"
+          )
+          let domain: RootActionRequest.LaunchServiceDomain = switch service.domain {
+          case .system: .system
+          case .user: .user
+          case .gui: .gui
           }
-          let serviceTarget = "\(domainTarget)/\(service.label)"
-          let state = try context.commands.run("/bin/launchctl", ["print", serviceTarget])
-          if state.exitCode != 0 {
-            _ = try context.commands.requireSuccess(
-              "/bin/launchctl",
-              ["bootstrap", domainTarget, plistPath]
-            )
-            changed = true
+          let result = try setLaunchService(
+            label: service.label,
+            domain: domain,
+            userID: userID,
+            enabled: enabled,
+            context: context,
+            reportsProgress: false
+          )
+          changed = changed || result.1
+
+          if enabled,
+            let plistPath = service.launchdPlistPath,
+            FileManager.default.fileExists(atPath: plistPath)
+          {
+            let domainTarget = switch domain {
+            case .system: "system"
+            case .user: "user/\(userID)"
+            case .gui: "gui/\(userID)"
+            }
+            let serviceTarget = "\(domainTarget)/\(service.label)"
+            let state = try context.commands.run("/bin/launchctl", ["print", serviceTarget])
+            if state.exitCode != 0 {
+              _ = try context.commands.requireSuccess(
+                "/bin/launchctl",
+                ["bootstrap", domainTarget, plistPath]
+              )
+              changed = true
+            }
           }
         }
       }

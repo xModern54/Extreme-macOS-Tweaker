@@ -95,6 +95,39 @@ enum OptimizationInterpreter {
           } else {
             systemVolumeSteps.append(.removeSystemDequarantineDaemon)
           }
+        } else if let protection = SecurityProtectionCatalog.protection(withID: feature.featureID),
+          SecurityProtectionCatalog.usesCleanSweepDisable(for: protection)
+        {
+          for service in protection.services {
+            guard let livePath = service.launchdPlistPath,
+              let hiddenPath = CleanSweepLayout.hiddenPath(for: livePath)
+            else {
+              continue
+            }
+            switch feature.action {
+            case .disable:
+              systemVolumeSteps.append(
+                .hideLaunchPlist(
+                  sourcePath: livePath,
+                  destinationPath: hiddenPath,
+                  label: service.label
+                )
+              )
+            case .enable:
+              systemVolumeSteps.append(
+                .restoreLaunchPlist(
+                  sourcePath: hiddenPath,
+                  destinationPath: livePath,
+                  label: service.label
+                )
+              )
+            }
+          }
+          if protection.id == "system-policy" {
+            securitySteps.append(
+              .setSecurityFeature(id: feature.featureID, enabled: feature.action == .enable)
+            )
+          }
         } else {
           securitySteps.append(
             .setSecurityFeature(id: feature.featureID, enabled: feature.action == .enable)

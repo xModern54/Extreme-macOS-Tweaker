@@ -8,6 +8,13 @@ enum CleanSweepPathPolicy {
   static let hiddenLaunchAgentsDirectory = root + "/LaunchAgents"
   static let systemLibraryPrefix = "/System/Library/"
   static let hiddenLibraryPrefix = root + "/Library/"
+  /// XProtect Apple-payload jobs live on the Data volume, not the sealed System snapshot.
+  static let appleSystemLibraryPrefix = "/Library/Apple/System/Library/"
+  static let appleLaunchDaemonsDirectory = appleSystemLibraryPrefix + "LaunchDaemons"
+  static let appleLaunchAgentsDirectory = appleSystemLibraryPrefix + "LaunchAgents"
+  static let appleCleanSweepRoot = appleSystemLibraryPrefix + "CleanSweep"
+  static let hiddenAppleLaunchDaemonsDirectory = appleCleanSweepRoot + "/LaunchDaemons"
+  static let hiddenAppleLaunchAgentsDirectory = appleCleanSweepRoot + "/LaunchAgents"
 
   static func isLiveSweepPath(_ path: String) -> Bool {
     isLivePlist(path) || isLiveXPC(path) || isLiveFrameworkSupport(path)
@@ -22,12 +29,17 @@ enum CleanSweepPathPolicy {
       || isHiddenFrameworkSupport(path)
   }
 
+  static func isDataVolumeSweepPath(_ path: String) -> Bool {
+    isAppleLivePlist(path) || isAppleHiddenPlist(path)
+  }
+
   static func hiddenPath(for sourcePath: String) -> String? {
     let standardized = standardizedPath(sourcePath)
     if isLivePlist(standardized) {
       let url = URL(fileURLWithPath: standardized)
       let folder = url.deletingLastPathComponent().lastPathComponent
-      return "\(root)/\(folder)/\(url.lastPathComponent)"
+      let destinationRoot = isAppleLivePlist(standardized) ? appleCleanSweepRoot : root
+      return "\(destinationRoot)/\(folder)/\(url.lastPathComponent)"
     }
     if isLiveXPC(standardized) || isLiveFrameworkSupport(standardized) {
       let suffix = String(standardized.dropFirst("/System".count))
@@ -37,11 +49,31 @@ enum CleanSweepPathPolicy {
   }
 
   private static func isLivePlist(_ path: String) -> Bool {
-    isPlist(in: path, parents: [launchDaemonsDirectory, launchAgentsDirectory])
+    isSystemLivePlist(path) || isAppleLivePlist(path)
   }
 
   private static func isHiddenPlist(_ path: String) -> Bool {
-    isPlist(in: path, parents: [hiddenLaunchDaemonsDirectory, hiddenLaunchAgentsDirectory])
+    isPlist(in: path, parents: [
+      hiddenLaunchDaemonsDirectory,
+      hiddenLaunchAgentsDirectory,
+      hiddenAppleLaunchDaemonsDirectory,
+      hiddenAppleLaunchAgentsDirectory,
+    ])
+  }
+
+  private static func isSystemLivePlist(_ path: String) -> Bool {
+    isPlist(in: path, parents: [launchDaemonsDirectory, launchAgentsDirectory])
+  }
+
+  private static func isAppleLivePlist(_ path: String) -> Bool {
+    isPlist(in: path, parents: [appleLaunchDaemonsDirectory, appleLaunchAgentsDirectory])
+  }
+
+  private static func isAppleHiddenPlist(_ path: String) -> Bool {
+    isPlist(
+      in: path,
+      parents: [hiddenAppleLaunchDaemonsDirectory, hiddenAppleLaunchAgentsDirectory]
+    )
   }
 
   private static func isLiveXPC(_ path: String) -> Bool {

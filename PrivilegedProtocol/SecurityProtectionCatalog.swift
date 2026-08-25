@@ -34,6 +34,14 @@ struct SecurityProtectionService: Identifiable, Hashable, Sendable {
 }
 
 enum SecurityProtectionCatalog {
+  static let cleanSweepMinimumMacOSMajor = 27
+
+  static func usesCleanSweepDisable(
+    macOSMajor: Int = ProcessInfo.processInfo.operatingSystemVersion.majorVersion
+  ) -> Bool {
+    macOSMajor >= cleanSweepMinimumMacOSMajor
+  }
+
   static let protections: [SecurityProtection] = [
     SecurityProtection(
       id: "gatekeeper",
@@ -173,6 +181,10 @@ enum SecurityProtectionCatalog {
 
   static func protection(withID id: String) -> SecurityProtection? {
     protections.first(where: { $0.id == id })
+  }
+
+  static func usesCleanSweepDisable(for protection: SecurityProtection) -> Bool {
+    protection.kind == .launchServices && usesCleanSweepDisable()
   }
 
   private static func service(
