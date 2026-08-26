@@ -434,7 +434,7 @@ enum RootActions {
       switch component.removalBehavior {
       case .removeDirectory:
         return [path]
-      case .removeContents:
+      case .removeContents, .removeVolatileContents:
         let attributes = try FileManager.default.attributesOfItem(atPath: path)
         guard attributes[.type] as? FileAttributeType != .typeSymbolicLink else {
           throw RootActionError.operationFailed(
@@ -459,7 +459,10 @@ enum RootActions {
       let fraction = 0.15 + 0.7 * Double(index) / Double(max(removalTargets.count, 1))
       context.events.progress(fraction, "Removing \(URL(fileURLWithPath: path).lastPathComponent)")
       _ = try context.commands.requireSuccess("/bin/rm", ["-rf", "--", path])
-      guard !FileManager.default.fileExists(atPath: path) else {
+      guard
+        component.removalBehavior == .removeVolatileContents
+          || !FileManager.default.fileExists(atPath: path)
+      else {
         throw RootActionError.operationFailed(
           code: "deletion_verification_failed",
           message: "A component asset still exists after the delete operation."
@@ -482,9 +485,9 @@ enum RootActions {
     }
 
     return (
-      component.removalBehavior == .removeContents
-        ? "\(component.title) data was cleared"
-        : "\(component.title) was removed",
+      component.removalBehavior == .removeDirectory
+        ? "\(component.title) was removed"
+        : "\(component.title) data was cleared",
       true,
       [
         "componentID": component.id,

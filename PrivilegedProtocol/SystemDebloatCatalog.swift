@@ -4,12 +4,14 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
   enum RemovalBehavior: Hashable, Sendable {
     case removeDirectory
     case removeContents
+    case removeVolatileContents
   }
 
   enum Category: String, CaseIterable, Sendable {
     case intelligence
     case languageAndSpeech
     case searchAndReference
+    case diagnostics
     case developer
     case updates
     case wallpapers
@@ -19,6 +21,7 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
       case .intelligence: "Intelligence"
       case .languageAndSpeech: "Language & Speech"
       case .searchAndReference: "Search & Reference"
+      case .diagnostics: "Diagnostics"
       case .developer: "Developer"
       case .updates: "Updates"
       case .wallpapers: "Wallpapers"
@@ -66,6 +69,14 @@ enum SystemDebloatCatalog {
     "/System/Volumes/Data/macOS Install Data",
     "/Library/Updates",
     "/System/Volumes/Data/MobileSoftwareUpdate",
+  ]
+  private static let logAndAnalyticsCachePaths: Set<String> = [
+    "/private/var/db/diagnostics",
+    "/private/var/db/uuidtext",
+    "/private/var/db/DiagnosticPipeline",
+    "/private/var/db/Spotlight-V100/BootVolume",
+    "/private/var/db/systemstats",
+    "/private/var/db/analyticsd",
   ]
 
   static let components: [SystemDebloatComponent] = [
@@ -214,6 +225,16 @@ enum SystemDebloatCatalog {
       removalBehavior: .removeContents
     ),
     SystemDebloatComponent(
+      id: "log-and-analytics-caches",
+      title: "Log and Analytics Caches",
+      summary: "Persistent system logs, diagnostics, analytics, system statistics, and Spotlight index data.",
+      consequence: "Historical logs, reports, statistics, and index data will be discarded and may be recreated by macOS.",
+      systemImage: "waveform.path.ecg",
+      category: .diagnostics,
+      paths: Array(logAndAnalyticsCachePaths).sorted(),
+      removalBehavior: .removeVolatileContents
+    ),
+    SystemDebloatComponent(
       id: "ios-simulator-runtimes",
       title: "iOS Simulator Runtimes",
       summary: "Downloaded iOS runtime images used by Simulator and Xcode.",
@@ -270,7 +291,7 @@ enum SystemDebloatCatalog {
     case .removeDirectory:
       return isDirectChild(standardizedPath, of: assetsRoot)
         || isDirectChild(standardizedPath, of: dataAssetsRoot)
-    case .removeContents:
+    case .removeContents, .removeVolatileContents:
       if component.id == "macos-preloaded-update" {
         return preloadedUpdatePaths.contains(standardizedPath)
       }
@@ -282,6 +303,9 @@ enum SystemDebloatCatalog {
       }
       if component.id == "npu-graph-caches" {
         return standardizedPath == anedCachePath
+      }
+      if component.id == "log-and-analytics-caches" {
+        return logAndAnalyticsCachePaths.contains(standardizedPath)
       }
       return false
     }
