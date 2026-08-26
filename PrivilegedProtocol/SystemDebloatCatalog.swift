@@ -64,7 +64,13 @@ enum SystemDebloatCatalog {
   private static let dataAssetsRoot = "/System/Volumes/Data/System/Library/AssetsV2"
   private static let anedCachePath = "/Library/Caches/com.apple.aned"
   private static let aerialsPath = "~/Library/Application Support/com.apple.wallpaper/aerials"
-  private static let aerialsRelativePath = "Library/Application Support/com.apple.wallpaper/aerials"
+  private static let personalIntelligencePaths: Set<String> = [
+    "~/Library/Containers/com.apple.mediaanalysisd",
+    "~/Library/Metadata/CoreSpotlight",
+    "~/Library/Group Containers/group.com.apple.SiriTTS",
+    "~/Library/DuetExpertCenter",
+    "~/Library/Biome",
+  ]
   private static let preloadedUpdatePaths: Set<String> = [
     "/System/Volumes/Data/macOS Install Data",
     "/Library/Updates",
@@ -225,6 +231,16 @@ enum SystemDebloatCatalog {
       removalBehavior: .removeContents
     ),
     SystemDebloatComponent(
+      id: "personal-intelligence-data",
+      title: "Personal Intelligence Data",
+      summary: "On-device media analysis, Spotlight indexes, Siri speech data, and personalized activity models.",
+      consequence: "Photos and Spotlight may reindex data, Siri voices may be downloaded again, and personalized suggestions may be temporarily reset.",
+      systemImage: "person.crop.circle.badge.sparkles",
+      category: .intelligence,
+      paths: Array(personalIntelligencePaths).sorted(),
+      removalBehavior: .removeVolatileContents
+    ),
+    SystemDebloatComponent(
       id: "log-and-analytics-caches",
       title: "Log and Analytics Caches",
       summary: "Persistent system logs, diagnostics, analytics, system statistics, and Spotlight index data.",
@@ -276,8 +292,8 @@ enum SystemDebloatCatalog {
     homeDirectory: URL
   ) -> [String] {
     component.paths.map { path in
-      guard path == aerialsPath else { return path }
-      return homeDirectory.appendingPathComponent(aerialsRelativePath).path
+      guard path.hasPrefix("~/") else { return path }
+      return homeDirectory.appendingPathComponent(String(path.dropFirst(2))).path
     }
   }
 
@@ -296,9 +312,7 @@ enum SystemDebloatCatalog {
         return preloadedUpdatePaths.contains(standardizedPath)
       }
       if component.id == "downloaded-dynamic-wallpapers" {
-        let allowedPath = homeDirectory
-          .appendingPathComponent(aerialsRelativePath)
-          .standardizedFileURL.path
+        let allowedPath = resolvedUserPath(aerialsPath, homeDirectory: homeDirectory)
         return standardizedPath == allowedPath
       }
       if component.id == "npu-graph-caches" {
@@ -306,6 +320,12 @@ enum SystemDebloatCatalog {
       }
       if component.id == "log-and-analytics-caches" {
         return logAndAnalyticsCachePaths.contains(standardizedPath)
+      }
+      if component.id == "personal-intelligence-data" {
+        let allowedPaths = Set(personalIntelligencePaths.map {
+          resolvedUserPath($0, homeDirectory: homeDirectory)
+        })
+        return allowedPaths.contains(standardizedPath)
       }
       return false
     }
@@ -322,5 +342,11 @@ enum SystemDebloatCatalog {
   private static func isDirectChild(_ path: String, of root: String) -> Bool {
     path.hasPrefix(root + "/")
       && !path.dropFirst(root.count + 1).contains("/")
+  }
+
+  private static func resolvedUserPath(_ path: String, homeDirectory: URL) -> String {
+    homeDirectory
+      .appendingPathComponent(String(path.dropFirst(2)))
+      .standardizedFileURL.path
   }
 }
