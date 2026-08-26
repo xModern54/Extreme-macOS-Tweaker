@@ -19,6 +19,7 @@ enum RootActionRequest {
   case hideLaunchPlist(mountPath: String, sourcePath: String, destinationPath: String)
   case restoreLaunchPlist(mountPath: String, sourcePath: String, destinationPath: String)
   case createSnapshot(mountPath: String)
+  case pruneSystemSnapshots(mountPath: String)
   case setLaunchService(
     label: String,
     domain: LaunchServiceDomain,
@@ -45,6 +46,7 @@ enum RootActionRequest {
     case .hideLaunchPlist: "hide-launch-plist"
     case .restoreLaunchPlist: "restore-launch-plist"
     case .createSnapshot: "create-snapshot"
+    case .pruneSystemSnapshots: "prune-system-snapshots"
     case .setLaunchService: "set-launch-service"
     case .removeSystemComponent: "remove-system-component"
     case .setSecurityProtection: "set-security-protection"
@@ -68,6 +70,7 @@ enum RootActionRequest {
     case .hideLaunchPlist(_, let source, _): "Hiding \(plistName(source))"
     case .restoreLaunchPlist(_, let source, _): "Restoring \(plistName(source))"
     case .createSnapshot: "Creating a bootable system snapshot"
+    case .pruneSystemSnapshots: "Removing old bootable system snapshots"
     case .setLaunchService(let label, _, _, let enabled):
       "\(enabled ? "Enabling" : "Disabling") service \(label)"
     case .removeSystemComponent(let id):
@@ -130,6 +133,8 @@ enum RootActionRequest {
       )
     case "create-snapshot":
       return .createSnapshot(mountPath: try required("mount-path", in: options))
+    case "prune-system-snapshots":
+      return .pruneSystemSnapshots(mountPath: try required("mount-path", in: options))
     case "set-launch-service":
       let domainValue = try required("domain", in: options)
       guard let domain = LaunchServiceDomain(rawValue: domainValue) else {

@@ -167,6 +167,7 @@ enum OptimizationInterpreter {
       steps.append(.relocateDisabledApplications)
       steps.append(contentsOf: systemVolumeSteps)
       steps.append(.createSystemSnapshot)
+      steps.append(.pruneSystemSnapshots)
       steps.append(.unmountSystemVolume)
     }
     steps.append(contentsOf: launchctlEnableSteps)

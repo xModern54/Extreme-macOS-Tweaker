@@ -32,9 +32,9 @@ Extreme Mac Tweaker is a macOS system optimization and customization utility des
 - The macOS App Sandbox is disabled because Authorization Services privilege escalation is not available inside it.
 - Each helper process performs exactly one primitive action, streams JSON Lines events to stdout, returns one final completed/failed event, and exits.
 - Shared event/result models live in `PrivilegedProtocol/` and compile into both targets.
-- System-app plans are ordered as preflight, mount base System volume, perform all app moves/deletions, create a bootable snapshot with `bless`, and unmount.
+- System-app plans are ordered as preflight, mount base System volume, perform all app moves/deletions, create a bootable snapshot with `bless`, prune old bootable snapshots, and unmount.
 - The default writable mount point is `/Volumes/SystemRW`; the helper discovers the base APFS System volume dynamically from `diskutil info -plist /`.
-- Current helper commands are `identity`, `preflight`, `mount-system-volume`, `unmount-system-volume`, `disable-application`, `restore-application`, `delete-application`, `hide-launch-plist`, `restore-launch-plist`, and `create-snapshot`.
+- Current helper commands are `identity`, `preflight`, `mount-system-volume`, `unmount-system-volume`, `disable-application`, `restore-application`, `delete-application`, `hide-launch-plist`, `restore-launch-plist`, `create-snapshot`, and `prune-system-snapshots`.
 
 ## Empirical Data
 

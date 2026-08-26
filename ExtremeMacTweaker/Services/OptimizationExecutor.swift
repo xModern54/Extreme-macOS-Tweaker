@@ -81,6 +81,8 @@ final class OptimizationExecutor {
       ]
     case .createSystemSnapshot:
       ["create-snapshot", "--mount-path", mountPath]
+    case .pruneSystemSnapshots:
+      ["prune-system-snapshots", "--mount-path", mountPath]
     case .unmountSystemVolume:
       ["unmount-system-volume", "--mount-path", mountPath]
     case .setLaunchService(_, let label, let domain, let enabled):

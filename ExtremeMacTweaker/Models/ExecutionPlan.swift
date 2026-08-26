@@ -82,6 +82,7 @@ enum ExecutionStep: Identifiable, Sendable {
   case removeSystemDequarantineDaemon
   case removeSystemComponent(id: String, title: String)
   case createSystemSnapshot
+  case pruneSystemSnapshots
   case unmountSystemVolume
 
   var id: String { description }
@@ -120,6 +121,8 @@ enum ExecutionStep: Identifiable, Sendable {
       "Remove \(title)"
     case .createSystemSnapshot:
       "Create a new bootable system snapshot"
+    case .pruneSystemSnapshots:
+      "Remove old bootable system snapshots"
     case .unmountSystemVolume:
       "Unmount the writable system volume"
     }

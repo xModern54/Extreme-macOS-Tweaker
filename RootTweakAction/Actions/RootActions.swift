@@ -77,6 +77,9 @@ enum RootActions {
     case .createSnapshot(let mountPath):
       return try createSnapshot(mountPath, context)
 
+    case .pruneSystemSnapshots(let mountPath):
+      return try pruneSystemSnapshots(mountPath, context)
+
     case .setLaunchService(let label, let domain, let userID, let enabled):
       return try setLaunchService(
         label: label,
@@ -1042,5 +1045,127 @@ enum RootActions {
       true,
       ["blessOutput": output.standardOutput]
     )
+  }
+
+  private static func pruneSystemSnapshots(
+    _ mountPath: String,
+    _ context: RootActionContext
+  ) throws -> (String, Bool, [String: String]) {
+    let mountPath = try SystemVolume.validatedMountPath(mountPath)
+    let mounts = try context.commands.requireSuccess("/sbin/mount", [])
+    guard mounts.standardOutput.contains(" on \(mountPath) ") else {
+      throw RootActionError.operationFailed(
+        code: "system_volume_not_mounted",
+        message: "The writable system volume must be mounted before cleaning snapshots."
+      )
+    }
+
+    let baseDevice = try SystemVolume.baseDevice(using: context.commands)
+    let currentInfo = try propertyListDictionary(
+      try context.commands.requireSuccess("/usr/sbin/diskutil", ["info", "-plist", "/"]),
+      errorCode: "current_snapshot_not_found",
+      errorMessage: "Unable to inspect the currently booted system snapshot."
+    )
+    guard let currentUUID = currentInfo["APFSSnapshotUUID"] as? String,
+      !currentUUID.isEmpty
+    else {
+      throw RootActionError.operationFailed(
+        code: "current_snapshot_not_found",
+        message: "Unable to identify the currently booted system snapshot."
+      )
+    }
+    let freeBytesBefore = currentInfo["APFSContainerFree"] as? Int64
+      ?? (currentInfo["APFSContainerFree"] as? NSNumber)?.int64Value
+
+    context.events.progress(0.1, "Inspecting bootable system snapshots")
+    let snapshotList = try propertyListDictionary(
+      try context.commands.requireSuccess(
+        "/usr/sbin/diskutil",
+        ["apfs", "listSnapshots", baseDevice, "-plist"]
+      ),
+      errorCode: "snapshot_list_invalid",
+      errorMessage: "Unable to inspect system snapshots."
+    )
+    guard let snapshots = snapshotList["Snapshots"] as? [[String: Any]] else {
+      throw RootActionError.operationFailed(
+        code: "snapshot_list_invalid",
+        message: "The system snapshot list has an unexpected format."
+      )
+    }
+
+    let nextBootSnapshots = snapshots.filter { snapshot in
+      snapshot["RootTo"] as? Bool == true
+        && (snapshot["SnapshotName"] as? String)?.hasPrefix("com.apple.bless.") == true
+    }
+    guard !nextBootSnapshots.isEmpty else {
+      throw RootActionError.operationFailed(
+        code: "new_boot_snapshot_not_found",
+        message: "The newly created bootable snapshot could not be identified, so no snapshots were removed."
+      )
+    }
+
+    let candidates = snapshots.compactMap { snapshot -> String? in
+      guard
+        let name = snapshot["SnapshotName"] as? String,
+        name.hasPrefix("com.apple.bless."),
+        let uuid = snapshot["SnapshotUUID"] as? String,
+        uuid != currentUUID,
+        snapshot["RootTo"] as? Bool != true,
+        snapshot["Purgeable"] as? Bool == true
+      else {
+        return nil
+      }
+      return uuid
+    }
+
+    for (index, uuid) in candidates.enumerated() {
+      let fraction = 0.15 + 0.75 * Double(index) / Double(max(candidates.count, 1))
+      context.events.progress(
+        fraction,
+        "Removing old boot snapshot \(index + 1) of \(candidates.count)"
+      )
+      _ = try context.commands.requireSuccess(
+        "/usr/sbin/diskutil",
+        ["apfs", "deleteSnapshot", baseDevice, "-uuid", uuid, "-wait"]
+      )
+    }
+
+    let finalInfo = try propertyListDictionary(
+      try context.commands.requireSuccess("/usr/sbin/diskutil", ["info", "-plist", "/"]),
+      errorCode: "snapshot_cleanup_measurement_failed",
+      errorMessage: "Snapshots were cleaned, but freed space could not be measured."
+    )
+    let freeBytesAfter = finalInfo["APFSContainerFree"] as? Int64
+      ?? (finalInfo["APFSContainerFree"] as? NSNumber)?.int64Value
+    let freedBytes = max(0, (freeBytesAfter ?? 0) - (freeBytesBefore ?? 0))
+
+    return (
+      candidates.isEmpty
+        ? "No old bootable system snapshots needed removal"
+        : "Removed \(candidates.count) old bootable system snapshots",
+      !candidates.isEmpty,
+      [
+        "removedSnapshots": String(candidates.count),
+        "freedBytes": String(freedBytes),
+        "currentSnapshotUUID": currentUUID,
+        "nextBootSnapshotCount": String(nextBootSnapshots.count),
+      ]
+    )
+  }
+
+  private static func propertyListDictionary(
+    _ output: CommandOutput,
+    errorCode: String,
+    errorMessage: String
+  ) throws -> [String: Any] {
+    let propertyList = try PropertyListSerialization.propertyList(
+      from: output.standardOutputData,
+      options: [],
+      format: nil
+    )
+    guard let dictionary = propertyList as? [String: Any] else {
+      throw RootActionError.operationFailed(code: errorCode, message: errorMessage)
+    }
+    return dictionary
   }
 }
