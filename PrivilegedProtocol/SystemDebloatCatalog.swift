@@ -59,6 +59,7 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
 enum SystemDebloatCatalog {
   private static let assetsRoot = "/System/Library/AssetsV2"
   private static let dataAssetsRoot = "/System/Volumes/Data/System/Library/AssetsV2"
+  private static let anedCachePath = "/Library/Caches/com.apple.aned"
   private static let aerialsPath = "~/Library/Application Support/com.apple.wallpaper/aerials"
   private static let aerialsRelativePath = "Library/Application Support/com.apple.wallpaper/aerials"
   private static let preloadedUpdatePaths: Set<String> = [
@@ -187,6 +188,16 @@ enum SystemDebloatCatalog {
       ])
     ),
     SystemDebloatComponent(
+      id: "npu-graph-caches",
+      title: "NPU Graph Caches",
+      summary: "Compiled neural-network graphs used by Siri, Apple Intelligence, and other system models.",
+      consequence: "macOS will recompile neural graphs as affected intelligence features are used again.",
+      systemImage: "cpu",
+      category: .intelligence,
+      paths: [anedCachePath],
+      removalBehavior: .removeContents
+    ),
+    SystemDebloatComponent(
       id: "ios-simulator-runtimes",
       title: "iOS Simulator Runtimes",
       summary: "Downloaded iOS runtime images used by Simulator and Xcode.",
@@ -252,6 +263,9 @@ enum SystemDebloatCatalog {
           .appendingPathComponent(aerialsRelativePath)
           .standardizedFileURL.path
         return standardizedPath == allowedPath
+      }
+      if component.id == "npu-graph-caches" {
+        return standardizedPath == anedCachePath
       }
       return false
     }
