@@ -38,3 +38,12 @@
   - No aggressive background compilation or Metal/NPU compiler storms were triggered upon reboot. `aned` remained sleeping in low-overhead state.
 - **Verdict:** **100% Safe to purge**.
 
+- **Target:** `/Library/Caches/com.apple.iconservices.store` (~908 MB deleted)
+- **What was cleared:** 1,654 cached `.isdata` icon files accumulated from past application launches and document previews.
+- **Post-Reboot Behavior (60s observation):**
+  - Directory size: Rebuilt only **1.6 MB** (11 active system icon bitmaps).
+  - Net permanent storage gain: **~906 MB**.
+  - System Finder and Dock loaded icons seamlessly with zero visual artifacts.
+- **Verdict:** **100% Safe to purge**.
+
+
