@@ -109,7 +109,11 @@ final class OptimizationExecutor {
     case .removeSystemDequarantineDaemon:
       ["remove-system-dequarantine", "--mount-path", mountPath]
     case .removeSystemComponent(let id, _):
-      ["remove-system-component", "--id", id]
+      [
+        "remove-system-component",
+        "--id", id,
+        "--user-id", String(userID),
+      ]
     }
   }
 

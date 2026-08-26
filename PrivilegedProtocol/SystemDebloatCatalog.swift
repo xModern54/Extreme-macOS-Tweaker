@@ -12,6 +12,7 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
     case searchAndReference
     case developer
     case updates
+    case wallpapers
 
     var title: String {
       switch self {
@@ -20,6 +21,7 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
       case .searchAndReference: "Search & Reference"
       case .developer: "Developer"
       case .updates: "Updates"
+      case .wallpapers: "Wallpapers"
       }
     }
   }
@@ -56,6 +58,8 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
 
 enum SystemDebloatCatalog {
   private static let assetsRoot = "/System/Library/AssetsV2"
+  private static let aerialsPath = "~/Library/Application Support/com.apple.wallpaper/aerials"
+  private static let aerialsRelativePath = "Library/Application Support/com.apple.wallpaper/aerials"
   private static let preloadedUpdatePaths: Set<String> = [
     "/System/Volumes/Data/macOS Install Data",
     "/Library/Updates",
@@ -198,21 +202,53 @@ enum SystemDebloatCatalog {
       paths: Array(preloadedUpdatePaths).sorted(),
       removalBehavior: .removeContents
     ),
+    SystemDebloatComponent(
+      id: "downloaded-dynamic-wallpapers",
+      title: "Downloaded Dynamic Wallpapers",
+      summary: "Downloaded aerial and dynamic wallpaper videos for the current user.",
+      consequence: "Removed wallpapers will need to be downloaded again before they can be used.",
+      systemImage: "photo.on.rectangle.angled",
+      category: .wallpapers,
+      paths: [aerialsPath],
+      removalBehavior: .removeContents
+    ),
   ]
 
   static func component(withID id: String) -> SystemDebloatComponent? {
     components.first(where: { $0.id == id })
   }
 
-  static func isAllowedPath(_ path: String, for component: SystemDebloatComponent) -> Bool {
+  static func resolvedPaths(
+    for component: SystemDebloatComponent,
+    homeDirectory: URL
+  ) -> [String] {
+    component.paths.map { path in
+      guard path == aerialsPath else { return path }
+      return homeDirectory.appendingPathComponent(aerialsRelativePath).path
+    }
+  }
+
+  static func isAllowedPath(
+    _ path: String,
+    for component: SystemDebloatComponent,
+    homeDirectory: URL
+  ) -> Bool {
     let standardizedPath = URL(fileURLWithPath: path).standardizedFileURL.path
     switch component.removalBehavior {
     case .removeDirectory:
       return standardizedPath.hasPrefix(assetsRoot + "/")
         && !standardizedPath.dropFirst(assetsRoot.count + 1).contains("/")
     case .removeContents:
-      return preloadedUpdatePaths.contains(standardizedPath)
-        && component.id == "macos-preloaded-update"
+      if component.id == "macos-preloaded-update" {
+        return preloadedUpdatePaths.contains(standardizedPath)
+      }
+      if component.id == "downloaded-dynamic-wallpapers" {
+        let allowedPath = homeDirectory
+          .appendingPathComponent(aerialsRelativePath)
+          .standardizedFileURL.path
+        return standardizedPath == allowedPath
+      }
+      return false
     }
   }
 

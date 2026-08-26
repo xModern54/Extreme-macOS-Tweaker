@@ -10,7 +10,10 @@ enum SystemDebloatScanner {
   }
 
   static func allocatedSize(of component: SystemDebloatComponent) -> Int64 {
-    component.paths.reduce(Int64(0)) { total, path in
+    SystemDebloatCatalog.resolvedPaths(
+      for: component,
+      homeDirectory: FileManager.default.homeDirectoryForCurrentUser
+    ).reduce(Int64(0)) { total, path in
       total + allocatedSize(atPath: path)
     }
   }

@@ -89,8 +89,8 @@ enum RootActions {
         context: context
       )
 
-    case .removeSystemComponent(let id):
-      return try removeSystemComponent(id: id, context: context)
+    case .removeSystemComponent(let id, let userID):
+      return try removeSystemComponent(id: id, userID: userID, context: context)
 
     case .setSecurityProtection(let id, let userID, let enabled):
       return try setSecurityProtection(
@@ -397,27 +397,51 @@ enum RootActions {
 
   private static func removeSystemComponent(
     id: String,
+    userID: uid_t,
     context: RootActionContext
   ) throws -> (String, Bool, [String: String]) {
     guard let component = SystemDebloatCatalog.component(withID: id) else {
       throw RootActionError.invalidArguments("Unknown system component: \(id)")
     }
-    guard component.paths.allSatisfy({ SystemDebloatCatalog.isAllowedPath($0, for: component) }) else {
+    guard let userHomeDirectory = homeDirectory(for: userID) else {
+      throw RootActionError.operationFailed(
+        code: "user_home_missing",
+        message: "Unable to locate the current user's home directory."
+      )
+    }
+    let componentPaths = SystemDebloatCatalog.resolvedPaths(
+      for: component,
+      homeDirectory: userHomeDirectory
+    )
+    guard componentPaths.allSatisfy({
+      SystemDebloatCatalog.isAllowedPath(
+        $0,
+        for: component,
+        homeDirectory: userHomeDirectory
+      )
+    }) else {
       throw RootActionError.operationFailed(
         code: "unsafe_component_path",
         message: "The component catalog contains a path outside its allowed roots."
       )
     }
 
-    let existingRootPaths = component.paths.filter {
+    let existingRootPaths = componentPaths.filter {
       FileManager.default.fileExists(atPath: $0)
     }
-    let removalTargets = try component.paths.flatMap { path -> [String] in
+    let removalTargets = try componentPaths.flatMap { path -> [String] in
       guard FileManager.default.fileExists(atPath: path) else { return [] }
       switch component.removalBehavior {
       case .removeDirectory:
         return [path]
       case .removeContents:
+        let attributes = try FileManager.default.attributesOfItem(atPath: path)
+        guard attributes[.type] as? FileAttributeType != .typeSymbolicLink else {
+          throw RootActionError.operationFailed(
+            code: "unsafe_component_path",
+            message: "A cleanup directory cannot be a symbolic link."
+          )
+        }
         return try FileManager.default.contentsOfDirectory(atPath: path).map {
           URL(fileURLWithPath: path, isDirectory: true).appendingPathComponent($0).path
         }

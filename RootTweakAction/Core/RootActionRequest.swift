@@ -26,7 +26,7 @@ enum RootActionRequest {
     userID: uid_t,
     enabled: Bool
   )
-  case removeSystemComponent(id: String)
+  case removeSystemComponent(id: String, userID: uid_t)
   case setSecurityProtection(id: String, userID: uid_t, enabled: Bool)
   case installSystemDequarantine(mountPath: String, downloadsPath: String)
   case removeSystemDequarantine(mountPath: String)
@@ -73,7 +73,7 @@ enum RootActionRequest {
     case .pruneSystemSnapshots: "Removing old bootable system snapshots"
     case .setLaunchService(let label, _, _, let enabled):
       "\(enabled ? "Enabling" : "Disabling") service \(label)"
-    case .removeSystemComponent(let id):
+    case .removeSystemComponent(let id, _):
       "Removing \(SystemDebloatCatalog.component(withID: id)?.title ?? "system component")"
     case .setSecurityProtection(let id, _, let enabled):
       "\(enabled ? "Enabling" : "Disabling") "
@@ -155,7 +155,14 @@ enum RootActionRequest {
         enabled: enabled
       )
     case "remove-system-component":
-      return .removeSystemComponent(id: try required("id", in: options))
+      let userIDValue = try required("user-id", in: options)
+      guard let userID = uid_t(userIDValue) else {
+        throw RootActionError.invalidArguments("Invalid user ID: \(userIDValue)")
+      }
+      return .removeSystemComponent(
+        id: try required("id", in: options),
+        userID: userID
+      )
     case "set-security-protection":
       let userIDValue = try required("user-id", in: options)
       guard let userID = uid_t(userIDValue) else {
