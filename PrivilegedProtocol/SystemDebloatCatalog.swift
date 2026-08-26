@@ -14,7 +14,7 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
     case diagnostics
     case developer
     case updates
-    case wallpapers
+    case appearance
 
     var title: String {
       switch self {
@@ -24,7 +24,7 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
       case .diagnostics: "Diagnostics"
       case .developer: "Developer"
       case .updates: "Updates"
-      case .wallpapers: "Wallpapers"
+      case .appearance: "Appearance"
       }
     }
   }
@@ -65,6 +65,7 @@ enum SystemDebloatCatalog {
   private static let spatialPhotosManifestPath = dataAssetsRoot
     + "/manifests/com_apple_MobileAsset_UAF_Photos_SpatialPhotosRelive"
   private static let anedCachePath = "/Library/Caches/com.apple.aned"
+  private static let iconCachePath = "/Library/Caches/com.apple.iconservices.store"
   private static let trialDataPath = "/Library/Trial"
   private static let aerialsPath = "~/Library/Application Support/com.apple.wallpaper/aerials"
   private static let personalIntelligencePaths: Set<String> = [
@@ -317,9 +318,19 @@ enum SystemDebloatCatalog {
       summary: "Downloaded aerial and dynamic wallpaper videos for the current user.",
       consequence: "Removed wallpapers will need to be downloaded again before they can be used.",
       systemImage: "photo.on.rectangle.angled",
-      category: .wallpapers,
+      category: .appearance,
       paths: [aerialsPath],
       removalBehavior: .removeContents
+    ),
+    SystemDebloatComponent(
+      id: "icon-caches",
+      title: "Icon Caches",
+      summary: "Compiled icon data used by macOS to display application and system icons.",
+      consequence: "Icons may appear slowly or temporarily blank while macOS rebuilds the cache.",
+      systemImage: "app.dashed",
+      category: .appearance,
+      paths: [iconCachePath],
+      removalBehavior: .removeVolatileContents
     ),
   ]
 
@@ -362,6 +373,9 @@ enum SystemDebloatCatalog {
       }
       if component.id == "npu-graph-caches" {
         return standardizedPath == anedCachePath
+      }
+      if component.id == "icon-caches" {
+        return standardizedPath == iconCachePath
       }
       if component.id == "log-and-analytics-caches" {
         return logAndAnalyticsCachePaths.contains(standardizedPath)
