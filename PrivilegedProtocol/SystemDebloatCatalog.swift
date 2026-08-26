@@ -10,7 +10,6 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
     case intelligence
     case languageAndSpeech
     case searchAndReference
-    case spotlightAndSiriCaches
     case developer
     case updates
     case wallpapers
@@ -20,7 +19,6 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
       case .intelligence: "Intelligence"
       case .languageAndSpeech: "Language & Speech"
       case .searchAndReference: "Search & Reference"
-      case .spotlightAndSiriCaches: "Spotlight and Siri Caches"
       case .developer: "Developer"
       case .updates: "Updates"
       case .wallpapers: "Wallpapers"
@@ -175,11 +173,11 @@ enum SystemDebloatCatalog {
     ),
     SystemDebloatComponent(
       id: "spotlight-and-siri-caches",
-      title: "Search and Suggestions Models",
+      title: "Spotlight and Siri Caches",
       summary: "Downloaded query-understanding, suggestion, and Spotlight resource models.",
       consequence: "Spotlight and Siri suggestions may be reduced until macOS downloads these assets again.",
       systemImage: "magnifyingglass.circle",
-      category: .spotlightAndSiriCaches,
+      category: .intelligence,
       paths: dataAssetPaths([
         "com_apple_MobileAsset_UAF_SearchQueryUnderstanding",
         "com_apple_MobileAsset_CoreSuggestions",
