@@ -39,12 +39,22 @@
 
 ## Empirical Test Results (Tested on Physical Mac)
 
-- **Deleted Items:**
+- **Spotlight & Suggestions Test (Deleted ~185 MB):**
   - `com_apple_MobileAsset_UAF_SearchQueryUnderstanding` (106 MB)
   - `com_apple_MobileAsset_UAF_SearchQueryUnderstandingOverrides` (1.4 MB)
   - `com_apple_MobileAsset_CoreSuggestions` (77 MB)
   - `com_apple_MobileAsset_CoreSuggestionsModels` (280 KB)
   - `com_apple_MobileAsset_SpotlightResources` (256 KB)
-- **Reboot & 60s Uptime Test:** All 5 paths remained completely absent (`[CLEAN] (Not found)`). Zero attempts by `mobileassetd` or system daemons to auto-download them back.
-- **Direct Space Freed:** `~185 MB`.
+  - *Result:* All 5 paths remained completely absent after reboot and 60s uptime.
+
+- **Siri Voice Trigger & Speech Models Test (Deleted ~193 MB):**
+  - `PreinstalledAssetsV2/RequiredByOs/com_apple_MobileAsset_VoiceTriggerAssetsASMac` (94 MB)
+  - `PreinstalledAssetsV2/RequiredByOs/com_apple_MobileAsset_VoiceTriggerAssets` (50 MB)
+  - `PreinstalledAssetsV2/RequiredByOs/com_apple_MobileAsset_VoiceTriggerAssetsStudioDisplay` (43 MB)
+  - `PreinstalledAssetsV2/RequiredByOs/com_apple_MobileAsset_SpeakerRecognitionASMacAssets` (4.1 MB)
+  - `PreinstalledAssetsV2/RequiredByOs/com_apple_MobileAsset_SpeechEndpointMacOSAssets` (1.4 MB)
+  - `PreinstalledAssetsV2/RequiredByOs/com_apple_MobileAsset_VoiceTriggerAssetsMac` (560 KB)
+  - `AssetsV2/com_apple_MobileAsset_VoiceTriggerAssetsStudioDisplay` (80 KB)
+  - *Result:* `PreinstalledAssetsV2` dropped from 195 MB to 1.6 MB. Zero items recreated after reboot and 60s uptime.
+
 
