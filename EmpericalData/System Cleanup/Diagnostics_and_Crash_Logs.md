@@ -48,8 +48,10 @@
   - `/private/var/db/Spotlight-V100` (95 MB -> **0 B**; **95 MB freed**)
   - `/private/var/db/systemstats` (38 MB -> 1.3 MB; **~37 MB freed**)
   - `/private/var/db/analyticsd` (35 MB -> **0 B**; **35 MB freed**)
-- **Post-Reboot & 60s Uptime Verification:**
-  - System booted cleanly with zero errors.
-  - Net permanent storage gain: **~1.05 GB**.
-  - `logd` re-created fresh minimal session buffers without carrying historical bloat.
+- **DiagnosticReports & Crash Dumps Test (Deleted ~40 MB):**
+  - `/Library/Logs/DiagnosticReports` (39 MB -> **0 B**)
+  - `~/Library/Logs/DiagnosticReports` (372 KB -> **0 B**)
+  - `/Library/Trial` (31 MB -> **0 B**)
+  - *Result:* Completely clean (0 B) after reboot and 60s uptime. Zero performance impact.
+
 
