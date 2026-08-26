@@ -115,6 +115,22 @@ enum SystemDebloatCatalog {
       ])
     ),
     SystemDebloatComponent(
+      id: "siri-voice-caches",
+      title: "Siri Voice Caches",
+      summary: "Voice-trigger, speaker-recognition, and speech-endpoint assets used by Siri.",
+      consequence: "Remove these assets only if you do not use Siri; voice activation and recognition may stop working until macOS downloads them again.",
+      systemImage: "waveform.badge.mic",
+      category: .intelligence,
+      paths: dataAssetPaths([
+        "com_apple_MobileAsset_VoiceTriggerAssetsASMac",
+        "com_apple_MobileAsset_VoiceTriggerAssets",
+        "com_apple_MobileAsset_VoiceTriggerAssetsStudioDisplay",
+        "com_apple_MobileAsset_SpeakerRecognitionASMacAssets",
+        "com_apple_MobileAsset_SpeechEndpointMacOSAssets",
+        "com_apple_MobileAsset_VoiceTriggerAssetsMac",
+      ])
+    ),
+    SystemDebloatComponent(
       id: "speech-recognition-models",
       title: "Speech Recognition Models",
       summary: "Downloaded assets for on-device dictation and speech recognition.",
