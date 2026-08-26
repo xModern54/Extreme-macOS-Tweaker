@@ -57,4 +57,13 @@
   - `AssetsV2/com_apple_MobileAsset_VoiceTriggerAssetsStudioDisplay` (80 KB)
   - *Result:* `PreinstalledAssetsV2` dropped from 195 MB to 1.6 MB. Zero items recreated after reboot and 60s uptime.
 
+- **AI, Photos, Shortcuts & Linguistic Data Test (Deleted ~1.05 GB):**
+  - `com_apple_MobileAsset_UAF_Photos_SpatialPhotosRelive` (417 MB)
+  - `com_apple_MobileAsset_UAF_LinguisticData` (389 MB)
+  - `com_apple_MobileAsset_DictionaryServices_dictionary3macOS` (124 MB)
+  - `com_apple_MobileAsset_UAF_Shortcuts_Generator` (86 MB)
+  - `com_apple_MobileAsset_UAF_Translation_Assets` (33 MB)
+  - *Result:* `AssetsV2` shrunk from 1.4 GB to just **27 MB** total. All paths remained absent (`[CLEAN]`). Keyboard layout switching and baseline typing remain 100% functional.
+
+
 
