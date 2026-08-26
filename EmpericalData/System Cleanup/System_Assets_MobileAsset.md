@@ -36,3 +36,15 @@
   - If Siri, Speech, and Translation services are **disabled** in Tweaker: These models are unused dead weight. They will **not** be redownloaded.
   - If services are **enabled**: `mobileassetd` will download only the active language/voice when explicitly selected in System Settings.
   - Standard system operation, keyboard typing, and default fonts remain fully functional (default fonts and system voices are embedded inside the sealed read-only System root volume).
+
+## Empirical Test Results (Tested on Physical Mac)
+
+- **Deleted Items:**
+  - `com_apple_MobileAsset_UAF_SearchQueryUnderstanding` (106 MB)
+  - `com_apple_MobileAsset_UAF_SearchQueryUnderstandingOverrides` (1.4 MB)
+  - `com_apple_MobileAsset_CoreSuggestions` (77 MB)
+  - `com_apple_MobileAsset_CoreSuggestionsModels` (280 KB)
+  - `com_apple_MobileAsset_SpotlightResources` (256 KB)
+- **Reboot & 60s Uptime Test:** All 5 paths remained completely absent (`[CLEAN] (Not found)`). Zero attempts by `mobileassetd` or system daemons to auto-download them back.
+- **Direct Space Freed:** `~185 MB`.
+
