@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.25.2-27",
+  "catalogVersion": "2026.08.26.1-27",
   "serviceDisablePolicy": "cleanSweep",
   "compatibility": {
     "minimumMacOSMajor": 27,
@@ -2882,6 +2882,140 @@
       "domain": "gui",
       "kind": "agent",
       "plistPath": "/System/Library/LaunchAgents/com.apple.backgroundtaskmanagement.agent.plist"
+    },
+    {
+      "id": "privatecloudcomputed",
+      "label": "com.apple.privatecloudcomputed",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.privatecloudcomputed.plist"
+    },
+    {
+      "id": "businessservicesd",
+      "label": "com.apple.businessservicesd",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.businessservicesd.plist"
+    },
+    {
+      "id": "followup-ui",
+      "label": "com.apple.FollowUpUI",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.FollowUpUI.plist"
+    },
+    {
+      "id": "bookassetd",
+      "label": "com.apple.bookassetd",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.bookassetd.plist"
+    },
+    {
+      "id": "submit-diag-info",
+      "label": "com.apple.SubmitDiagInfo",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.SubmitDiagInfo.plist"
+    },
+    {
+      "id": "appleseed-fbahelperd",
+      "label": "com.apple.appleseed.fbahelperd",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.appleseed.fbahelperd.plist"
+    },
+    {
+      "id": "appleseed-seedusaged",
+      "label": "com.apple.appleseed.seedusaged",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.appleseed.seedusaged.plist"
+    },
+    {
+      "id": "family-controls-agent",
+      "label": "com.apple.FamilyControlsAgent",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.FamilyControlsAgent.plist"
+    },
+    {
+      "id": "parental-controls-check",
+      "label": "com.apple.parentalcontrols.check",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.parentalcontrols.check.plist"
+    },
+    {
+      "id": "reversetemplated",
+      "label": "com.apple.reversetemplated",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.reversetemplated.plist"
+    },
+    {
+      "id": "crash-reporter-support-helper",
+      "label": "com.apple.CrashReporterSupportHelper",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.CrashReporterSupportHelper.plist"
+    },
+    {
+      "id": "diagnostics-reporter",
+      "label": "com.apple.DiagnosticsReporter",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.DiagnosticsReporter.plist"
+    },
+    {
+      "id": "loginwindow-weekly-message-tracer",
+      "label": "com.apple.loginwindow.LWWeeklyMessageTracer",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.loginwindow.LWWeeklyMessageTracer.plist"
+    },
+    {
+      "id": "signpost-reporter",
+      "label": "com.apple.signpost.signpost_reporter",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.signpost.signpost_reporter.plist"
+    },
+    {
+      "id": "symptomsd-distributed-agent",
+      "label": "com.apple.symptomsd.distributed-agent",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.symptomsd.distributed-agent.plist"
+    },
+    {
+      "id": "calendar-bookmark-migration",
+      "label": "com.apple.calendar.CalendarAgentBookmarkMigrationService",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.calendar.CalendarAgentBookmarkMigrationService.plist"
+    },
+    {
+      "id": "live-transcription-agent",
+      "label": "com.apple.accessibility.LiveTranscriptionAgent",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Library/LaunchAgents/com.apple.accessibility.LiveTranscriptionAgent.plist"
+    },
+    {
+      "id": "bridgeos-update-proxy",
+      "label": "com.apple.bridgeOSUpdateProxy",
+      "domain": "system",
+      "kind": "daemon",
+      "plistPath": "/System/Library/LaunchDaemons/com.apple.bridgeOSUpdateProxy.plist"
+    },
+    {
+      "id": "webinspectord",
+      "label": "com.apple.webinspectord",
+      "domain": "gui",
+      "kind": "agent",
+      "plistPath": "/System/Cryptexes/App/System/Library/LaunchAgents/com.apple.webinspectord.plist",
+      "disableMethod": "launchctl"
     }
   ],
   "serviceGroups": [
@@ -2987,7 +3121,8 @@
     {
       "id": "accessibility-hearing",
       "services": [
-        "accessibility-heard"
+        "accessibility-heard",
+        "live-transcription-agent"
       ]
     },
     {
@@ -3014,7 +3149,8 @@
         "hybridsearchd",
         "intelligencetasksd",
         "generative-functions-agentstored",
-        "visualintelligenced"
+        "visualintelligenced",
+        "privatecloudcomputed"
       ]
     },
     {
@@ -3043,7 +3179,8 @@
         "proactiveeventtrackerd",
         "coreduetd",
         "ospredictiond",
-        "suggestd"
+        "suggestd",
+        "reversetemplated"
       ]
     },
     {
@@ -3054,7 +3191,8 @@
         "osanalytics-helper",
         "rtcreportingd",
         "geoanalyticsd",
-        "metrickitd"
+        "metrickitd",
+        "submit-diag-info"
       ]
     },
     {
@@ -3078,7 +3216,9 @@
         "perfpowermetricd",
         "tailspind",
         "spindump",
-        "spindump-agent"
+        "spindump-agent",
+        "loginwindow-weekly-message-tracer",
+        "signpost-reporter"
       ]
     },
     {
@@ -3086,7 +3226,9 @@
       "services": [
         "reportcrash",
         "reportcrash-root",
-        "coresymbolicationd"
+        "coresymbolicationd",
+        "crash-reporter-support-helper",
+        "diagnostics-reporter"
       ]
     },
     {
@@ -3101,7 +3243,8 @@
         "callhistory-sync",
         "callhistory-plugin",
         "screensharing-messages",
-        "im-auto-history-deletion"
+        "im-auto-history-deletion",
+        "businessservicesd"
       ]
     },
     {
@@ -3198,7 +3341,8 @@
         "peopled",
         "familycircled",
         "familycontrols",
-        "familycontrols-useragent"
+        "familycontrols-useragent",
+        "calendar-bookmark-migration"
       ]
     },
     {
@@ -3228,7 +3372,9 @@
         "sociallayerd",
         "managed-settings-agent",
         "dmd",
-        "askpermissiond"
+        "askpermissiond",
+        "family-controls-agent",
+        "parental-controls-check"
       ]
     },
     {
@@ -3360,7 +3506,8 @@
       "id": "media-stores",
       "services": [
         "itunescloudd",
-        "bookdatastored"
+        "bookdatastored",
+        "bookassetd"
       ]
     },
     {
@@ -3368,7 +3515,8 @@
       "services": [
         "softwareupdated",
         "mobile-softwareupdated",
-        "suhelperd"
+        "suhelperd",
+        "bridgeos-update-proxy"
       ]
     },
     {
@@ -3559,7 +3707,8 @@
         "symptomsd",
         "symptomsd-diag",
         "symptomsd-diag-agent",
-        "wifianalyticsd"
+        "wifianalyticsd",
+        "symptomsd-distributed-agent"
       ]
     },
     {
@@ -3625,7 +3774,9 @@
         "eligibilityd",
         "feedbackd",
         "swtransparencyd",
-        "seedusaged-postinstall"
+        "seedusaged-postinstall",
+        "appleseed-fbahelperd",
+        "appleseed-seedusaged"
       ]
     },
     {
@@ -3635,7 +3786,8 @@
         "safari-safebrowsing",
         "safari-password-breach",
         "safari-history-service",
-        "safari-launch-agent"
+        "safari-launch-agent",
+        "webinspectord"
       ]
     },
     {
@@ -3664,7 +3816,8 @@
         "followupd",
         "newsd",
         "videosubscriptionsd",
-        "watchlistd"
+        "watchlistd",
+        "followup-ui"
       ]
     },
     {
