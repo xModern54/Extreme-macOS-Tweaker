@@ -1,11 +1,17 @@
 import Foundation
 
 struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
+  enum RemovalBehavior: Hashable, Sendable {
+    case removeDirectory
+    case removeContents
+  }
+
   enum Category: String, CaseIterable, Sendable {
     case intelligence
     case languageAndSpeech
     case searchAndReference
     case developer
+    case updates
 
     var title: String {
       switch self {
@@ -13,6 +19,7 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
       case .languageAndSpeech: "Language & Speech"
       case .searchAndReference: "Search & Reference"
       case .developer: "Developer"
+      case .updates: "Updates"
       }
     }
   }
@@ -24,10 +31,36 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
   let systemImage: String
   let category: Category
   let paths: [String]
+  let removalBehavior: RemovalBehavior
+
+  init(
+    id: String,
+    title: String,
+    summary: String,
+    consequence: String,
+    systemImage: String,
+    category: Category,
+    paths: [String],
+    removalBehavior: RemovalBehavior = .removeDirectory
+  ) {
+    self.id = id
+    self.title = title
+    self.summary = summary
+    self.consequence = consequence
+    self.systemImage = systemImage
+    self.category = category
+    self.paths = paths
+    self.removalBehavior = removalBehavior
+  }
 }
 
 enum SystemDebloatCatalog {
   private static let assetsRoot = "/System/Library/AssetsV2"
+  private static let preloadedUpdatePaths: Set<String> = [
+    "/System/Volumes/Data/macOS Install Data",
+    "/Library/Updates",
+    "/System/Volumes/Data/MobileSoftwareUpdate",
+  ]
 
   static let components: [SystemDebloatComponent] = [
     SystemDebloatComponent(
@@ -145,17 +178,6 @@ enum SystemDebloatCatalog {
       ])
     ),
     SystemDebloatComponent(
-      id: "developer-documentation",
-      title: "Developer Documentation",
-      summary: "Locally downloaded Apple developer documentation used by Xcode.",
-      consequence: "Xcode documentation will require an internet connection or a fresh download.",
-      systemImage: "doc.text.magnifyingglass",
-      category: .developer,
-      paths: assetPaths([
-        "com_apple_MobileAsset_AppleDeveloperDocumentation"
-      ])
-    ),
-    SystemDebloatComponent(
       id: "ios-simulator-runtimes",
       title: "iOS Simulator Runtimes",
       summary: "Downloaded iOS runtime images used by Simulator and Xcode.",
@@ -166,16 +188,32 @@ enum SystemDebloatCatalog {
         "com_apple_MobileAsset_iOSSimulatorRuntime"
       ])
     ),
+    SystemDebloatComponent(
+      id: "macos-preloaded-update",
+      title: "macOS Preloaded Update",
+      summary: "Downloaded macOS update and installation data staged for a future update.",
+      consequence: "macOS may need to download the update data again before installing an update.",
+      systemImage: "arrow.down.circle",
+      category: .updates,
+      paths: Array(preloadedUpdatePaths).sorted(),
+      removalBehavior: .removeContents
+    ),
   ]
 
   static func component(withID id: String) -> SystemDebloatComponent? {
     components.first(where: { $0.id == id })
   }
 
-  static func isAllowedAssetPath(_ path: String) -> Bool {
+  static func isAllowedPath(_ path: String, for component: SystemDebloatComponent) -> Bool {
     let standardizedPath = URL(fileURLWithPath: path).standardizedFileURL.path
-    return standardizedPath.hasPrefix(assetsRoot + "/")
-      && !standardizedPath.dropFirst(assetsRoot.count + 1).contains("/")
+    switch component.removalBehavior {
+    case .removeDirectory:
+      return standardizedPath.hasPrefix(assetsRoot + "/")
+        && !standardizedPath.dropFirst(assetsRoot.count + 1).contains("/")
+    case .removeContents:
+      return preloadedUpdatePaths.contains(standardizedPath)
+        && component.id == "macos-preloaded-update"
+    }
   }
 
   private static func assetPaths(_ directoryNames: [String]) -> [String] {

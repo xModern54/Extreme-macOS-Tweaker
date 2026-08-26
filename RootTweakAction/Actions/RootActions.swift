@@ -402,26 +402,37 @@ enum RootActions {
     guard let component = SystemDebloatCatalog.component(withID: id) else {
       throw RootActionError.invalidArguments("Unknown system component: \(id)")
     }
-    guard component.paths.allSatisfy(SystemDebloatCatalog.isAllowedAssetPath) else {
+    guard component.paths.allSatisfy({ SystemDebloatCatalog.isAllowedPath($0, for: component) }) else {
       throw RootActionError.operationFailed(
         code: "unsafe_component_path",
-        message: "The component catalog contains a path outside the allowed asset root."
+        message: "The component catalog contains a path outside its allowed roots."
       )
     }
 
-    let existingPaths = component.paths.filter {
+    let existingRootPaths = component.paths.filter {
       FileManager.default.fileExists(atPath: $0)
     }
-    guard !existingPaths.isEmpty else {
+    let removalTargets = try component.paths.flatMap { path -> [String] in
+      guard FileManager.default.fileExists(atPath: path) else { return [] }
+      switch component.removalBehavior {
+      case .removeDirectory:
+        return [path]
+      case .removeContents:
+        return try FileManager.default.contentsOfDirectory(atPath: path).map {
+          URL(fileURLWithPath: path, isDirectory: true).appendingPathComponent($0).path
+        }
+      }
+    }
+    guard !removalTargets.isEmpty else {
       return (
-        "\(component.title) is already absent",
+        "\(component.title) is already absent or empty",
         false,
         ["componentID": component.id, "removedPaths": "0"]
       )
     }
 
-    for (index, path) in existingPaths.enumerated() {
-      let fraction = 0.15 + 0.7 * Double(index) / Double(max(existingPaths.count, 1))
+    for (index, path) in removalTargets.enumerated() {
+      let fraction = 0.15 + 0.7 * Double(index) / Double(max(removalTargets.count, 1))
       context.events.progress(fraction, "Removing \(URL(fileURLWithPath: path).lastPathComponent)")
       _ = try context.commands.requireSuccess("/bin/rm", ["-rf", "--", path])
       guard !FileManager.default.fileExists(atPath: path) else {
@@ -432,12 +443,28 @@ enum RootActions {
       }
     }
 
+    if component.removalBehavior == .removeContents {
+      for path in existingRootPaths {
+        guard
+          FileManager.default.fileExists(atPath: path),
+          try FileManager.default.contentsOfDirectory(atPath: path).isEmpty
+        else {
+          throw RootActionError.operationFailed(
+            code: "deletion_verification_failed",
+            message: "An update data directory was removed or is not empty after the cleanup operation."
+          )
+        }
+      }
+    }
+
     return (
-      "\(component.title) was removed",
+      component.removalBehavior == .removeContents
+        ? "\(component.title) data was cleared"
+        : "\(component.title) was removed",
       true,
       [
         "componentID": component.id,
-        "removedPaths": String(existingPaths.count),
+        "removedPaths": String(removalTargets.count),
       ]
     )
   }
