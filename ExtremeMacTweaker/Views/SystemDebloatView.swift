@@ -42,7 +42,7 @@ struct SystemDebloatView: View {
           ForEach(SystemDebloatComponent.Category.allCases, id: \.self) { category in
             let categoryItems = model.items.filter { $0.component.category == category }
             if !categoryItems.isEmpty {
-              componentSection(category: category, items: categoryItems)
+              categorySection(category: category, items: categoryItems)
             }
           }
         }
@@ -57,7 +57,7 @@ struct SystemDebloatView: View {
         Text("System Debloat")
           .font(.title2.weight(.semibold))
 
-        Text("Remove optional macOS assets stored on the Data volume.")
+        Text("Review optional macOS downloads, models, indexes, and caches.")
           .font(.subheadline)
           .foregroundStyle(.secondary)
       }
@@ -83,15 +83,43 @@ struct SystemDebloatView: View {
     .padding(.bottom, 16)
   }
 
-  private func componentSection(
+  private func categorySection(
     category: SystemDebloatComponent.Category,
     items: [SystemDebloatItem]
   ) -> some View {
-    VStack(alignment: .leading, spacing: 9) {
+    VStack(alignment: .leading, spacing: 12) {
       Text(category.title)
-        .font(.caption.weight(.semibold))
-        .foregroundStyle(.secondary)
-        .textCase(.uppercase)
+        .font(.headline.weight(.semibold))
+
+      VStack(alignment: .leading, spacing: 14) {
+        ForEach(SystemDebloatComponent.Group.allCases, id: \.self) { group in
+          let groupItems = items.filter { $0.component.group == group }
+          if !groupItems.isEmpty {
+            componentGroup(group: group, items: groupItems)
+          }
+        }
+      }
+    }
+  }
+
+  private func componentGroup(
+    group: SystemDebloatComponent.Group,
+    items: [SystemDebloatItem]
+  ) -> some View {
+    VStack(alignment: .leading, spacing: 7) {
+      HStack(spacing: 8) {
+        Text(group.title)
+          .font(.caption.weight(.semibold))
+          .foregroundStyle(.secondary)
+          .textCase(.uppercase)
+
+        Spacer()
+
+        Text(formattedSize(items.reduce(0) { $0 + $1.sizeInBytes }))
+          .font(.caption2.monospacedDigit())
+          .foregroundStyle(.tertiary)
+      }
+      .padding(.horizontal, 2)
 
       VStack(spacing: 0) {
         ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
