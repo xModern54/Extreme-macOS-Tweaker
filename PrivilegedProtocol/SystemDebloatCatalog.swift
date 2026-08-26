@@ -65,6 +65,7 @@ enum SystemDebloatCatalog {
   private static let spatialPhotosManifestPath = dataAssetsRoot
     + "/manifests/com_apple_MobileAsset_UAF_Photos_SpatialPhotosRelive"
   private static let anedCachePath = "/Library/Caches/com.apple.aned"
+  private static let trialDataPath = "/Library/Trial"
   private static let aerialsPath = "~/Library/Application Support/com.apple.wallpaper/aerials"
   private static let personalIntelligencePaths: Set<String> = [
     "~/Library/Containers/com.apple.mediaanalysisd",
@@ -79,6 +80,7 @@ enum SystemDebloatCatalog {
     "/System/Volumes/Data/MobileSoftwareUpdate",
   ]
   private static let logAndAnalyticsCachePaths: Set<String> = [
+    "/Library/Logs/DiagnosticReports",
     "/private/var/db/diagnostics",
     "/private/var/db/uuidtext",
     "/private/var/db/DiagnosticPipeline",
@@ -279,6 +281,16 @@ enum SystemDebloatCatalog {
       removalBehavior: .removeVolatileContents
     ),
     SystemDebloatComponent(
+      id: "apple-feature-experiment-data",
+      title: "Apple Feature Experiment Data",
+      summary: "Downloaded data used by Apple's Trial framework for feature experiments.",
+      consequence: "",
+      systemImage: "testtube.2",
+      category: .diagnostics,
+      paths: [trialDataPath],
+      removalBehavior: .removeVolatileContents
+    ),
+    SystemDebloatComponent(
       id: "ios-simulator-runtimes",
       title: "iOS Simulator Runtimes",
       summary: "Downloaded iOS runtime images used by Simulator and Xcode.",
@@ -353,6 +365,9 @@ enum SystemDebloatCatalog {
       }
       if component.id == "log-and-analytics-caches" {
         return logAndAnalyticsCachePaths.contains(standardizedPath)
+      }
+      if component.id == "apple-feature-experiment-data" {
+        return standardizedPath == trialDataPath
       }
       if component.id == "personal-intelligence-data" {
         let allowedPaths = Set(personalIntelligencePaths.map {

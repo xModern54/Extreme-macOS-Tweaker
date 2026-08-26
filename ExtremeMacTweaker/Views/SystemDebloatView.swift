@@ -160,7 +160,7 @@ private struct SystemDebloatRow: View {
           .foregroundStyle(.secondary)
           .lineLimit(2)
 
-        if isSelected {
+        if isSelected, !item.component.consequence.isEmpty {
           Text(item.component.consequence)
             .font(.caption2)
             .foregroundStyle(.orange)
