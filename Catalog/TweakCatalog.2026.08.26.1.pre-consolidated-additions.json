@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.26.2-27",
-  "serviceDisablePolicy": "cleanSweep",
+  "catalogVersion": "2026.08.26.1",
+  "serviceDisablePolicy": "launchctl",
   "compatibility": {
-    "minimumMacOSMajor": 27,
-    "maximumMacOSMajor": 27,
+    "minimumMacOSMajor": 15,
+    "maximumMacOSMajor": 26,
     "architectures": [
       "arm64",
       "x86_64"
@@ -71,3203 +71,2359 @@
       "id": "metadata-mds",
       "label": "com.apple.metadata.mds",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.metadata.mds.plist"
+      "kind": "daemon"
     },
     {
       "id": "metadata-mds-index",
       "label": "com.apple.metadata.mds.index",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.metadata.mds.index.plist"
+      "kind": "daemon"
     },
     {
       "id": "metadata-mds-scan",
       "label": "com.apple.metadata.mds.scan",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.metadata.mds.scan.plist"
+      "kind": "daemon"
     },
     {
       "id": "spotlight-agent",
       "label": "com.apple.Spotlight",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.Spotlight.plist"
+      "kind": "agent"
     },
     {
       "id": "corespotlightd",
       "label": "com.apple.corespotlightd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.corespotlightd.plist"
+      "kind": "agent"
     },
     {
       "id": "spotlightknowledged",
       "label": "com.apple.spotlightknowledged",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.spotlightknowledged.plist"
+      "kind": "agent"
     },
     {
       "id": "metadata-mdworker-shared",
       "label": "com.apple.mdworker.shared",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mdworker.shared.plist"
+      "kind": "agent"
     },
     {
       "id": "metadata-mdbulkimport",
       "label": "com.apple.metadata.mdbulkimport",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.metadata.mdbulkimport.plist"
+      "kind": "agent"
     },
     {
       "id": "metadata-mdwrite",
       "label": "com.apple.metadata.mdwrite",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.metadata.mdwrite.plist"
+      "kind": "agent"
     },
     {
       "id": "chronod",
       "label": "com.apple.chronod",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.chronod.plist"
+      "kind": "agent"
     },
     {
       "id": "mediaanalysisd",
       "label": "com.apple.mediaanalysisd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mediaanalysisd.plist"
+      "kind": "agent"
     },
     {
       "id": "photoanalysisd",
       "label": "com.apple.photoanalysisd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.photoanalysisd.plist"
+      "kind": "agent"
     },
     {
       "id": "photolibraryd",
       "label": "com.apple.photolibraryd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.photolibraryd.plist"
+      "kind": "agent"
     },
     {
       "id": "revisiond",
       "label": "com.apple.revisiond",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.revisiond.plist"
+      "kind": "daemon"
     },
     {
       "id": "homed",
       "label": "com.apple.homed",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.homed.plist"
+      "kind": "agent"
     },
     {
       "id": "homeeventsd",
       "label": "com.apple.homeeventsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.homeeventsd.plist"
+      "kind": "agent"
     },
     {
       "id": "homeenergyd",
       "label": "com.apple.homeenergyd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.homeenergyd.plist"
+      "kind": "agent"
     },
     {
       "id": "thread-commissioner",
       "label": "com.apple.ThreadCommissionerService",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ThreadCommissionerService.plist"
+      "kind": "agent"
     },
     {
       "id": "threadradiod",
       "label": "com.apple.threadradiod",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.threadradiod.plist"
+      "kind": "daemon"
     },
     {
       "id": "corespeechd",
       "label": "com.apple.corespeechd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.corespeechd.plist"
+      "kind": "agent"
     },
     {
       "id": "corespeechd-system",
       "label": "com.apple.corespeechd_system",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.corespeechd.system.plist"
+      "kind": "daemon"
     },
     {
       "id": "assistantd",
       "label": "com.apple.assistantd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.assistantd.plist"
+      "kind": "agent"
     },
     {
       "id": "assistant-service",
       "label": "com.apple.assistant_service",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.assistant_service.plist"
+      "kind": "agent"
     },
     {
       "id": "assistant-cdmd",
       "label": "com.apple.assistant_cdmd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.assistant_cdmd.plist"
+      "kind": "agent"
     },
     {
       "id": "dictation-im",
       "label": "com.apple.DictationIM",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.DictationIM.plist"
+      "kind": "agent"
     },
     {
       "id": "asr",
       "label": "com.apple.asr",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.asr.plist"
+      "kind": "daemon"
     },
     {
       "id": "voicebankingd",
       "label": "com.apple.voicebankingd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.voicebankingd.plist"
+      "kind": "agent"
     },
     {
       "id": "voicememod",
       "label": "com.apple.voicememod",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.voicememod.plist"
+      "kind": "agent"
     },
     {
       "id": "speech-synthesisserver",
       "label": "com.apple.speech.synthesisserver",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.speech.synthesisserver.plist"
+      "kind": "agent"
     },
     {
       "id": "speech-datainstallerd",
       "label": "com.apple.speech.speechdatainstallerd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.speech.speechdatainstallerd.plist"
+      "kind": "agent"
     },
     {
       "id": "siri-tts-training",
       "label": "com.apple.SiriTTSTrainingAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.SiriTTSTrainingAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "speechsynthesisd-arm64",
       "label": "com.apple.speech.speechsynthesisd.arm64",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.speech.speechsynthesisd.arm64.plist"
+      "kind": "agent"
     },
     {
       "id": "axassetsd",
       "label": "com.apple.accessibility.axassetsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.accessibility.axassetsd.plist"
+      "kind": "agent"
     },
     {
       "id": "accessibility-heard",
       "label": "com.apple.accessibility.heard",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.accessibility.heard.plist"
+      "kind": "agent"
     },
     {
       "id": "accessibility-visuals",
       "label": "com.apple.AccessibilityVisualsAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AccessibilityVisualsAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "generativeexperiencesd",
       "label": "com.apple.generativeexperiencesd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.generativeexperiencesd.plist"
+      "kind": "agent"
     },
     {
       "id": "modelmanagerd",
       "label": "com.apple.modelmanagerd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.modelmanagerd.plist"
+      "kind": "daemon"
     },
     {
       "id": "modelcatalogd",
       "label": "com.apple.modelcatalogd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.modelcatalogd.plist"
+      "kind": "daemon"
     },
     {
       "id": "model-catalog-agent",
       "label": "com.apple.ModelCatalogAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ModelCatalogAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "intelligenceplatformd",
       "label": "com.apple.intelligenceplatformd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.intelligenceplatformd.plist"
+      "kind": "agent"
     },
     {
       "id": "textcomposerd",
       "label": "com.apple.textcomposerd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.textcomposerd.plist"
+      "kind": "agent"
     },
     {
       "id": "triald",
       "label": "com.apple.triald",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.triald.plist"
+      "kind": "agent"
     },
     {
       "id": "biome-agent",
       "label": "com.apple.BiomeAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.BiomeAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "biomed",
       "label": "com.apple.biomed",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.biomed.plist"
+      "kind": "daemon"
     },
     {
       "id": "biomesyncd",
       "label": "com.apple.biomesyncd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.biomesyncd.plist"
+      "kind": "agent"
     },
     {
       "id": "routined",
       "label": "com.apple.routined",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.routined.plist"
+      "kind": "agent"
     },
     {
       "id": "context-store-agent",
       "label": "com.apple.ContextStoreAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ContextStoreAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "contextstored",
       "label": "com.apple.contextstored",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.contextstored.plist"
+      "kind": "daemon"
     },
     {
       "id": "duetexpertd",
       "label": "com.apple.duetexpertd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.duetexpertd.plist"
+      "kind": "agent"
     },
     {
       "id": "proactived",
       "label": "com.apple.proactived",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.proactived.plist"
+      "kind": "agent"
     },
     {
       "id": "proactiveeventtrackerd",
       "label": "com.apple.proactiveeventtrackerd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.proactiveeventtrackerd.plist"
+      "kind": "agent"
     },
     {
       "id": "coreduetd",
       "label": "com.apple.coreduetd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.coreduetd.plist"
+      "kind": "daemon"
     },
     {
       "id": "ospredictiond",
       "label": "com.apple.ospredictiond",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.ospredictiond.plist"
+      "kind": "daemon"
     },
     {
       "id": "analyticsd",
       "label": "com.apple.analyticsd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.analyticsd.plist"
+      "kind": "daemon"
     },
     {
       "id": "analyticsagent",
       "label": "com.apple.analyticsagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.analyticsagent.plist"
+      "kind": "agent"
     },
     {
       "id": "osanalytics-helper",
       "label": "com.apple.osanalytics.osanalyticshelper",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.osanalytics.osanalyticshelper.plist"
+      "kind": "daemon"
     },
     {
       "id": "rtcreportingd",
       "label": "com.apple.rtcreportingd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.rtcreportingd.plist"
+      "kind": "daemon"
     },
     {
       "id": "geoanalyticsd",
       "label": "com.apple.geoanalyticsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.geoanalyticsd.plist"
+      "kind": "agent"
     },
     {
       "id": "metrickitd",
       "label": "com.apple.metrickitd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.metrickitd.plist"
+      "kind": "agent"
     },
     {
       "id": "inputanalyticsd-user",
       "label": "com.apple.inputanalyticsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.inputanalyticsd.plist"
+      "kind": "agent"
     },
     {
       "id": "audioanalyticsd",
       "label": "com.apple.audioanalyticsd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.audioanalyticsd.plist"
+      "kind": "daemon"
     },
     {
       "id": "systemstats-analysis",
       "label": "com.apple.systemstats.analysis",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.systemstats.analysis.plist"
+      "kind": "daemon"
     },
     {
       "id": "systemstats-daily",
       "label": "com.apple.systemstats.daily",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.systemstats.daily.plist"
+      "kind": "daemon"
     },
     {
       "id": "systemstats-microstackshot",
       "label": "com.apple.systemstats.microstackshot_periodic",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.systemstats.microstackshot_periodic.plist"
+      "kind": "daemon"
     },
     {
       "id": "usbctelemetryd",
       "label": "com.apple.usbctelemetryd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.usbctelemetryd.plist"
+      "kind": "daemon"
     },
     {
       "id": "ecosystemd",
       "label": "com.apple.ecosystemd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.ecosystemd.plist"
+      "kind": "daemon"
     },
     {
       "id": "aslmanager",
       "label": "com.apple.aslmanager",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.aslmanager.plist"
+      "kind": "daemon"
     },
     {
       "id": "reportcrash",
       "label": "com.apple.ReportCrash",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ReportCrash.plist"
+      "kind": "agent"
     },
     {
       "id": "reportcrash-root",
       "label": "com.apple.ReportCrash.Root",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.ReportCrash.Root.plist"
+      "kind": "daemon"
     },
     {
       "id": "coresymbolicationd",
       "label": "com.apple.coresymbolicationd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.coresymbolicationd.plist"
+      "kind": "daemon"
     },
     {
       "id": "imagent",
       "label": "com.apple.imagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.imagent.plist"
+      "kind": "agent"
     },
     {
       "id": "imtransferagent",
       "label": "com.apple.imcore.imtransferagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.imtransferagent.plist"
+      "kind": "agent"
     },
     {
       "id": "identityservicesd",
       "label": "com.apple.identityservicesd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.identityservicesd.plist"
+      "kind": "agent"
     },
     {
       "id": "ids-remote-url",
       "label": "com.apple.idsfoundation.IDSRemoteURLConnectionAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.idsremoteurlconnectionagent.plist"
+      "kind": "agent"
     },
     {
       "id": "facetimemessagestored",
       "label": "com.apple.facetimemessagestored",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.facetimemessagestored.plist"
+      "kind": "agent"
     },
     {
       "id": "callhistoryd",
       "label": "com.apple.callhistoryd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.callhistoryd.plist"
+      "kind": "agent"
     },
     {
       "id": "callhistory-sync",
       "label": "com.apple.CallHistorySyncHelper",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.CallHistorySyncHelper.plist"
+      "kind": "agent"
     },
     {
       "id": "callhistory-plugin",
       "label": "com.apple.CallHistoryPluginHelper",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.CallHistoryPluginHelper.plist"
+      "kind": "agent"
     },
     {
       "id": "screensharing-messages",
       "label": "com.apple.screensharing.MessagesAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.screensharing.MessagesAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "linkd",
       "label": "com.apple.linkd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.linkd.plist"
+      "kind": "agent"
     },
     {
       "id": "callservicesd",
       "label": "com.apple.telephonyutilities.callservicesd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.telephonyutilities.callservicesd.plist"
+      "kind": "agent"
     },
     {
       "id": "sharingd",
       "label": "com.apple.sharingd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.sharingd.plist"
+      "kind": "agent"
     },
     {
       "id": "rapportd",
       "label": "com.apple.rapportd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.rapportd.plist"
+      "kind": "daemon"
     },
     {
       "id": "rapportd-user",
       "label": "com.apple.rapportd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.rapportd-user.plist"
+      "kind": "agent"
     },
     {
       "id": "nearbyd",
       "label": "com.apple.nearbyd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.nearbyd.plist"
+      "kind": "daemon"
     },
     {
       "id": "useractivityd",
       "label": "com.apple.coreservices.useractivityd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.coreservices.useractivityd.plist"
+      "kind": "agent"
     },
     {
       "id": "wifip2pd",
       "label": "com.apple.wifip2pd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.wifip2pd.plist"
+      "kind": "daemon"
     },
     {
       "id": "continuity-capture",
       "label": "com.apple.cmio.ContinuityCaptureAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.cmio.ContinuityCaptureAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "mediacontinuityd",
       "label": "com.apple.mediacontinuityd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mediacontinuityd.plist"
+      "kind": "agent"
     },
     {
       "id": "amp-mediasharingd",
       "label": "com.apple.amp.mediasharingd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.amp.mediasharingd.plist"
+      "kind": "agent"
     },
     {
       "id": "rapport-ui-agent",
       "label": "com.apple.RapportUIAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.RapportUIAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "sidecar-relay",
       "label": "com.apple.sidecar-relay",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.sidecar-relay.plist"
+      "kind": "agent"
     },
     {
       "id": "companiond",
       "label": "com.apple.companiond",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.companiond.plist"
+      "kind": "agent"
     },
     {
       "id": "ensemble",
       "label": "com.apple.ensemble",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ensemble.plist"
+      "kind": "agent"
     },
     {
       "id": "intelligentroutingd",
       "label": "com.apple.intelligentroutingd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.intelligentroutingd.plist"
+      "kind": "agent"
     },
     {
       "id": "bluetoothuserd",
       "label": "com.apple.bluetoothuserd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.bluetoothuserd.plist"
+      "kind": "agent"
     },
     {
       "id": "findmy-locate-agent",
       "label": "com.apple.findmy.findmylocateagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.findmy.findmylocateagent.plist"
+      "kind": "agent"
     },
     {
       "id": "findmy-beaconingd",
       "label": "com.apple.findmy.findmybeaconingd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.findmy.findmybeaconingd.plist"
+      "kind": "daemon"
     },
     {
       "id": "findmydeviced",
       "label": "com.apple.icloud.findmydeviced",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.icloud.findmydeviced.plist"
+      "kind": "daemon"
     },
     {
       "id": "findmymacd",
       "label": "com.apple.findmymacd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.findmymac.plist"
+      "kind": "daemon"
     },
     {
       "id": "findmymacmessenger",
       "label": "com.apple.findmymacmessenger",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.findmymacmessenger.plist"
+      "kind": "daemon"
     },
     {
       "id": "findmymacmessenger-user",
       "label": "com.apple.findmymacmessenger",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.findmymacmessenger.plist"
+      "kind": "agent"
     },
     {
       "id": "searchpartyd",
       "label": "com.apple.icloud.searchpartyd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.icloud.searchpartyd.plist"
+      "kind": "daemon"
     },
     {
       "id": "searchpartyuseragent",
       "label": "com.apple.icloud.searchpartyuseragent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.icloud.searchpartyuseragent.plist"
+      "kind": "agent"
     },
     {
       "id": "findmydevice-user-agent",
       "label": "com.apple.icloud.findmydeviced.findmydevice-user-agent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.icloud.findmydeviced.findmydevice-user-agent.plist"
+      "kind": "agent"
     },
     {
       "id": "financed",
       "label": "com.apple.financed",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.financed.plist"
+      "kind": "agent"
     },
     {
       "id": "passd",
       "label": "com.apple.passd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.passd.plist"
+      "kind": "agent"
     },
     {
       "id": "nfcd",
       "label": "com.apple.nfcd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.nfcd.plist"
+      "kind": "daemon"
     },
     {
       "id": "seld",
       "label": "com.apple.seld",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.seld.plist"
+      "kind": "daemon"
     },
     {
       "id": "contactsd",
       "label": "com.apple.contactsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.contactsd.plist"
+      "kind": "agent"
     },
     {
       "id": "addressbook-sourcesync",
       "label": "com.apple.AddressBook.SourceSync",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AddressBook.SourceSync.plist"
+      "kind": "agent"
     },
     {
       "id": "addressbook-abd",
       "label": "com.apple.AddressBook.abd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AddressBook.abd.plist"
+      "kind": "agent"
     },
     {
       "id": "addressbook-assistant",
       "label": "com.apple.AddressBook.AssistantService",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AddressBook.AssistantService.plist"
+      "kind": "agent"
     },
     {
       "id": "contacts-postersyncd",
       "label": "com.apple.contacts.postersyncd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.contacts.postersyncd.plist"
+      "kind": "agent"
     },
     {
       "id": "contacts-donation",
       "label": "com.apple.contacts.donation-agent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.contacts.donation-agent.plist"
+      "kind": "agent"
     },
     {
       "id": "calaccessd",
       "label": "com.apple.calaccessd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.calaccessd.plist"
+      "kind": "agent"
     },
     {
       "id": "peopled",
       "label": "com.apple.peopled",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.peopled.plist"
+      "kind": "agent"
     },
     {
       "id": "familycircled",
       "label": "com.apple.familycircled",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.familycircled.plist"
+      "kind": "agent"
     },
     {
       "id": "remindd",
       "label": "com.apple.remindd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.remindd.plist"
+      "kind": "agent"
     },
     {
       "id": "donotdisturbd",
       "label": "com.apple.donotdisturbd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.donotdisturbd.plist"
+      "kind": "agent"
     },
     {
       "id": "screentime-agent",
       "label": "com.apple.ScreenTimeAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ScreenTimeAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "usage-tracking-agent",
       "label": "com.apple.UsageTrackingAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.UsageTrackingAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "liveactivitiesd",
       "label": "com.apple.liveactivitiesd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.liveactivitiesd.plist",
-      "disableMethod": "cleanSweep"
-    },
-    {
-      "id": "liveactivitiesd-support",
-      "label": "com.apple.liveactivitiesd.support",
-      "domain": "system",
-      "kind": "binary",
-      "assetPath": "/System/Library/PrivateFrameworks/SessionCore.framework/Support/liveactivitiesd",
-      "disableMethod": "cleanSweep"
-    },
-    {
-      "id": "liveentity-xpc",
-      "label": "com.apple.appintents.LiveEntityService",
-      "domain": "system",
-      "kind": "xpcService",
-      "assetPath": "/System/Library/PrivateFrameworks/AppIntentsLiveEntitySupport.framework/XPCServices/AppIntentsLiveEntityService.xpc",
-      "disableMethod": "cleanSweep"
+      "kind": "agent"
     },
     {
       "id": "sociallayerd",
       "label": "com.apple.sociallayerd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.sociallayerd.plist"
+      "kind": "agent"
     },
     {
       "id": "managed-settings-agent",
       "label": "com.apple.ManagedSettingsAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ManagedSettingsAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "dmd",
       "label": "com.apple.dmd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.dmd.agent.plist"
+      "kind": "agent"
     },
     {
       "id": "askpermissiond",
       "label": "com.apple.askpermissiond",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.askpermissiond.plist"
+      "kind": "agent"
     },
     {
       "id": "usernoted",
       "label": "com.apple.usernoted",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.usernoted.plist"
+      "kind": "agent"
     },
     {
       "id": "usernotificationsd",
       "label": "com.apple.usernotificationsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.usernotificationsd.plist"
+      "kind": "agent"
     },
     {
       "id": "notificationcenterui",
       "label": "com.apple.notificationcenterui.agent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.notificationcenterui.plist"
+      "kind": "agent"
     },
     {
       "id": "apsd",
       "label": "com.apple.apsd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.apsd.plist"
+      "kind": "daemon"
     },
     {
       "id": "su-notification-manager",
       "label": "com.apple.SoftwareUpdateNotificationManager",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.SoftwareUpdateNotificationManager.plist"
+      "kind": "agent"
     },
     {
       "id": "user-notification-center-agent",
       "label": "com.apple.UserNotificationCenterAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.UserNotificationCenterAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "icloud-notification-agent",
       "label": "com.apple.iCloudNotificationAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.iCloudNotificationAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "icloud-usernotificationsd",
       "label": "com.apple.iCloudUserNotificationsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.iCloudUserNotifications.plist"
+      "kind": "agent"
     },
     {
       "id": "familynotificationd",
       "label": "com.apple.familynotificationd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.familynotificationd.plist"
+      "kind": "agent"
     },
     {
       "id": "safari-notification-agent",
       "label": "com.apple.SafariNotificationAgent",
       "domain": "gui",
-      "kind": "agent",
-      "disableMethod": "launchctl"
+      "kind": "agent"
     },
     {
       "id": "webpushd",
       "label": "com.apple.webkit.webpushd",
       "domain": "gui",
-      "kind": "agent",
-      "disableMethod": "launchctl"
+      "kind": "agent"
     },
     {
       "id": "usbnotificationagent",
       "label": "com.apple.usbnotificationagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.usbnotificationagent.plist"
+      "kind": "agent"
     },
     {
       "id": "diagnosticspushd",
       "label": "com.apple.diagnosticspushd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.diagnosticspushd.plist"
+      "kind": "agent"
     },
     {
       "id": "aos-push-relay",
       "label": "com.apple.AOSPushRelay",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AOSPushRelay.plist"
+      "kind": "agent"
     },
     {
       "id": "bird",
       "label": "com.apple.bird",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.bird.plist"
+      "kind": "agent"
     },
     {
       "id": "fileprovider",
       "label": "com.apple.FileProvider",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.FileProvider.plist"
+      "kind": "agent"
     },
     {
       "id": "cloudphotod",
       "label": "com.apple.cloudphotod",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.cloudphotod.plist"
+      "kind": "agent"
     },
     {
       "id": "cloudd",
       "label": "com.apple.cloudd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.cloudd.plist"
+      "kind": "agent"
     },
     {
       "id": "cloudd-system",
       "label": "com.apple.cloudd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.cloudd.plist"
+      "kind": "daemon"
     },
     {
       "id": "syncdefaultsd",
       "label": "com.apple.syncdefaultsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.syncdefaultsd.plist"
+      "kind": "agent"
     },
     {
       "id": "cloudsettingssyncagent",
       "label": "com.apple.cloudsettingssyncagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.CloudSettingsSyncAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "safari-bookmarks-sync",
       "label": "com.apple.SafariBookmarksSyncAgent",
       "domain": "gui",
-      "kind": "agent",
-      "disableMethod": "launchctl"
+      "kind": "agent"
     },
     {
       "id": "safari-history",
       "label": "com.apple.Safari.History",
       "domain": "gui",
-      "kind": "agent",
-      "disableMethod": "launchctl"
+      "kind": "agent"
     },
     {
       "id": "feature-access-agent",
       "label": "com.apple.FeatureAccessAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.FeatureAccessAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "cdpd",
       "label": "com.apple.cdpd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.cdpd.plist"
+      "kind": "agent"
     },
     {
       "id": "cloudkeychainproxy3",
       "label": "com.apple.security.cloudkeychainproxy3",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.security.cloudkeychainproxy3.plist"
+      "kind": "agent"
     },
     {
       "id": "protected-cloud-key-sync",
       "label": "com.apple.protectedcloudstorage.protectedcloudkeysyncing",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.protectedcloudstorage.protectedcloudkeysyncing.plist"
+      "kind": "agent"
     },
     {
       "id": "appstoreagent",
       "label": "com.apple.appstoreagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.appstoreagent.plist"
+      "kind": "agent"
     },
     {
       "id": "commerce",
       "label": "com.apple.commerce",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.commerce.plist"
+      "kind": "agent"
     },
     {
       "id": "storedownloadd",
       "label": "com.apple.storedownloadd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.storedownloadd.plist"
+      "kind": "agent"
     },
     {
       "id": "storeaccountd",
       "label": "com.apple.storeaccountd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.storeaccountd.plist"
+      "kind": "agent"
     },
     {
       "id": "storeassetd",
       "label": "com.apple.storeassetd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.storeassetd.plist"
+      "kind": "agent"
     },
     {
       "id": "storelegacy",
       "label": "com.apple.storelegacy",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.storelegacy.plist"
+      "kind": "agent"
     },
     {
       "id": "storeuid",
       "label": "com.apple.storeuid",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.storeuid.plist"
+      "kind": "agent"
     },
     {
       "id": "appstorecomponentsd",
       "label": "com.apple.appstorecomponentsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.appstorecomponentsd.plist"
+      "kind": "agent"
     },
     {
       "id": "storekitagent",
       "label": "com.apple.storekitagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.storekitagent.plist"
+      "kind": "agent"
     },
     {
       "id": "appstored",
       "label": "com.apple.appstored",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.appstored.plist"
+      "kind": "daemon"
     },
     {
       "id": "store-privileged-odr",
       "label": "com.apple.AppStoreDaemon.StorePrivilegedODRService",
       "domain": "system",
-      "kind": "xpcService",
-      "disableMethod": "launchctl"
+      "kind": "xpcService"
     },
     {
       "id": "store-privileged-task",
       "label": "com.apple.AppStoreDaemon.StorePrivilegedTaskService",
       "domain": "system",
-      "kind": "xpcService",
-      "disableMethod": "launchctl"
+      "kind": "xpcService"
     },
     {
       "id": "store-ae-service",
       "label": "com.apple.AppStoreDaemon.StoreAEService",
       "domain": "system",
-      "kind": "xpcService",
-      "disableMethod": "launchctl"
+      "kind": "xpcService"
     },
     {
       "id": "storereceiptinstaller",
       "label": "com.apple.storereceiptinstaller",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.storereceiptinstaller.plist"
+      "kind": "daemon"
     },
     {
       "id": "amsaccountsd",
       "label": "com.apple.amsaccountsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.amsaccountsd.plist"
+      "kind": "agent"
     },
     {
       "id": "amsengagementd",
       "label": "com.apple.amsengagementd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.amsengagementd.plist"
+      "kind": "agent"
     },
     {
       "id": "promotedcontentd",
       "label": "com.apple.ap.promotedcontentd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ap.promotedcontentd.plist"
+      "kind": "agent"
     },
     {
       "id": "adprivacyd",
       "label": "com.apple.ap.adprivacyd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ap.adprivacyd.plist"
+      "kind": "agent"
     },
     {
       "id": "amsondevicestoraged",
       "label": "com.apple.amsondevicestoraged",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.amsondevicestoraged.plist"
+      "kind": "agent"
     },
     {
       "id": "appplaceholdersyncd",
       "label": "com.apple.appplaceholdersyncd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.appplaceholdersyncd.plist"
+      "kind": "agent"
     },
     {
       "id": "installcoordinationd",
       "label": "com.apple.installcoordinationd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.installcoordinationd.plist"
+      "kind": "daemon"
     },
     {
       "id": "fairplayd",
       "label": "com.apple.fairplayd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.fairplayd.plist"
+      "kind": "daemon"
     },
     {
       "id": "itunescloudd",
       "label": "com.apple.itunescloudd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.itunescloudd.plist"
+      "kind": "agent"
     },
     {
       "id": "softwareupdated",
       "label": "com.apple.softwareupdated",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.softwareupdated.plist"
+      "kind": "daemon"
     },
     {
       "id": "mobileassetd",
       "label": "com.apple.mobileassetd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.mobileassetd.plist"
+      "kind": "daemon"
     },
     {
       "id": "mobile-softwareupdated",
       "label": "com.apple.mobile.softwareupdated",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.mobile.softwareupdated.plist"
+      "kind": "daemon"
     },
     {
       "id": "suhelperd",
       "label": "com.apple.suhelperd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.suhelperd.plist"
+      "kind": "daemon"
     },
     {
       "id": "assetcache-builtin",
       "label": "com.apple.AssetCache.builtin",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.AssetCache.builtin.plist"
+      "kind": "daemon"
     },
     {
       "id": "assetcache-locator-system",
       "label": "com.apple.AssetCacheLocatorService",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.AssetCacheLocatorService.plist"
+      "kind": "daemon"
     },
     {
       "id": "assetcache-locator-user",
       "label": "com.apple.AssetCacheLocatorService",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AssetCacheLocatorService.plist"
+      "kind": "agent"
     },
     {
       "id": "assetcache-manager",
       "label": "com.apple.AssetCacheManagerService",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.AssetCacheManagerService.plist"
+      "kind": "daemon"
     },
     {
       "id": "assetcache-tetherator",
       "label": "com.apple.AssetCacheTetheratorService",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.AssetCacheTetheratorService.plist"
+      "kind": "daemon"
     },
     {
       "id": "assetcache-agent",
       "label": "com.apple.AssetCache.agent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AssetCache.agent.plist"
+      "kind": "agent"
     },
     {
       "id": "backupd",
       "label": "com.apple.backupd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.backupd.plist"
+      "kind": "daemon"
     },
     {
       "id": "backupd-helper",
       "label": "com.apple.backupd-helper",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.backupd-helper.plist"
+      "kind": "daemon"
     },
     {
       "id": "tm-helper-agent",
       "label": "com.apple.TMHelperAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.TMHelperAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "gamepolicy-agent",
       "label": "com.apple.GamePolicyAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.GamePolicyAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "gamepolicyd",
       "label": "com.apple.gamepolicyd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.gamepolicyd.plist"
+      "kind": "daemon"
     },
     {
       "id": "gamecontrollerd",
       "label": "com.apple.GameController.gamecontrollerd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.GameController.gamecontrollerd.plist"
+      "kind": "daemon"
     },
     {
       "id": "gamecontrolleragentd",
       "label": "com.apple.GameController.gamecontrolleragentd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.GameController.gamecontrolleragentd.plist"
+      "kind": "agent"
     },
     {
       "id": "gamed",
       "label": "com.apple.gamed",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.gamed.plist"
+      "kind": "agent"
     },
     {
       "id": "gamesaved",
       "label": "com.apple.gamesaved",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.gamesaved.plist"
+      "kind": "agent"
     },
     {
       "id": "sportsd",
       "label": "com.apple.sportsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.sportsd.plist"
+      "kind": "agent"
     },
     {
       "id": "locationd",
       "label": "com.apple.locationd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.locationd.plist"
+      "kind": "daemon"
     },
     {
       "id": "corelocation-agent",
       "label": "com.apple.CoreLocationAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.CoreLocationAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "geod-bridge",
       "label": "com.apple.geodMachServiceBridge",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.geodMachServiceBridge.plist"
+      "kind": "agent"
     },
     {
       "id": "geod",
       "label": "com.apple.geod",
       "domain": "gui",
-      "kind": "xpcService",
-      "disableMethod": "launchctl"
+      "kind": "xpcService"
     },
     {
       "id": "countryd",
       "label": "com.apple.countryd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.countryd.plist"
+      "kind": "daemon"
     },
     {
       "id": "milod",
       "label": "com.apple.milod",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.milod.plist"
+      "kind": "agent"
     },
     {
       "id": "weatherd",
       "label": "com.apple.weatherd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.weatherd.plist"
+      "kind": "agent"
     },
     {
       "id": "cmio-registerassistant",
       "label": "com.apple.cmio.registerassistantservice",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.cmio.registerassistantservice.plist"
+      "kind": "daemon"
     },
     {
       "id": "cameracaptured",
       "label": "com.apple.cameracaptured",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.cameracaptured.plist"
+      "kind": "daemon"
     },
     {
       "id": "appleh16camerad",
       "label": "com.apple.appleh16camerad",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.appleh16camerad.plist"
+      "kind": "daemon"
     },
     {
       "id": "vdc-assistant",
       "label": "com.apple.cmio.VDCAssistant",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.cmio.VDCAssistant.plist"
+      "kind": "daemon"
     },
     {
       "id": "uvc-assistant",
       "label": "com.apple.cmio.uvcassistantextension",
       "domain": "system",
-      "kind": "xpcService",
-      "disableMethod": "launchctl"
+      "kind": "xpcService"
     },
     {
       "id": "email-maild",
       "label": "com.apple.email.maild",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.email.maild.plist"
+      "kind": "agent"
     },
     {
       "id": "helpd",
       "label": "com.apple.helpd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.helpd.plist"
+      "kind": "agent"
     },
     {
       "id": "studentd",
       "label": "com.apple.studentd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.macos.studentd.plist"
+      "kind": "agent"
     },
     {
       "id": "assessmentagent",
       "label": "com.apple.assessmentagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.assessmentagent.plist"
+      "kind": "agent"
     },
     {
       "id": "appssso-agent",
       "label": "com.apple.AppSSOAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AppSSOAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "appssso-daemon",
       "label": "com.apple.AppSSODaemon",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.AppSSODaemon.plist"
+      "kind": "daemon"
     },
     {
       "id": "appssso-login",
       "label": "com.apple.AppSSOAgent.login",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.AppSSOAgent.login.plist"
+      "kind": "daemon"
     },
     {
       "id": "remotemanagementd",
       "label": "com.apple.remotemanagementd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.remotemanagementd.plist"
+      "kind": "daemon"
     },
     {
       "id": "mdmclient-daemon",
       "label": "com.apple.mdmclient.daemon",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.mdmclient.daemon.plist"
+      "kind": "daemon"
     },
     {
       "id": "mdmclient-agent",
       "label": "com.apple.mdmclient.agent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mdmclient.agent.plist"
+      "kind": "agent"
     },
     {
       "id": "networkserviceproxy",
       "label": "com.apple.networkserviceproxy",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.networkserviceproxy-osx.plist"
+      "kind": "agent"
     },
     {
       "id": "captiveagent",
       "label": "com.apple.captiveagent",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.captiveagent.plist"
+      "kind": "daemon"
     },
     {
       "id": "translationd",
       "label": "com.apple.translationd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.translationd.plist"
+      "kind": "agent"
     },
     {
       "id": "applespell",
       "label": "com.apple.applespell",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.applespell.plist"
+      "kind": "agent"
     },
     {
       "id": "talagent",
       "label": "com.apple.talagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.talagent.plist"
+      "kind": "agent"
     },
     {
       "id": "amp-device-discovery",
       "label": "com.apple.AMPDeviceDiscoveryAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AMPDeviceDiscoveryAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "icdd",
       "label": "com.apple.icdd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.icdd.plist"
+      "kind": "agent"
     },
     {
       "id": "ctkd",
       "label": "com.apple.ctkd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.ctkd.plist"
+      "kind": "daemon"
     },
     {
       "id": "ctkd-user",
       "label": "com.apple.ctkd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ctkd.plist"
+      "kind": "agent"
     },
     {
       "id": "commcenter",
       "label": "com.apple.CommCenter",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.CommCenter-osx.plist"
+      "kind": "agent"
     },
     {
       "id": "symptomsd",
       "label": "com.apple.symptomsd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.symptomsd.plist"
+      "kind": "daemon"
     },
     {
       "id": "wifi-agent",
       "label": "com.apple.wifi.WiFiAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.wifi.WiFiAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "wallpaper-export",
       "label": "com.apple.wallpaper.export",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.wallpaper.export.plist"
+      "kind": "daemon"
     },
     {
       "id": "netbiosd",
       "label": "com.apple.netbiosd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.netbiosd.plist"
+      "kind": "daemon"
     },
     {
       "id": "dhcp6d",
       "label": "com.apple.dhcp6d",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.dhcp6d.plist"
+      "kind": "daemon"
     },
     {
       "id": "kerberos-digest",
       "label": "com.apple.Kerberos.digest-service",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.Kerberos.digest-service.plist"
+      "kind": "daemon"
     },
     {
       "id": "gsscred",
       "label": "com.apple.GSSCred",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.GSSCred.plist"
+      "kind": "daemon"
     },
     {
       "id": "gssd",
       "label": "com.apple.gssd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.gssd.plist"
+      "kind": "daemon"
     },
     {
       "id": "accessoryupdaterd",
       "label": "com.apple.accessoryupdaterd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.accessoryupdaterd.plist"
+      "kind": "daemon"
     },
     {
       "id": "uarpd",
       "label": "com.apple.uarpd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.uarpd.plist"
+      "kind": "daemon"
     },
     {
       "id": "bootinstalld",
       "label": "com.apple.bootinstalld",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.bootinstalld.plist"
+      "kind": "daemon"
     },
     {
       "id": "corerepaird",
       "label": "com.apple.corerepaird",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.corerepaird.plist"
+      "kind": "daemon"
     },
     {
       "id": "mobilerepaird",
       "label": "com.apple.mobilerepaird",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mobilerepaird.plist"
+      "kind": "agent"
     },
     {
       "id": "perfpower-services",
       "label": "com.apple.PerfPowerServices",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.PerfPowerServices.plist"
+      "kind": "daemon"
     },
     {
       "id": "mobiletimerd",
       "label": "com.apple.mobiletimerd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mobiletimerd.plist"
+      "kind": "agent"
     },
     {
       "id": "ndoagent",
       "label": "com.apple.ndoagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ndoagent.plist"
+      "kind": "agent"
     },
     {
       "id": "eligibilityd",
       "label": "com.apple.eligibilityd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.eligibilityd.plist"
+      "kind": "daemon"
     },
     {
       "id": "feedbackd",
       "label": "com.apple.feedbackd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.feedbackd.plist"
+      "kind": "agent"
     },
     {
       "id": "swtransparencyd",
       "label": "com.apple.swtransparencyd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.swtransparencyd.plist"
+      "kind": "agent"
     },
     {
       "id": "safari-platform-helper",
       "label": "com.apple.SafariPlatformSupport.Helper",
       "domain": "system",
-      "kind": "xpcService",
-      "disableMethod": "launchctl"
+      "kind": "xpcService"
     },
     {
       "id": "safari-safebrowsing",
       "label": "com.apple.Safari.SafeBrowsing.Service",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.Safari.SafeBrowsing.Service.plist"
+      "kind": "agent"
     },
     {
       "id": "auth-services-agent",
       "label": "com.apple.AuthenticationServicesCore.AuthenticationServicesAgent",
       "domain": "gui",
-      "kind": "agent",
-      "disableMethod": "launchctl"
+      "kind": "agent"
     },
     {
       "id": "cursor-ui-view",
       "label": "com.apple.TextInputUI.xpc.CursorUIViewService",
       "domain": "gui",
-      "kind": "xpcService",
-      "disableMethod": "launchctl"
+      "kind": "xpcService"
     },
     {
       "id": "quicklookd",
       "label": "com.apple.quicklook",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.quicklook.plist"
+      "kind": "agent"
     },
     {
       "id": "quicklook-ui",
       "label": "com.apple.quicklook.ui.helper",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.quicklook.ui.helper.plist"
+      "kind": "agent"
     },
     {
       "id": "quicklook-thumbnail",
       "label": "com.apple.quicklook.ThumbnailsAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.quicklook.ThumbnailsAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "followupd",
       "label": "com.apple.followupd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.followupd.plist"
+      "kind": "agent"
     },
     {
       "id": "warmd",
       "label": "com.apple.warmd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.warmd.plist",
-      "disableMethod": "launchctl"
+      "kind": "daemon"
     },
     {
       "id": "dasd",
       "label": "com.apple.dasd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.dasd-OSX.plist",
-      "disableMethod": "launchctl"
+      "kind": "daemon"
     },
     {
       "id": "imklaunchagent",
       "label": "com.apple.imklaunchagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.imklaunchagent.plist",
-      "disableMethod": "launchctl"
+      "kind": "agent"
     },
     {
       "id": "audioclocksyncd",
-      "label": "com.apple.clocksyncd",
+      "label": "com.apple.timesync.audioclocksyncd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.clocksyncd.plist",
-      "disableMethod": "launchctl"
+      "kind": "daemon"
     },
     {
       "id": "apfsuseragent",
       "label": "com.apple.apfsuseragent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.apfsuseragent.plist"
+      "kind": "agent"
     },
     {
       "id": "autofsd",
       "label": "com.apple.autofsd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.autofsd.plist"
+      "kind": "daemon"
     },
     {
       "id": "corespotlightservice",
       "label": "com.apple.corespotlightservice",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.corespotlightservice.plist"
+      "kind": "agent"
     },
     {
       "id": "knowledge-agent",
       "label": "com.apple.knowledge-agent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.knowledge-agent.plist"
+      "kind": "agent"
     },
     {
       "id": "managedcorespotlightd",
       "label": "com.apple.managedcorespotlightd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.managedcorespotlightd.plist"
+      "kind": "agent"
     },
     {
       "id": "mdworker-application",
       "label": "com.apple.mdworker.application",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mdworker.application.plist"
+      "kind": "agent"
     },
     {
       "id": "mdworker-mail",
       "label": "com.apple.mdworker.mail",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mdworker.mail.plist"
+      "kind": "agent"
     },
     {
       "id": "mdworker-single-arm64",
       "label": "com.apple.mdworker.single.arm64",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mdworker.single.arm64.plist"
+      "kind": "agent"
     },
     {
       "id": "mdworker-single-x86-64",
       "label": "com.apple.mdworker.single.x86_64",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mdworker.single.x86_64.plist"
+      "kind": "agent"
     },
     {
       "id": "mdworker-sizing",
       "label": "com.apple.mdworker.sizing",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mdworker.sizing.plist"
+      "kind": "agent"
     },
     {
       "id": "metadata-mdflagwriter",
       "label": "com.apple.metadata.mdflagwriter",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.metadata.mdflagwriter.plist"
+      "kind": "agent"
     },
     {
       "id": "metadata-mds-index-readonly",
       "label": "com.apple.metadata.mds.index.readonly",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.metadata.mds.index.readonly.plist"
+      "kind": "daemon"
     },
     {
       "id": "metadata-mds-spindump",
       "label": "com.apple.metadata.mds.spindump",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.metadata.mds.spindump.plist"
+      "kind": "daemon"
     },
     {
       "id": "spotlight-diagnostic-helper",
       "label": "com.apple.diagnosticextensions.osx.spotlight.helper",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.diagnosticextensions.osx.spotlight.helper.plist"
+      "kind": "daemon"
     },
     {
       "id": "msrpc-mdssvc",
       "label": "com.apple.msrpc.mdssvc",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.msrpc.mdssvc.plist"
+      "kind": "daemon"
     },
     {
       "id": "parsecd",
       "label": "com.apple.parsecd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.parsecd.plist"
+      "kind": "agent"
     },
     {
       "id": "parsec-fbf",
       "label": "com.apple.parsec-fbf",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.parsec-fbf.plist"
+      "kind": "agent"
     },
     {
       "id": "spotlightknowledged-importer",
       "label": "com.apple.spotlightknowledged.importer",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.spotlightknowledged.importer.plist"
+      "kind": "agent"
     },
     {
       "id": "spotlightknowledged-updater",
       "label": "com.apple.spotlightknowledged.updater",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.spotlightknowledged.updater.plist"
+      "kind": "agent"
     },
     {
       "id": "siriactionsd",
       "label": "com.apple.siriactionsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.siriactionsd.plist"
+      "kind": "agent"
     },
     {
       "id": "siriinferenced",
       "label": "com.apple.siriinferenced",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.siriinferenced.plist"
+      "kind": "agent"
     },
     {
       "id": "siriknowledged",
       "label": "com.apple.siriknowledged",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.siriknowledged.plist"
+      "kind": "agent"
     },
     {
       "id": "sirittsd",
       "label": "com.apple.sirittsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.sirittsd.plist"
+      "kind": "agent"
     },
     {
       "id": "speechsynthesisd-x86-64",
       "label": "com.apple.speech.speechsynthesisd.x86_64",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.speech.speechsynthesisd.x86_64.plist"
+      "kind": "agent"
     },
     {
       "id": "intelligencecontextd",
       "label": "com.apple.intelligencecontextd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.intelligencecontextd.plist"
+      "kind": "agent"
     },
     {
       "id": "intelligenceflowd",
       "label": "com.apple.intelligenceflowd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.intelligenceflowd.plist"
+      "kind": "agent"
     },
     {
       "id": "knowledgeconstructiond",
       "label": "com.apple.knowledgeconstructiond",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.knowledgeconstructiond.plist"
+      "kind": "agent"
     },
     {
       "id": "naturallanguaged",
       "label": "com.apple.naturallanguaged",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.naturallanguaged.plist"
+      "kind": "agent"
     },
     {
       "id": "suggestd",
       "label": "com.apple.suggestd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.suggestd.plist"
+      "kind": "agent"
     },
     {
       "id": "triald-dot-system",
       "label": "com.apple.triald.system",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.triald.system.plist"
+      "kind": "daemon"
     },
     {
       "id": "im-auto-history-deletion",
       "label": "com.apple.imautomatichistorydeletionagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.imautomatichistorydeletionagent.plist"
+      "kind": "agent"
     },
     {
       "id": "callintelligenced",
       "label": "com.apple.callintelligenced",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.callintelligenced.plist"
+      "kind": "agent"
     },
     {
       "id": "videoconference-camera",
       "label": "com.apple.videoconference.camera",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.avconferenced.plist"
+      "kind": "agent"
     },
     {
       "id": "airplay-ui-agent",
       "label": "com.apple.AirPlayUIAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AirPlayUIAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "airplay-xpc-helper",
       "label": "com.apple.AirPlayXPCHelper",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.AirPlayXPCHelper.plist"
+      "kind": "daemon"
     },
     {
       "id": "replicatord",
       "label": "com.apple.replicatord",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.replicatord.plist"
+      "kind": "agent"
     },
     {
       "id": "sidecar-hid-relay",
       "label": "com.apple.sidecar-display-agent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.sidecar-hid-relay.plist"
+      "kind": "agent"
     },
     {
       "id": "screensharing",
       "label": "com.apple.screensharing",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.screensharing.plist"
+      "kind": "daemon"
     },
     {
       "id": "screensharing-agent",
       "label": "com.apple.screensharing.agent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.screensharing.agent.plist"
+      "kind": "agent"
     },
     {
       "id": "screensharing-menuextra",
       "label": "com.apple.screensharing.menuextra",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.screensharing.menuextra.plist"
+      "kind": "agent"
     },
     {
       "id": "ss-invitation-agent",
       "label": "com.apple.ssinvitationagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.SSInvitationAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "maps-mapspushd",
       "label": "com.apple.Maps.mapspushd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.Maps.pushdaemon.plist"
+      "kind": "agent"
     },
     {
       "id": "maps-mapssyncd",
       "label": "com.apple.Maps.mapssyncd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.Maps.mapssyncd.plist"
+      "kind": "agent"
     },
     {
       "id": "maps-destinationd",
       "label": "com.apple.maps.destinationd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.maps.destinationd.plist"
+      "kind": "agent"
     },
     {
       "id": "navd",
       "label": "com.apple.navd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.navd.plist"
+      "kind": "agent"
     },
     {
       "id": "icloudmailagent",
       "label": "com.apple.icloudmailagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.icloudmailagent.plist"
+      "kind": "agent"
     },
     {
       "id": "icloudwebd",
       "label": "com.apple.icloudwebd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.icloudwebd.plist"
+      "kind": "agent"
     },
     {
       "id": "ckdiscretionaryd",
       "label": "com.apple.ckdiscretionaryd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ckdiscretionaryd.plist"
+      "kind": "agent"
     },
     {
       "id": "coredatad",
       "label": "com.apple.coredatad",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.coredatad.plist"
+      "kind": "agent"
     },
     {
       "id": "user-picture-sync-agent",
       "label": "com.apple.UserPictureSyncAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.UserPictureSyncAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "cmfsyncagent",
       "label": "com.apple.cmfsyncagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.cmfsyncagent.plist"
+      "kind": "agent"
     },
     {
       "id": "exchange-syncd",
       "label": "com.apple.exchange.exchangesyncd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.exchange.exchangesyncd.plist"
+      "kind": "agent"
     },
     {
       "id": "statuskit-agent",
       "label": "com.apple.StatusKitAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.StatusKitAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "syncservices-syncserver",
       "label": "com.apple.syncservices.SyncServer",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.syncservices.SyncServer.plist"
+      "kind": "agent"
     },
     {
       "id": "syncservices-uihandler",
       "label": "com.apple.syncservices.uihandler",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.syncservices.uihandler.plist"
+      "kind": "agent"
     },
     {
       "id": "aos-heartbeat",
       "label": "com.apple.AOSHeartbeat",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AOSHeartbeat.plist"
+      "kind": "agent"
     },
     {
       "id": "dataaccessd",
       "label": "com.apple.dataaccess.dataaccessd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.dataaccess.dataaccessd.plist"
+      "kind": "agent"
     },
     {
       "id": "bookdatastored",
       "label": "com.apple.bookdatastored",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.bookdatastored.plist"
+      "kind": "agent"
     },
     {
       "id": "fairplaydeviceidentityd",
       "label": "com.apple.fairplaydeviceidentityd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.fairplaydeviceidentityd.plist"
+      "kind": "daemon"
     },
     {
       "id": "installcoordination-proxy",
       "label": "com.apple.installcoordination_proxy",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.installcoordination_proxy.plist"
+      "kind": "daemon"
     },
     {
       "id": "mediastream-mstreamd",
       "label": "com.apple.mediastream.mstreamd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mediastream.mstreamd.plist"
+      "kind": "agent"
     },
     {
       "id": "appleh13camerad",
       "label": "com.apple.appleh13camerad",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.appleh13camerad.plist"
+      "kind": "daemon"
     },
     {
       "id": "cmio-launch-user-extensions",
       "label": "com.apple.cmio.LaunchCMIOUserExtensionsAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.cmio.LaunchCMIOUserExtensionsAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "cmio-ios-screencapture",
       "label": "com.apple.cmio.iOSScreenCaptureAssistant",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.cmio.iOSScreenCaptureAssistant.plist"
+      "kind": "daemon"
     },
     {
       "id": "cmio-videodriverkit",
       "label": "com.apple.cmio.videodriverkithostextension",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.cmio.videodriverkithostextension.plist"
+      "kind": "daemon"
     },
     {
       "id": "ptpcamerad",
       "label": "com.apple.ptpcamerad",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ptpcamerad.plist"
+      "kind": "agent"
     },
     {
       "id": "newsd",
       "label": "com.apple.newsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.newsd.plist"
+      "kind": "agent"
     },
     {
       "id": "videosubscriptionsd",
       "label": "com.apple.videosubscriptionsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.videosubscriptionsd.plist"
+      "kind": "agent"
     },
     {
       "id": "watchlistd",
       "label": "com.apple.watchlistd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.watchlistd.plist"
+      "kind": "agent"
     },
     {
       "id": "familycontrols",
       "label": "com.apple.familycontrols",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.familycontrols.plist"
+      "kind": "daemon"
     },
     {
       "id": "familycontrols-useragent",
       "label": "com.apple.familycontrols.useragent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.familycontrols.useragent.plist"
+      "kind": "agent"
     },
     {
       "id": "progressd",
       "label": "com.apple.progressd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.progressd.plist"
+      "kind": "agent"
     },
     {
       "id": "me-notification-service",
       "label": "com.apple.MENotificationService",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.MENotificationAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "unc-loginwindow",
       "label": "com.apple.UserNotificationCenterAgent-LoginWindow",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.UserNotificationCenterAgent-LoginWindow.plist"
+      "kind": "agent"
     },
     {
       "id": "mobile-notification-proxy",
       "label": "com.apple.mobile.notification_proxy",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.mobile.notification_proxy.plist"
+      "kind": "daemon"
     },
     {
       "id": "noticeboard-agent",
       "label": "com.apple.noticeboard.agent",
       "domain": "gui",
-      "kind": "agent",
-      "disableMethod": "launchctl"
+      "kind": "agent"
     },
     {
       "id": "keychain-circle-notification",
       "label": "com.apple.security.keychain-circle-notification",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.security.keychain-circle-notification.plist"
+      "kind": "agent"
     },
     {
       "id": "installerdiagd",
       "label": "com.apple.InstallerDiagnostics.installerdiagd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.InstallerDiagnostics.installerdiagd.plist"
+      "kind": "daemon"
     },
     {
       "id": "installerdiagwatcher",
       "label": "com.apple.InstallerDiagnostics.installerdiagwatcher",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.InstallerDiagnostics.installerdiagwatcher.plist"
+      "kind": "daemon"
     },
     {
       "id": "diagnosticextensionsd",
       "label": "com.apple.diagnosticextensionsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.diagnosticextensionsd.plist"
+      "kind": "agent"
     },
     {
       "id": "diagnostics-agent",
       "label": "com.apple.diagnostics_agent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.diagnostics_agent.plist"
+      "kind": "agent"
     },
     {
       "id": "ecosystemagent",
       "label": "com.apple.ecosystemagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ecosystemagent.plist"
+      "kind": "agent"
     },
     {
       "id": "ecosystemanalyticsd",
       "label": "com.apple.ecosystemanalyticsd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.ecosystemanalyticsd.plist"
+      "kind": "daemon"
     },
     {
       "id": "powerlog-helperd",
       "label": "com.apple.powerlogHelperd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.powerlogHelperd.plist"
+      "kind": "daemon"
     },
     {
       "id": "perfpowermetricd",
       "label": "com.apple.perfpowermetricd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.perfpowermetricd.plist"
+      "kind": "daemon"
     },
     {
       "id": "tailspind",
       "label": "com.apple.tailspind",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.tailspind.plist"
+      "kind": "daemon"
     },
     {
       "id": "spindump",
       "label": "com.apple.spindump",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.spindump.plist"
+      "kind": "daemon"
     },
     {
       "id": "spindump-agent",
       "label": "com.apple.spindump_agent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.spindump_agent.plist"
+      "kind": "agent"
     },
     {
       "id": "symptomsd-diag",
       "label": "com.apple.symptomsd-diag",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.symptomsd-diag.plist"
+      "kind": "daemon"
     },
     {
       "id": "symptomsd-diag-agent",
       "label": "com.apple.symptomsd-diag.agent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.symptomsd-diag.plist"
+      "kind": "agent"
     },
     {
       "id": "wifianalyticsd",
       "label": "com.apple.wifianalyticsd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.wifianalyticsd.plist"
+      "kind": "daemon"
     },
     {
       "id": "timemachine-diagnostic-helper",
       "label": "com.apple.diagnosticextensions.osx.timemachine.helper",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.diagnosticextensions.osx.timemachine.helper.plist"
+      "kind": "daemon"
     },
     {
       "id": "tipsd",
       "label": "com.apple.tipsd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.tipsd.plist"
+      "kind": "agent"
     },
     {
       "id": "remote-management-agent",
       "label": "com.apple.RemoteManagementAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.RemoteManagementAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "managedappdistributionagent",
       "label": "com.apple.managedappdistributionagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.managedappdistributionagent.plist"
+      "kind": "agent"
     },
     {
       "id": "managedappdistributiond",
       "label": "com.apple.managedappdistributiond",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.managedappdistributiond.plist"
+      "kind": "daemon"
     },
     {
       "id": "managedeventsd",
       "label": "com.apple.devicemanagementclient.managedeventsd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.devicemanagementclient.managedeventsd.plist"
+      "kind": "daemon"
     },
     {
       "id": "managedclient-enrollagent",
       "label": "com.apple.ManagedClientAgent.enrollagent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ManagedClientAgent.enrollagent.plist"
+      "kind": "agent"
     },
     {
       "id": "cryptotokenkit-ahp",
       "label": "com.apple.CryptoTokenKit.ahp",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.CryptoTokenKit.ahp.plist"
+      "kind": "daemon"
     },
     {
       "id": "cryptotokenkit-ahp-agent",
       "label": "com.apple.CryptoTokenKit.ahp.agent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.CryptoTokenKit.ahp.agent.plist"
+      "kind": "agent"
     },
     {
       "id": "ctkbind",
       "label": "com.apple.ctkbind",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ctkbind.plist"
+      "kind": "agent"
     },
     {
       "id": "ftp-proxy",
       "label": "com.apple.ftp-proxy",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.ftp-proxy.plist"
+      "kind": "daemon"
     },
     {
       "id": "motion-tracking-agent",
       "label": "com.apple.accessibility.MotionTrackingAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.accessibility.MotionTrackingAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "safari-password-breach",
       "label": "com.apple.Safari.PasswordBreachAgent",
       "domain": "gui",
-      "kind": "agent",
-      "disableMethod": "launchctl"
+      "kind": "agent"
     },
     {
       "id": "safari-history-service",
       "label": "com.apple.SafariHistoryServiceAgent",
       "domain": "gui",
-      "kind": "agent",
-      "disableMethod": "launchctl"
+      "kind": "agent"
     },
     {
       "id": "safari-launch-agent",
       "label": "com.apple.SafariLaunchAgent",
       "domain": "gui",
-      "kind": "agent",
-      "disableMethod": "launchctl"
+      "kind": "agent"
     },
     {
       "id": "siri-agent",
       "label": "com.apple.Siri.agent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.Siri.agent.plist"
+      "kind": "agent"
     },
     {
       "id": "mdmclient-runatboot",
       "label": "com.apple.mdmclient.daemon.runatboot",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.mdmclient.daemon.runatboot.plist"
+      "kind": "daemon"
     },
     {
       "id": "folder-actions-dispatcher",
       "label": "com.apple.FolderActionsDispatcher",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.FolderActionsDispatcher.plist",
-      "disableMethod": "launchctl"
+      "kind": "agent"
     },
     {
       "id": "script-menu-app",
       "label": "com.apple.ScriptMenuApp",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ScriptMenuApp.plist",
-      "disableMethod": "launchctl"
+      "kind": "agent"
     },
     {
       "id": "seedusaged-postinstall",
       "label": "com.apple.appleseed.seedusaged.postinstall",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.appleseed.seedusaged.postinstall.plist"
+      "kind": "agent"
     },
     {
       "id": "csc-supportd",
       "label": "com.apple.CSCSupportd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.CSCSupportd.plist"
+      "kind": "daemon"
     },
     {
       "id": "linkednotes-uiservice",
       "label": "com.apple.LinkedNotesUIService",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.LinkedNotesUIService.plist"
+      "kind": "agent"
     },
     {
       "id": "synapse-contentlinkingd",
       "label": "com.apple.synapse.contentlinkingd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.synapse.contentlinkingd.plist"
-    },
-    {
-      "id": "set-store-update-service",
-      "label": "com.apple.SetStoreUpdateService",
-      "domain": "system",
-      "kind": "xpcService",
-      "assetPath": "/System/Library/PrivateFrameworks/CascadeSets.framework/Versions/A/XPCServices/SetStoreUpdateService.xpc"
-    },
-    {
-      "id": "campo",
-      "label": "com.apple.campo",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.campo.plist"
-    },
-    {
-      "id": "siriappintentsd",
-      "label": "com.apple.siriappintentsd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.siriappintentsd.plist"
-    },
-    {
-      "id": "hybridsearchd",
-      "label": "com.apple.hybridsearchd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.hybridsearchd.plist"
-    },
-    {
-      "id": "intelligencetasksd",
-      "label": "com.apple.intelligencetasksd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.intelligencetasksd.plist"
-    },
-    {
-      "id": "generative-functions-agentstored",
-      "label": "com.apple.GenerativeFunctions.agentstored",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.GenerativeFunctions.agentstored.plist"
-    },
-    {
-      "id": "visualintelligenced",
-      "label": "com.apple.visualintelligenced",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.visualintelligenced.plist"
-    },
-    {
-      "id": "managedclient",
-      "label": "com.apple.ManagedClient",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.ManagedClient.plist"
-    },
-    {
-      "id": "managedclient-startup",
-      "label": "com.apple.ManagedClient.startup",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.ManagedClient.startup.plist"
-    },
-    {
-      "id": "managedclient-enroll",
-      "label": "com.apple.ManagedClient.enroll",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.ManagedClient.enroll.plist"
-    },
-    {
-      "id": "managedclient-mechanism",
-      "label": "com.apple.ManagedClient.mechanism",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.ManagedClient.mechanism.plist"
-    },
-    {
-      "id": "managedclient-agent",
-      "label": "com.apple.ManagedClientAgent.agent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.ManagedClientAgent.agent.plist"
-    },
-    {
-      "id": "deviceconfigurationd",
-      "label": "com.apple.deviceconfigurationd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.deviceconfigurationd.plist"
-    },
-    {
-      "id": "device-configuration-agent",
-      "label": "com.apple.DeviceConfigurationAgent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.DeviceConfigurationAgent.plist"
-    },
-    {
-      "id": "betaenrollmentd",
-      "label": "com.apple.betaenrollmentd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.betaenrollmentd.plist"
-    },
-    {
-      "id": "betaenrollmentagent",
-      "label": "com.apple.betaenrollmentagent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.betaenrollmentagent.plist"
-    },
-    {
-      "id": "powerchime",
-      "label": "com.apple.powerchime",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.powerchime.plist"
-    },
-    {
-      "id": "secure-backup-daemon",
-      "label": "com.apple.SecureBackupDaemon",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.SecureBackupDaemon.plist"
-    },
-    {
-      "id": "corekdld",
-      "label": "com.apple.corekdld",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.corekdld.plist"
-    },
-    {
-      "id": "managedappsd",
-      "label": "com.apple.devicemanagementclient.managedappsd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.devicemanagementclient.managedappsd.plist"
-    },
-    {
-      "id": "teslad",
-      "label": "com.apple.devicemanagementclient.teslad",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.devicemanagementclient.teslad.plist"
-    },
-    {
-      "id": "managed-apps-agent",
-      "label": "com.apple.devicemanagementclient.ManagedAppsAgent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.devicemanagementclient.ManagedAppsAgent.plist"
-    },
-    {
-      "id": "device-management-alertagent",
-      "label": "com.apple.devicemanagementclient.alertagent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.devicemanagementclient.alertagent.plist"
-    },
-    {
-      "id": "backgroundtaskmanagementd",
-      "label": "com.apple.backgroundtaskmanagementd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.backgroundtaskmanagementd.plist"
-    },
-    {
-      "id": "backgroundtaskmanagement-agent",
-      "label": "com.apple.backgroundtaskmanagement.agent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.backgroundtaskmanagement.agent.plist"
+      "kind": "agent"
     },
     {
       "id": "privatecloudcomputed",
       "label": "com.apple.privatecloudcomputed",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.privatecloudcomputed.plist"
+      "kind": "agent"
     },
     {
       "id": "businessservicesd",
       "label": "com.apple.businessservicesd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.businessservicesd.plist"
+      "kind": "agent"
     },
     {
       "id": "followup-ui",
       "label": "com.apple.FollowUpUI",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.FollowUpUI.plist"
+      "kind": "agent"
     },
     {
       "id": "bookassetd",
       "label": "com.apple.bookassetd",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.bookassetd.plist"
+      "kind": "agent"
     },
     {
       "id": "submit-diag-info",
       "label": "com.apple.SubmitDiagInfo",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.SubmitDiagInfo.plist"
+      "kind": "daemon"
     },
     {
       "id": "appleseed-fbahelperd",
       "label": "com.apple.appleseed.fbahelperd",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.appleseed.fbahelperd.plist"
+      "kind": "daemon"
     },
     {
       "id": "appleseed-seedusaged",
       "label": "com.apple.appleseed.seedusaged",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.appleseed.seedusaged.plist"
+      "kind": "agent"
     },
     {
       "id": "family-controls-agent",
       "label": "com.apple.FamilyControlsAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.FamilyControlsAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "parental-controls-check",
       "label": "com.apple.parentalcontrols.check",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.parentalcontrols.check.plist"
+      "kind": "agent"
     },
     {
       "id": "reversetemplated",
       "label": "com.apple.reversetemplated",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.reversetemplated.plist"
+      "kind": "agent"
     },
     {
       "id": "crash-reporter-support-helper",
       "label": "com.apple.CrashReporterSupportHelper",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.CrashReporterSupportHelper.plist"
+      "kind": "daemon"
     },
     {
       "id": "diagnostics-reporter",
       "label": "com.apple.DiagnosticsReporter",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.DiagnosticsReporter.plist"
+      "kind": "agent"
     },
     {
       "id": "loginwindow-weekly-message-tracer",
       "label": "com.apple.loginwindow.LWWeeklyMessageTracer",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.loginwindow.LWWeeklyMessageTracer.plist"
+      "kind": "agent"
     },
     {
       "id": "signpost-reporter",
       "label": "com.apple.signpost.signpost_reporter",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.signpost.signpost_reporter.plist"
+      "kind": "daemon"
     },
     {
       "id": "symptomsd-distributed-agent",
       "label": "com.apple.symptomsd.distributed-agent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.symptomsd.distributed-agent.plist"
+      "kind": "agent"
     },
     {
       "id": "calendar-bookmark-migration",
       "label": "com.apple.calendar.CalendarAgentBookmarkMigrationService",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.calendar.CalendarAgentBookmarkMigrationService.plist"
+      "kind": "agent"
     },
     {
       "id": "live-transcription-agent",
       "label": "com.apple.accessibility.LiveTranscriptionAgent",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.accessibility.LiveTranscriptionAgent.plist"
+      "kind": "agent"
     },
     {
       "id": "bridgeos-update-proxy",
       "label": "com.apple.bridgeOSUpdateProxy",
       "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.bridgeOSUpdateProxy.plist"
+      "kind": "daemon"
     },
     {
       "id": "webinspectord",
       "label": "com.apple.webinspectord",
       "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Cryptexes/App/System/Library/LaunchAgents/com.apple.webinspectord.plist",
-      "disableMethod": "launchctl"
-    },
-    {
-      "id": "mlruntimed",
-      "label": "com.apple.mlruntimed",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mlruntimed.plist"
-    },
-    {
-      "id": "mlhostd",
-      "label": "com.apple.mlhostd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mlhostd.plist"
-    },
-    {
-      "id": "shazamd",
-      "label": "com.apple.shazamd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.shazamd.plist"
-    },
-    {
-      "id": "musicd",
-      "label": "com.apple.musicd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.musicd.plist"
-    },
-    {
-      "id": "mediaremoted",
-      "label": "com.apple.mediaremoted",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.mediaremoted.plist"
-    },
-    {
-      "id": "mediaremoteagent",
-      "label": "com.apple.mediaremoteagent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mediaremoteagent.plist"
-    },
-    {
-      "id": "appleaccountd",
-      "label": "com.apple.appleaccountd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.appleaccountd.plist"
-    },
-    {
-      "id": "adid",
-      "label": "com.apple.adid",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.adid.plist"
-    },
-    {
-      "id": "akd-agent",
-      "label": "com.apple.akd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.akd.plist"
-    },
-    {
-      "id": "akd-daemon",
-      "label": "com.apple.akd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.akd.plist"
-    },
-    {
-      "id": "filesystems-fskitd",
-      "label": "com.apple.filesystems.fskitd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.filesystems.fskitd.plist"
-    },
-    {
-      "id": "fskit-agent",
-      "label": "com.apple.fskit.fskit_agent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.fskit.fskit_agent.plist"
-    },
-    {
-      "id": "fskit-helper",
-      "label": "com.apple.fskit.fskit_helper",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.fskit.fskit_helper.plist"
-    },
-    {
-      "id": "avatarsd",
-      "label": "com.apple.avatarsd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.avatarsd.plist"
-    },
-    {
-      "id": "stickersd",
-      "label": "com.apple.stickersd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.stickersd.plist"
-    },
-    {
-      "id": "diagnosticd",
-      "label": "com.apple.diagnosticd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.diagnosticd.plist"
-    },
-    {
-      "id": "diagnosticservicesd",
-      "label": "com.apple.diagnosticservicesd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.diagnosticservicesd.plist"
-    },
-    {
-      "id": "securityuploadd",
-      "label": "com.apple.securityuploadd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.securityuploadd.plist"
-    },
-    {
-      "id": "enhancedloggingd",
-      "label": "com.apple.enhancedloggingd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.enhancedloggingd.plist"
-    },
-    {
-      "id": "exchange-notesd",
-      "label": "com.apple.notes.exchangenotesd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.notes.exchangenotesd.plist"
-    },
-    {
-      "id": "voiceover",
-      "label": "com.apple.VoiceOver",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.VoiceOver.plist"
-    },
-    {
-      "id": "erase-content-settings-helper",
-      "label": "com.apple.erasecontentsettingshelperd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.erasecontentsettingshelperd.plist"
-    },
-    {
-      "id": "printtool-agent",
-      "label": "com.apple.printtool.agent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.printtool.agent.plist"
-    },
-    {
-      "id": "printtool-daemon",
-      "label": "com.apple.printtool.daemon",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.printtool.daemon.plist"
-    },
-    {
-      "id": "print-ui-tool-agent",
-      "label": "com.apple.printuitool.agent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.printuitool.agent.plist"
-    },
-    {
-      "id": "automation-mode-ui",
-      "label": "com.apple.dt.AutomationModeUI",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.dt.AutomationModeUI.plist"
-    },
-    {
-      "id": "automation-mode-writer",
-      "label": "com.apple.dt.automationmode-writer",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.dt.automationmode-writer.plist"
-    },
-    {
-      "id": "amp-artwork-agent",
-      "label": "com.apple.AMPArtworkAgent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AMPArtworkAgent.plist"
-    },
-    {
-      "id": "amp-devices-agent",
-      "label": "com.apple.AMPDevicesAgent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AMPDevicesAgent.plist"
-    },
-    {
-      "id": "amp-library-agent",
-      "label": "com.apple.AMPLibraryAgent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AMPLibraryAgent.plist"
-    },
-    {
-      "id": "amp-system-player-agent",
-      "label": "com.apple.AMPSystemPlayerAgent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AMPSystemPlayerAgent.plist"
-    },
-    {
-      "id": "now-playing-touch-ui",
-      "label": "com.apple.nowplayingtouchui",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.NowPlayingTouchUI.plist"
-    },
-    {
-      "id": "touchbarserver",
-      "label": "com.apple.touchbarserver",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.touchbarserver.plist"
-    },
-    {
-      "id": "controlstrip",
-      "label": "com.apple.controlstrip",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.controlstrip.plist"
-    },
-    {
-      "id": "spaces-touch-bar-agent",
-      "label": "com.apple.SpacesTouchBarAgent.app",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.SpacesTouchBarAgent.plist"
-    },
-    {
-      "id": "dfr-hud",
-      "label": "com.apple.accessibility.dfrhud",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.accessibility.dfrhud.plist"
+      "kind": "agent"
     }
   ],
   "serviceGroups": [
@@ -3359,9 +2515,7 @@
         "siriknowledged",
         "sirittsd",
         "speechsynthesisd-x86-64",
-        "siri-agent",
-        "campo",
-        "siriappintentsd"
+        "siri-agent"
       ]
     },
     {
@@ -3381,8 +2535,7 @@
       "id": "accessibility-ui-overlays",
       "services": [
         "accessibility-visuals",
-        "motion-tracking-agent",
-        "voiceover"
+        "motion-tracking-agent"
       ]
     },
     {
@@ -3398,14 +2551,7 @@
         "intelligenceflowd",
         "knowledgeconstructiond",
         "naturallanguaged",
-        "set-store-update-service",
-        "hybridsearchd",
-        "intelligencetasksd",
-        "generative-functions-agentstored",
-        "visualintelligenced",
-        "privatecloudcomputed",
-        "mlruntimed",
-        "mlhostd"
+        "privatecloudcomputed"
       ]
     },
     {
@@ -3473,11 +2619,7 @@
         "spindump",
         "spindump-agent",
         "loginwindow-weekly-message-tracer",
-        "signpost-reporter",
-        "diagnosticd",
-        "diagnosticservicesd",
-        "securityuploadd",
-        "enhancedloggingd"
+        "signpost-reporter"
       ]
     },
     {
@@ -3503,9 +2645,7 @@
         "callhistory-plugin",
         "screensharing-messages",
         "im-auto-history-deletion",
-        "businessservicesd",
-        "avatarsd",
-        "stickersd"
+        "businessservicesd"
       ]
     },
     {
@@ -3580,8 +2720,7 @@
         "financed",
         "passd",
         "nfcd",
-        "seld",
-        "corekdld"
+        "seld"
       ]
     },
     {
@@ -3616,8 +2755,7 @@
       "id": "quick-note",
       "services": [
         "linkednotes-uiservice",
-        "synapse-contentlinkingd",
-        "exchange-notesd"
+        "synapse-contentlinkingd"
       ]
     },
     {
@@ -3631,20 +2769,13 @@
       "services": [
         "screentime-agent",
         "usage-tracking-agent",
+        "liveactivitiesd",
         "sociallayerd",
         "managed-settings-agent",
         "dmd",
         "askpermissiond",
         "family-controls-agent",
         "parental-controls-check"
-      ]
-    },
-    {
-      "id": "live-activities",
-      "services": [
-        "liveactivitiesd",
-        "liveactivitiesd-support",
-        "liveentity-xpc"
       ]
     },
     {
@@ -3769,15 +2900,7 @@
       "services": [
         "itunescloudd",
         "bookdatastored",
-        "bookassetd",
-        "shazamd",
-        "musicd",
-        "mediaremoted",
-        "mediaremoteagent",
-        "amp-artwork-agent",
-        "amp-devices-agent",
-        "amp-library-agent",
-        "amp-system-player-agent"
+        "bookassetd"
       ]
     },
     {
@@ -3897,20 +3020,7 @@
         "managedappdistributiond",
         "managedeventsd",
         "managedclient-enrollagent",
-        "mdmclient-runatboot",
-        "managedclient",
-        "managedclient-startup",
-        "managedclient-enroll",
-        "managedclient-mechanism",
-        "managedclient-agent",
-        "deviceconfigurationd",
-        "device-configuration-agent",
-        "betaenrollmentd",
-        "betaenrollmentagent",
-        "managedappsd",
-        "teslad",
-        "managed-apps-agent",
-        "device-management-alertagent"
+        "mdmclient-runatboot"
       ]
     },
     {
@@ -3952,10 +3062,7 @@
     {
       "id": "image-capture",
       "services": [
-        "icdd",
-        "printtool-agent",
-        "printtool-daemon",
-        "print-ui-tool-agent"
+        "icdd"
       ]
     },
     {
@@ -4025,8 +3132,7 @@
       "services": [
         "corerepaird",
         "mobilerepaird",
-        "csc-supportd",
-        "erase-content-settings-helper"
+        "csc-supportd"
       ]
     },
     {
@@ -4102,28 +3208,7 @@
         "imklaunchagent",
         "audioclocksyncd",
         "folder-actions-dispatcher",
-        "script-menu-app",
-        "automation-mode-ui",
-        "automation-mode-writer"
-      ]
-    },
-    {
-      "id": "power-chime",
-      "services": [
-        "powerchime"
-      ]
-    },
-    {
-      "id": "icloud-secure-backup",
-      "services": [
-        "secure-backup-daemon"
-      ]
-    },
-    {
-      "id": "background-task-management",
-      "services": [
-        "backgroundtaskmanagementd",
-        "backgroundtaskmanagement-agent"
+        "script-menu-app"
       ]
     },
     {
@@ -4135,10 +3220,7 @@
     {
       "id": "automount",
       "services": [
-        "autofsd",
-        "filesystems-fskitd",
-        "fskit-agent",
-        "fskit-helper"
+        "autofsd"
       ]
     },
     {
@@ -4151,25 +3233,6 @@
       "id": "system-permission-popups",
       "services": [
         "user-notification-center-agent"
-      ]
-    },
-    {
-      "id": "apple-account-core",
-      "services": [
-        "appleaccountd",
-        "adid",
-        "akd-agent",
-        "akd-daemon"
-      ]
-    },
-    {
-      "id": "touch-bar",
-      "services": [
-        "now-playing-touch-ui",
-        "touchbarserver",
-        "controlstrip",
-        "spaces-touch-bar-agent",
-        "dfr-hud"
       ]
     }
   ],
@@ -4229,24 +3292,6 @@
       "order": 300
     },
     {
-      "id": "live-activities",
-      "categoryID": "search-desktop",
-      "title": "Live Activities",
-      "question": "Do you use Live Activities such as timers, sports scores, or delivery status?",
-      "description": "ActivityKit session daemon, the SessionCore liveactivitiesd binary, and the App Intents Live Entity XPC that keep Live Activities updated.",
-      "disableGuidance": "Disable this if you do not use Live Activities. Static widgets, Notification Center banners, and audio playback keep working.",
-      "systemImage": "rectangle.stack",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "live-activities"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 25,
-        "estimatedProcessReduction": 3
-      },
-      "order": 350
-    },
-    {
       "id": "document-versions",
       "categoryID": "search-desktop",
       "title": "Document Versions",
@@ -4295,8 +3340,8 @@
         "speech-siri"
       ],
       "impact": {
-        "estimatedMemoryMB": 199,
-        "estimatedProcessReduction": 18
+        "estimatedMemoryMB": 80,
+        "estimatedProcessReduction": 16
       },
       "order": 100
     },
@@ -4313,8 +3358,8 @@
         "apple-intelligence"
       ],
       "impact": {
-        "estimatedMemoryMB": 229,
-        "estimatedProcessReduction": 16
+        "estimatedMemoryMB": 165,
+        "estimatedProcessReduction": 10
       },
       "order": 200
     },
@@ -4370,7 +3415,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 144,
-        "estimatedProcessReduction": 14
+        "estimatedProcessReduction": 12
       },
       "order": 100
     },
@@ -4520,24 +3565,6 @@
       "order": 400
     },
     {
-      "id": "icloud-secure-backup",
-      "categoryID": "icloud-store",
-      "title": "iCloud Keychain Escrow",
-      "question": "Back up iCloud Keychain recovery material to Apple?",
-      "description": "Secure Backup daemon that escrows encrypted iCloud Keychain records and account recovery tokens.",
-      "disableGuidance": "Disable this if this Mac does not recover iCloud Keychain from Apple’s escrow. Local keychain login still works.",
-      "systemImage": "lock.icloud",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "icloud-secure-backup"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 6,
-        "estimatedProcessReduction": 1
-      },
-      "order": 450
-    },
-    {
       "id": "private-relay",
       "categoryID": "icloud-store",
       "title": "iCloud Private Relay",
@@ -4595,18 +3622,18 @@
     {
       "id": "media-stores",
       "categoryID": "icloud-store",
-      "title": "Apple Media Services",
-      "question": "Do you use Apple Music, Books, Shazam, hardware media keys, or Now Playing?",
-      "description": "Provides Apple Music and Books libraries, Shazam recognition, artwork and device agents, and system MediaRemote controls.",
-      "disableGuidance": "Disable this if this Mac does not use Apple media apps, music recognition, hardware media keys, headset playback controls, or Now Playing.",
+      "title": "Music & Books Cloud",
+      "question": "Do you use Apple Music, iTunes cloud, or Books library sync?",
+      "description": "Background media store cloud daemons for Music and Books.",
+      "disableGuidance": "Disable this if you do not use Apple media store cloud libraries on this Mac.",
       "systemImage": "music.note.list",
       "defaultEnabled": true,
       "disableServiceGroups": [
         "media-stores"
       ],
       "impact": {
-        "estimatedMemoryMB": 34,
-        "estimatedProcessReduction": 11
+        "estimatedMemoryMB": 22,
+        "estimatedProcessReduction": 3
       },
       "order": 800
     },
@@ -4813,9 +3840,9 @@
       "id": "screen-time",
       "categoryID": "apple-apps",
       "title": "Screen Time",
-      "question": "Do you use Screen Time or app usage limits?",
-      "description": "Tracks app usage, Downtime, social layer suggestions, and managed settings.",
-      "disableGuidance": "Disable this if you do not use Screen Time reports or Downtime.",
+      "question": "Do you use Screen Time, Live Activities, or app usage limits?",
+      "description": "Tracks usage, Live Activities, social layer suggestions, and managed settings.",
+      "disableGuidance": "Disable this if you do not use Screen Time reports, Downtime, or Live Activities.",
       "systemImage": "hourglass",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -4866,10 +3893,10 @@
     {
       "id": "quick-note",
       "categoryID": "apple-apps",
-      "title": "Apple Notes & Quick Note",
-      "question": "Do you use Apple Notes, Quick Note, or Exchange Notes sync?",
-      "description": "Provides Quick Note UI, linked-note indicators, and Exchange-backed Apple Notes synchronization.",
-      "disableGuidance": "Disable this if you do not use Apple Notes, the Quick Note hot corner, document backlink indicators, or Exchange Notes sync.",
+      "title": "Quick Note",
+      "question": "Do you use the Quick Note hot corner or linked-note indicators?",
+      "description": "The paper that slides in from a screen corner, plus the Synapse backlink indicator that appears when a page or file has a linked note.",
+      "disableGuidance": "Disable this if you do not use Quick Note, the Notes hot corner, or document backlink indicators. Notes.app itself still opens.",
       "systemImage": "note.text",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -4877,7 +3904,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 36,
-        "estimatedProcessReduction": 3
+        "estimatedProcessReduction": 2
       },
       "order": 410
     },
@@ -4923,7 +3950,7 @@
       "categoryID": "apple-apps",
       "title": "Wallet & Apple Pay",
       "question": "Do you use Wallet, Apple Pay, or passes on this Mac?",
-      "description": "FinanceKit, PassKit, NFC, CoreKDL, and secure element related services.",
+      "description": "FinanceKit, PassKit, NFC, and secure element related services.",
       "disableGuidance": "Disable this if payments and passes are never used on this Mac.",
       "systemImage": "creditcard",
       "defaultEnabled": true,
@@ -4931,8 +3958,8 @@
         "wallet-applepay"
       ],
       "impact": {
-        "estimatedMemoryMB": 48,
-        "estimatedProcessReduction": 5
+        "estimatedMemoryMB": 42,
+        "estimatedProcessReduction": 4
       },
       "order": 700
     },
@@ -5094,7 +4121,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 45,
-        "estimatedProcessReduction": 19
+        "estimatedProcessReduction": 15
       },
       "order": 200
     },
@@ -5209,10 +4236,10 @@
     {
       "id": "accessibility-overlays",
       "categoryID": "accessibility",
-      "title": "VoiceOver & Accessibility Interface",
-      "question": "Do you use VoiceOver, Screen Zoom overlays, or accessibility focus rings?",
-      "description": "Provides the VoiceOver screen reader, zoom lenses, focus rings, and related accessibility visuals.",
-      "disableGuidance": "Disable this only if VoiceOver, Screen Zoom, motion tracking, and accessibility focus indicators are unused.",
+      "title": "Accessibility Overlays",
+      "question": "Do you use Screen Zoom overlays or accessibility focus rings?",
+      "description": "Renders zoom lenses, focus rings, and related accessibility visuals.",
+      "disableGuidance": "Disable this if you do not use zoom overlays or high-contrast focus indicators. Keep enabled if Screen Zoom is required.",
       "systemImage": "plus.magnifyingglass",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -5220,7 +4247,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 78,
-        "estimatedProcessReduction": 4
+        "estimatedProcessReduction": 3
       },
       "order": 300
     },
@@ -5255,8 +4282,8 @@
         "mdm-remote-management"
       ],
       "impact": {
-        "estimatedMemoryMB": 75,
-        "estimatedProcessReduction": 22
+        "estimatedMemoryMB": 40,
+        "estimatedProcessReduction": 9
       },
       "order": 200
     },
@@ -5371,18 +4398,18 @@
     {
       "id": "automount",
       "categoryID": "system-network",
-      "title": "File Systems & Automount",
-      "question": "Do you mount external, third-party, NFS, or SMB file systems?",
-      "description": "FSKit infrastructure for user-space file systems plus autofs network-share mounting.",
-      "disableGuidance": "Disable this only if external and third-party file systems and transparent NFS or SMB automount are unused.",
+      "title": "Network Automount",
+      "question": "Do you use transparent NFS or SMB automount under /net?",
+      "description": "Autofs daemon for automatic network share mounting.",
+      "disableGuidance": "Disable this if you mount shares manually in Finder. Manual SMB connections still work.",
       "systemImage": "externaldrive.connected.to.line.below",
       "defaultEnabled": true,
       "disableServiceGroups": [
         "automount"
       ],
       "impact": {
-        "estimatedMemoryMB": 26,
-        "estimatedProcessReduction": 4
+        "estimatedMemoryMB": 10,
+        "estimatedProcessReduction": 1
       },
       "order": 900
     },
@@ -5407,10 +4434,10 @@
     {
       "id": "image-capture",
       "categoryID": "system-network",
-      "title": "Printing & Image Capture",
-      "question": "Do you print or auto-discover scanners and PTP cameras?",
-      "description": "PrintCore and Print UI helpers together with Image Capture device discovery.",
-      "disableGuidance": "Disable this if printers, scanners, and PTP cameras are unused.",
+      "title": "Image Capture Discovery",
+      "question": "Auto-discover scanners and cameras for Image Capture?",
+      "description": "Image Capture device discovery daemon.",
+      "disableGuidance": "Disable this if scanners and PTP cameras are unused.",
       "systemImage": "scanner",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -5418,7 +4445,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 15,
-        "estimatedProcessReduction": 4
+        "estimatedProcessReduction": 1
       },
       "order": 1100
     },
@@ -5443,10 +4470,10 @@
     {
       "id": "hardware-repair",
       "categoryID": "system-network",
-      "title": "Repair & Reset Utilities",
-      "question": "Keep hardware repair verification and Erase All Content and Settings available?",
-      "description": "Repair diagnostics, verification helpers, and the privileged factory-reset helper.",
-      "disableGuidance": "Disable this only if background repair checks and Erase All Content and Settings are not needed.",
+      "title": "Repair Diagnostics",
+      "question": "Keep hardware repair verification agents running?",
+      "description": "Repair diagnostics and related verification helpers.",
+      "disableGuidance": "Disable this on coding machines that do not need background repair checks.",
       "systemImage": "wrench.and.screwdriver",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -5454,7 +4481,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 20,
-        "estimatedProcessReduction": 4
+        "estimatedProcessReduction": 3
       },
       "order": 1300
     },
@@ -5475,24 +4502,6 @@
         "estimatedProcessReduction": 1
       },
       "order": 1400
-    },
-    {
-      "id": "power-chime",
-      "categoryID": "system-network",
-      "title": "Charging Sound",
-      "question": "Play the MagSafe charging chime when a power cable is connected?",
-      "description": "PowerChime agent that plays the charger-connected sound. Charging, battery status, and MagSafe LED stay available without it.",
-      "disableGuidance": "Disable this to silence the charger chime and reclaim idle memory. Power management is unaffected.",
-      "systemImage": "bolt.fill",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "power-chime"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 37,
-        "estimatedProcessReduction": 1
-      },
-      "order": 1450
     },
     {
       "id": "spellcheck",
@@ -5603,30 +4612,12 @@
       "order": 2200
     },
     {
-      "id": "background-task-management",
-      "categoryID": "system-network",
-      "title": "Login Item Alerts",
-      "question": "Show alerts when apps add login items or background tasks?",
-      "description": "Background Task Management daemon and agent that track login items and post “items added that can run in the background” banners.",
-      "disableGuidance": "Disable this to stop login-item telemetry and banners. Apps that already launch at login keep launching through launchd.",
-      "systemImage": "list.bullet.rectangle",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "background-task-management"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 18,
-        "estimatedProcessReduction": 2
-      },
-      "order": 2250
-    },
-    {
       "id": "misc-trims",
       "categoryID": "system-network",
-      "title": "Legacy & Developer Helpers",
-      "question": "Keep legacy maintenance helpers or macOS Automation Mode services?",
-      "description": "Small legacy helpers and developer automation services validated as removable on coding targets.",
-      "disableGuidance": "Disable this for lean cleanup when Automation Mode and the legacy helpers are unused.",
+      "title": "Legacy Maintenance Helpers",
+      "question": "Keep rarely used maintenance helpers such as warmd and IMK launch agent?",
+      "description": "Small legacy or low-value helpers validated as removable on coding targets.",
+      "disableGuidance": "Disable this for additional lean cleanup on coding machines.",
       "systemImage": "wrench",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -5634,45 +4625,9 @@
       ],
       "impact": {
         "estimatedMemoryMB": 20,
-        "estimatedProcessReduction": 8
+        "estimatedProcessReduction": 6
       },
       "order": 2300
-    },
-    {
-      "id": "apple-account-core",
-      "categoryID": "icloud-store",
-      "title": "Apple Account Core",
-      "question": "Do you use an Apple Account, iCloud authentication, or Sign in with Apple?",
-      "description": "Core Apple Account and AuthKit services that manage account identity, authentication tokens, and device identity data.",
-      "disableGuidance": "Disable this only on a deliberately local-only Mac. Apple Account sign-in, iCloud authentication, Sign in with Apple, and services that depend on AuthKit may stop working.",
-      "systemImage": "person.crop.circle.badge.checkmark",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "apple-account-core"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 0,
-        "estimatedProcessReduction": 4
-      },
-      "order": 450
-    },
-    {
-      "id": "touch-bar",
-      "categoryID": "system-network",
-      "title": "Touch Bar",
-      "question": "Does this Mac have a Touch Bar that you use?",
-      "description": "Touch Bar server, Control Strip, app-space controls, Now Playing controls, and accessibility HUD services.",
-      "disableGuidance": "Disable this only on Macs without a Touch Bar, or when its interface is intentionally unused. Touch Bar controls and their accessibility overlay will stop working.",
-      "systemImage": "rectangle",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "touch-bar"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 0,
-        "estimatedProcessReduction": 5
-      },
-      "order": 1700
     }
   ]
 }

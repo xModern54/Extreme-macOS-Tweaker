@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.26.1",
+  "catalogVersion": "2026.08.26.2",
   "serviceDisablePolicy": "launchctl",
   "compatibility": {
     "minimumMacOSMajor": 15,
@@ -2424,6 +2424,222 @@
       "label": "com.apple.webinspectord",
       "domain": "gui",
       "kind": "agent"
+    },
+    {
+      "id": "mlruntimed",
+      "label": "com.apple.mlruntimed",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "mlhostd",
+      "label": "com.apple.mlhostd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "shazamd",
+      "label": "com.apple.shazamd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "musicd",
+      "label": "com.apple.musicd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "mediaremoted",
+      "label": "com.apple.mediaremoted",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "mediaremoteagent",
+      "label": "com.apple.mediaremoteagent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "appleaccountd",
+      "label": "com.apple.appleaccountd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "adid",
+      "label": "com.apple.adid",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "akd-agent",
+      "label": "com.apple.akd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "akd-daemon",
+      "label": "com.apple.akd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "filesystems-fskitd",
+      "label": "com.apple.filesystems.fskitd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "fskit-agent",
+      "label": "com.apple.fskit.fskit_agent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "fskit-helper",
+      "label": "com.apple.fskit.fskit_helper",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "avatarsd",
+      "label": "com.apple.avatarsd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "stickersd",
+      "label": "com.apple.stickersd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "diagnosticd",
+      "label": "com.apple.diagnosticd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "diagnosticservicesd",
+      "label": "com.apple.diagnosticservicesd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "securityuploadd",
+      "label": "com.apple.securityuploadd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "enhancedloggingd",
+      "label": "com.apple.enhancedloggingd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "exchange-notesd",
+      "label": "com.apple.notes.exchangenotesd",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "voiceover",
+      "label": "com.apple.VoiceOver",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "erase-content-settings-helper",
+      "label": "com.apple.erasecontentsettingshelperd",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "printtool-agent",
+      "label": "com.apple.printtool.agent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "printtool-daemon",
+      "label": "com.apple.printtool.daemon",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "print-ui-tool-agent",
+      "label": "com.apple.printuitool.agent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "automation-mode-ui",
+      "label": "com.apple.dt.AutomationModeUI",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "automation-mode-writer",
+      "label": "com.apple.dt.automationmode-writer",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "amp-artwork-agent",
+      "label": "com.apple.AMPArtworkAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "amp-devices-agent",
+      "label": "com.apple.AMPDevicesAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "amp-library-agent",
+      "label": "com.apple.AMPLibraryAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "amp-system-player-agent",
+      "label": "com.apple.AMPSystemPlayerAgent",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "now-playing-touch-ui",
+      "label": "com.apple.nowplayingtouchui",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "touchbarserver",
+      "label": "com.apple.touchbarserver",
+      "domain": "system",
+      "kind": "daemon"
+    },
+    {
+      "id": "controlstrip",
+      "label": "com.apple.controlstrip",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "spaces-touch-bar-agent",
+      "label": "com.apple.SpacesTouchBarAgent.app",
+      "domain": "gui",
+      "kind": "agent"
+    },
+    {
+      "id": "dfr-hud",
+      "label": "com.apple.accessibility.dfrhud",
+      "domain": "gui",
+      "kind": "agent"
     }
   ],
   "serviceGroups": [
@@ -2535,7 +2751,8 @@
       "id": "accessibility-ui-overlays",
       "services": [
         "accessibility-visuals",
-        "motion-tracking-agent"
+        "motion-tracking-agent",
+        "voiceover"
       ]
     },
     {
@@ -2551,7 +2768,9 @@
         "intelligenceflowd",
         "knowledgeconstructiond",
         "naturallanguaged",
-        "privatecloudcomputed"
+        "privatecloudcomputed",
+        "mlruntimed",
+        "mlhostd"
       ]
     },
     {
@@ -2619,7 +2838,11 @@
         "spindump",
         "spindump-agent",
         "loginwindow-weekly-message-tracer",
-        "signpost-reporter"
+        "signpost-reporter",
+        "diagnosticd",
+        "diagnosticservicesd",
+        "securityuploadd",
+        "enhancedloggingd"
       ]
     },
     {
@@ -2645,7 +2868,9 @@
         "callhistory-plugin",
         "screensharing-messages",
         "im-auto-history-deletion",
-        "businessservicesd"
+        "businessservicesd",
+        "avatarsd",
+        "stickersd"
       ]
     },
     {
@@ -2755,7 +2980,8 @@
       "id": "quick-note",
       "services": [
         "linkednotes-uiservice",
-        "synapse-contentlinkingd"
+        "synapse-contentlinkingd",
+        "exchange-notesd"
       ]
     },
     {
@@ -2900,7 +3126,15 @@
       "services": [
         "itunescloudd",
         "bookdatastored",
-        "bookassetd"
+        "bookassetd",
+        "shazamd",
+        "musicd",
+        "mediaremoted",
+        "mediaremoteagent",
+        "amp-artwork-agent",
+        "amp-devices-agent",
+        "amp-library-agent",
+        "amp-system-player-agent"
       ]
     },
     {
@@ -3062,7 +3296,10 @@
     {
       "id": "image-capture",
       "services": [
-        "icdd"
+        "icdd",
+        "printtool-agent",
+        "printtool-daemon",
+        "print-ui-tool-agent"
       ]
     },
     {
@@ -3132,7 +3369,8 @@
       "services": [
         "corerepaird",
         "mobilerepaird",
-        "csc-supportd"
+        "csc-supportd",
+        "erase-content-settings-helper"
       ]
     },
     {
@@ -3208,7 +3446,9 @@
         "imklaunchagent",
         "audioclocksyncd",
         "folder-actions-dispatcher",
-        "script-menu-app"
+        "script-menu-app",
+        "automation-mode-ui",
+        "automation-mode-writer"
       ]
     },
     {
@@ -3220,7 +3460,10 @@
     {
       "id": "automount",
       "services": [
-        "autofsd"
+        "autofsd",
+        "filesystems-fskitd",
+        "fskit-agent",
+        "fskit-helper"
       ]
     },
     {
@@ -3233,6 +3476,25 @@
       "id": "system-permission-popups",
       "services": [
         "user-notification-center-agent"
+      ]
+    },
+    {
+      "id": "apple-account-core",
+      "services": [
+        "appleaccountd",
+        "adid",
+        "akd-agent",
+        "akd-daemon"
+      ]
+    },
+    {
+      "id": "touch-bar",
+      "services": [
+        "now-playing-touch-ui",
+        "touchbarserver",
+        "controlstrip",
+        "spaces-touch-bar-agent",
+        "dfr-hud"
       ]
     }
   ],
@@ -3359,7 +3621,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 165,
-        "estimatedProcessReduction": 10
+        "estimatedProcessReduction": 12
       },
       "order": 200
     },
@@ -3415,7 +3677,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 144,
-        "estimatedProcessReduction": 12
+        "estimatedProcessReduction": 14
       },
       "order": 100
     },
@@ -3622,18 +3884,18 @@
     {
       "id": "media-stores",
       "categoryID": "icloud-store",
-      "title": "Music & Books Cloud",
-      "question": "Do you use Apple Music, iTunes cloud, or Books library sync?",
-      "description": "Background media store cloud daemons for Music and Books.",
-      "disableGuidance": "Disable this if you do not use Apple media store cloud libraries on this Mac.",
+      "title": "Apple Media Services",
+      "question": "Do you use Apple Music, Books, Shazam, hardware media keys, or Now Playing?",
+      "description": "Provides Apple Music and Books libraries, Shazam recognition, artwork and device agents, and system MediaRemote controls.",
+      "disableGuidance": "Disable this if this Mac does not use Apple media apps, music recognition, hardware media keys, headset playback controls, or Now Playing.",
       "systemImage": "music.note.list",
       "defaultEnabled": true,
       "disableServiceGroups": [
         "media-stores"
       ],
       "impact": {
-        "estimatedMemoryMB": 22,
-        "estimatedProcessReduction": 3
+        "estimatedMemoryMB": 34,
+        "estimatedProcessReduction": 11
       },
       "order": 800
     },
@@ -3893,10 +4155,10 @@
     {
       "id": "quick-note",
       "categoryID": "apple-apps",
-      "title": "Quick Note",
-      "question": "Do you use the Quick Note hot corner or linked-note indicators?",
-      "description": "The paper that slides in from a screen corner, plus the Synapse backlink indicator that appears when a page or file has a linked note.",
-      "disableGuidance": "Disable this if you do not use Quick Note, the Notes hot corner, or document backlink indicators. Notes.app itself still opens.",
+      "title": "Apple Notes & Quick Note",
+      "question": "Do you use Apple Notes, Quick Note, or Exchange Notes sync?",
+      "description": "Provides Quick Note UI, linked-note indicators, and Exchange-backed Apple Notes synchronization.",
+      "disableGuidance": "Disable this if you do not use Apple Notes, the Quick Note hot corner, document backlink indicators, or Exchange Notes sync.",
       "systemImage": "note.text",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -3904,7 +4166,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 36,
-        "estimatedProcessReduction": 2
+        "estimatedProcessReduction": 3
       },
       "order": 410
     },
@@ -4121,7 +4383,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 45,
-        "estimatedProcessReduction": 15
+        "estimatedProcessReduction": 19
       },
       "order": 200
     },
@@ -4236,10 +4498,10 @@
     {
       "id": "accessibility-overlays",
       "categoryID": "accessibility",
-      "title": "Accessibility Overlays",
-      "question": "Do you use Screen Zoom overlays or accessibility focus rings?",
-      "description": "Renders zoom lenses, focus rings, and related accessibility visuals.",
-      "disableGuidance": "Disable this if you do not use zoom overlays or high-contrast focus indicators. Keep enabled if Screen Zoom is required.",
+      "title": "VoiceOver & Accessibility Interface",
+      "question": "Do you use VoiceOver, Screen Zoom overlays, or accessibility focus rings?",
+      "description": "Provides the VoiceOver screen reader, zoom lenses, focus rings, and related accessibility visuals.",
+      "disableGuidance": "Disable this only if VoiceOver, Screen Zoom, motion tracking, and accessibility focus indicators are unused.",
       "systemImage": "plus.magnifyingglass",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -4247,7 +4509,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 78,
-        "estimatedProcessReduction": 3
+        "estimatedProcessReduction": 4
       },
       "order": 300
     },
@@ -4398,18 +4660,18 @@
     {
       "id": "automount",
       "categoryID": "system-network",
-      "title": "Network Automount",
-      "question": "Do you use transparent NFS or SMB automount under /net?",
-      "description": "Autofs daemon for automatic network share mounting.",
-      "disableGuidance": "Disable this if you mount shares manually in Finder. Manual SMB connections still work.",
+      "title": "File Systems & Automount",
+      "question": "Do you mount external, third-party, NFS, or SMB file systems?",
+      "description": "FSKit infrastructure for user-space file systems plus autofs network-share mounting.",
+      "disableGuidance": "Disable this only if external and third-party file systems and transparent NFS or SMB automount are unused.",
       "systemImage": "externaldrive.connected.to.line.below",
       "defaultEnabled": true,
       "disableServiceGroups": [
         "automount"
       ],
       "impact": {
-        "estimatedMemoryMB": 10,
-        "estimatedProcessReduction": 1
+        "estimatedMemoryMB": 26,
+        "estimatedProcessReduction": 4
       },
       "order": 900
     },
@@ -4434,10 +4696,10 @@
     {
       "id": "image-capture",
       "categoryID": "system-network",
-      "title": "Image Capture Discovery",
-      "question": "Auto-discover scanners and cameras for Image Capture?",
-      "description": "Image Capture device discovery daemon.",
-      "disableGuidance": "Disable this if scanners and PTP cameras are unused.",
+      "title": "Printing & Image Capture",
+      "question": "Do you print or auto-discover scanners and PTP cameras?",
+      "description": "PrintCore and Print UI helpers together with Image Capture device discovery.",
+      "disableGuidance": "Disable this if printers, scanners, and PTP cameras are unused.",
       "systemImage": "scanner",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -4445,7 +4707,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 15,
-        "estimatedProcessReduction": 1
+        "estimatedProcessReduction": 4
       },
       "order": 1100
     },
@@ -4470,10 +4732,10 @@
     {
       "id": "hardware-repair",
       "categoryID": "system-network",
-      "title": "Repair Diagnostics",
-      "question": "Keep hardware repair verification agents running?",
-      "description": "Repair diagnostics and related verification helpers.",
-      "disableGuidance": "Disable this on coding machines that do not need background repair checks.",
+      "title": "Repair & Reset Utilities",
+      "question": "Keep hardware repair verification and Erase All Content and Settings available?",
+      "description": "Repair diagnostics, verification helpers, and the privileged factory-reset helper.",
+      "disableGuidance": "Disable this only if background repair checks and Erase All Content and Settings are not needed.",
       "systemImage": "wrench.and.screwdriver",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -4481,7 +4743,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 20,
-        "estimatedProcessReduction": 3
+        "estimatedProcessReduction": 4
       },
       "order": 1300
     },
@@ -4614,10 +4876,10 @@
     {
       "id": "misc-trims",
       "categoryID": "system-network",
-      "title": "Legacy Maintenance Helpers",
-      "question": "Keep rarely used maintenance helpers such as warmd and IMK launch agent?",
-      "description": "Small legacy or low-value helpers validated as removable on coding targets.",
-      "disableGuidance": "Disable this for additional lean cleanup on coding machines.",
+      "title": "Legacy & Developer Helpers",
+      "question": "Keep legacy maintenance helpers or macOS Automation Mode services?",
+      "description": "Small legacy helpers and developer automation services validated as removable on coding targets.",
+      "disableGuidance": "Disable this for lean cleanup when Automation Mode and the legacy helpers are unused.",
       "systemImage": "wrench",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -4625,9 +4887,45 @@
       ],
       "impact": {
         "estimatedMemoryMB": 20,
-        "estimatedProcessReduction": 6
+        "estimatedProcessReduction": 8
       },
       "order": 2300
+    },
+    {
+      "id": "apple-account-core",
+      "categoryID": "icloud-store",
+      "title": "Apple Account Core",
+      "question": "Do you use an Apple Account, iCloud authentication, or Sign in with Apple?",
+      "description": "Core Apple Account and AuthKit services that manage account identity, authentication tokens, and device identity data.",
+      "disableGuidance": "Disable this only on a deliberately local-only Mac. Apple Account sign-in, iCloud authentication, Sign in with Apple, and services that depend on AuthKit may stop working.",
+      "systemImage": "person.crop.circle.badge.checkmark",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "apple-account-core"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 0,
+        "estimatedProcessReduction": 4
+      },
+      "order": 450
+    },
+    {
+      "id": "touch-bar",
+      "categoryID": "system-network",
+      "title": "Touch Bar",
+      "question": "Does this Mac have a Touch Bar that you use?",
+      "description": "Touch Bar server, Control Strip, app-space controls, Now Playing controls, and accessibility HUD services.",
+      "disableGuidance": "Disable this only on Macs without a Touch Bar, or when its interface is intentionally unused. Touch Bar controls and their accessibility overlay will stop working.",
+      "systemImage": "rectangle",
+      "defaultEnabled": true,
+      "disableServiceGroups": [
+        "touch-bar"
+      ],
+      "impact": {
+        "estimatedMemoryMB": 0,
+        "estimatedProcessReduction": 5
+      },
+      "order": 1700
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.08.26.2-27",
+  "catalogVersion": "2026.08.26.1-27",
   "serviceDisablePolicy": "cleanSweep",
   "compatibility": {
     "minimumMacOSMajor": 27,
@@ -3016,258 +3016,6 @@
       "kind": "agent",
       "plistPath": "/System/Cryptexes/App/System/Library/LaunchAgents/com.apple.webinspectord.plist",
       "disableMethod": "launchctl"
-    },
-    {
-      "id": "mlruntimed",
-      "label": "com.apple.mlruntimed",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mlruntimed.plist"
-    },
-    {
-      "id": "mlhostd",
-      "label": "com.apple.mlhostd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mlhostd.plist"
-    },
-    {
-      "id": "shazamd",
-      "label": "com.apple.shazamd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.shazamd.plist"
-    },
-    {
-      "id": "musicd",
-      "label": "com.apple.musicd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.musicd.plist"
-    },
-    {
-      "id": "mediaremoted",
-      "label": "com.apple.mediaremoted",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.mediaremoted.plist"
-    },
-    {
-      "id": "mediaremoteagent",
-      "label": "com.apple.mediaremoteagent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.mediaremoteagent.plist"
-    },
-    {
-      "id": "appleaccountd",
-      "label": "com.apple.appleaccountd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.appleaccountd.plist"
-    },
-    {
-      "id": "adid",
-      "label": "com.apple.adid",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.adid.plist"
-    },
-    {
-      "id": "akd-agent",
-      "label": "com.apple.akd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.akd.plist"
-    },
-    {
-      "id": "akd-daemon",
-      "label": "com.apple.akd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.akd.plist"
-    },
-    {
-      "id": "filesystems-fskitd",
-      "label": "com.apple.filesystems.fskitd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.filesystems.fskitd.plist"
-    },
-    {
-      "id": "fskit-agent",
-      "label": "com.apple.fskit.fskit_agent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.fskit.fskit_agent.plist"
-    },
-    {
-      "id": "fskit-helper",
-      "label": "com.apple.fskit.fskit_helper",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.fskit.fskit_helper.plist"
-    },
-    {
-      "id": "avatarsd",
-      "label": "com.apple.avatarsd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.avatarsd.plist"
-    },
-    {
-      "id": "stickersd",
-      "label": "com.apple.stickersd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.stickersd.plist"
-    },
-    {
-      "id": "diagnosticd",
-      "label": "com.apple.diagnosticd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.diagnosticd.plist"
-    },
-    {
-      "id": "diagnosticservicesd",
-      "label": "com.apple.diagnosticservicesd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.diagnosticservicesd.plist"
-    },
-    {
-      "id": "securityuploadd",
-      "label": "com.apple.securityuploadd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.securityuploadd.plist"
-    },
-    {
-      "id": "enhancedloggingd",
-      "label": "com.apple.enhancedloggingd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.enhancedloggingd.plist"
-    },
-    {
-      "id": "exchange-notesd",
-      "label": "com.apple.notes.exchangenotesd",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.notes.exchangenotesd.plist"
-    },
-    {
-      "id": "voiceover",
-      "label": "com.apple.VoiceOver",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.VoiceOver.plist"
-    },
-    {
-      "id": "erase-content-settings-helper",
-      "label": "com.apple.erasecontentsettingshelperd",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.erasecontentsettingshelperd.plist"
-    },
-    {
-      "id": "printtool-agent",
-      "label": "com.apple.printtool.agent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.printtool.agent.plist"
-    },
-    {
-      "id": "printtool-daemon",
-      "label": "com.apple.printtool.daemon",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.printtool.daemon.plist"
-    },
-    {
-      "id": "print-ui-tool-agent",
-      "label": "com.apple.printuitool.agent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.printuitool.agent.plist"
-    },
-    {
-      "id": "automation-mode-ui",
-      "label": "com.apple.dt.AutomationModeUI",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.dt.AutomationModeUI.plist"
-    },
-    {
-      "id": "automation-mode-writer",
-      "label": "com.apple.dt.automationmode-writer",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.dt.automationmode-writer.plist"
-    },
-    {
-      "id": "amp-artwork-agent",
-      "label": "com.apple.AMPArtworkAgent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AMPArtworkAgent.plist"
-    },
-    {
-      "id": "amp-devices-agent",
-      "label": "com.apple.AMPDevicesAgent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AMPDevicesAgent.plist"
-    },
-    {
-      "id": "amp-library-agent",
-      "label": "com.apple.AMPLibraryAgent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AMPLibraryAgent.plist"
-    },
-    {
-      "id": "amp-system-player-agent",
-      "label": "com.apple.AMPSystemPlayerAgent",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.AMPSystemPlayerAgent.plist"
-    },
-    {
-      "id": "now-playing-touch-ui",
-      "label": "com.apple.nowplayingtouchui",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.NowPlayingTouchUI.plist"
-    },
-    {
-      "id": "touchbarserver",
-      "label": "com.apple.touchbarserver",
-      "domain": "system",
-      "kind": "daemon",
-      "plistPath": "/System/Library/LaunchDaemons/com.apple.touchbarserver.plist"
-    },
-    {
-      "id": "controlstrip",
-      "label": "com.apple.controlstrip",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.controlstrip.plist"
-    },
-    {
-      "id": "spaces-touch-bar-agent",
-      "label": "com.apple.SpacesTouchBarAgent.app",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.SpacesTouchBarAgent.plist"
-    },
-    {
-      "id": "dfr-hud",
-      "label": "com.apple.accessibility.dfrhud",
-      "domain": "gui",
-      "kind": "agent",
-      "plistPath": "/System/Library/LaunchAgents/com.apple.accessibility.dfrhud.plist"
     }
   ],
   "serviceGroups": [
@@ -3381,8 +3129,7 @@
       "id": "accessibility-ui-overlays",
       "services": [
         "accessibility-visuals",
-        "motion-tracking-agent",
-        "voiceover"
+        "motion-tracking-agent"
       ]
     },
     {
@@ -3403,9 +3150,7 @@
         "intelligencetasksd",
         "generative-functions-agentstored",
         "visualintelligenced",
-        "privatecloudcomputed",
-        "mlruntimed",
-        "mlhostd"
+        "privatecloudcomputed"
       ]
     },
     {
@@ -3473,11 +3218,7 @@
         "spindump",
         "spindump-agent",
         "loginwindow-weekly-message-tracer",
-        "signpost-reporter",
-        "diagnosticd",
-        "diagnosticservicesd",
-        "securityuploadd",
-        "enhancedloggingd"
+        "signpost-reporter"
       ]
     },
     {
@@ -3503,9 +3244,7 @@
         "callhistory-plugin",
         "screensharing-messages",
         "im-auto-history-deletion",
-        "businessservicesd",
-        "avatarsd",
-        "stickersd"
+        "businessservicesd"
       ]
     },
     {
@@ -3616,8 +3355,7 @@
       "id": "quick-note",
       "services": [
         "linkednotes-uiservice",
-        "synapse-contentlinkingd",
-        "exchange-notesd"
+        "synapse-contentlinkingd"
       ]
     },
     {
@@ -3769,15 +3507,7 @@
       "services": [
         "itunescloudd",
         "bookdatastored",
-        "bookassetd",
-        "shazamd",
-        "musicd",
-        "mediaremoted",
-        "mediaremoteagent",
-        "amp-artwork-agent",
-        "amp-devices-agent",
-        "amp-library-agent",
-        "amp-system-player-agent"
+        "bookassetd"
       ]
     },
     {
@@ -3952,10 +3682,7 @@
     {
       "id": "image-capture",
       "services": [
-        "icdd",
-        "printtool-agent",
-        "printtool-daemon",
-        "print-ui-tool-agent"
+        "icdd"
       ]
     },
     {
@@ -4025,8 +3752,7 @@
       "services": [
         "corerepaird",
         "mobilerepaird",
-        "csc-supportd",
-        "erase-content-settings-helper"
+        "csc-supportd"
       ]
     },
     {
@@ -4102,9 +3828,7 @@
         "imklaunchagent",
         "audioclocksyncd",
         "folder-actions-dispatcher",
-        "script-menu-app",
-        "automation-mode-ui",
-        "automation-mode-writer"
+        "script-menu-app"
       ]
     },
     {
@@ -4135,10 +3859,7 @@
     {
       "id": "automount",
       "services": [
-        "autofsd",
-        "filesystems-fskitd",
-        "fskit-agent",
-        "fskit-helper"
+        "autofsd"
       ]
     },
     {
@@ -4151,25 +3872,6 @@
       "id": "system-permission-popups",
       "services": [
         "user-notification-center-agent"
-      ]
-    },
-    {
-      "id": "apple-account-core",
-      "services": [
-        "appleaccountd",
-        "adid",
-        "akd-agent",
-        "akd-daemon"
-      ]
-    },
-    {
-      "id": "touch-bar",
-      "services": [
-        "now-playing-touch-ui",
-        "touchbarserver",
-        "controlstrip",
-        "spaces-touch-bar-agent",
-        "dfr-hud"
       ]
     }
   ],
@@ -4314,7 +4016,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 229,
-        "estimatedProcessReduction": 16
+        "estimatedProcessReduction": 14
       },
       "order": 200
     },
@@ -4370,7 +4072,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 144,
-        "estimatedProcessReduction": 14
+        "estimatedProcessReduction": 12
       },
       "order": 100
     },
@@ -4595,18 +4297,18 @@
     {
       "id": "media-stores",
       "categoryID": "icloud-store",
-      "title": "Apple Media Services",
-      "question": "Do you use Apple Music, Books, Shazam, hardware media keys, or Now Playing?",
-      "description": "Provides Apple Music and Books libraries, Shazam recognition, artwork and device agents, and system MediaRemote controls.",
-      "disableGuidance": "Disable this if this Mac does not use Apple media apps, music recognition, hardware media keys, headset playback controls, or Now Playing.",
+      "title": "Music & Books Cloud",
+      "question": "Do you use Apple Music, iTunes cloud, or Books library sync?",
+      "description": "Background media store cloud daemons for Music and Books.",
+      "disableGuidance": "Disable this if you do not use Apple media store cloud libraries on this Mac.",
       "systemImage": "music.note.list",
       "defaultEnabled": true,
       "disableServiceGroups": [
         "media-stores"
       ],
       "impact": {
-        "estimatedMemoryMB": 34,
-        "estimatedProcessReduction": 11
+        "estimatedMemoryMB": 22,
+        "estimatedProcessReduction": 3
       },
       "order": 800
     },
@@ -4866,10 +4568,10 @@
     {
       "id": "quick-note",
       "categoryID": "apple-apps",
-      "title": "Apple Notes & Quick Note",
-      "question": "Do you use Apple Notes, Quick Note, or Exchange Notes sync?",
-      "description": "Provides Quick Note UI, linked-note indicators, and Exchange-backed Apple Notes synchronization.",
-      "disableGuidance": "Disable this if you do not use Apple Notes, the Quick Note hot corner, document backlink indicators, or Exchange Notes sync.",
+      "title": "Quick Note",
+      "question": "Do you use the Quick Note hot corner or linked-note indicators?",
+      "description": "The paper that slides in from a screen corner, plus the Synapse backlink indicator that appears when a page or file has a linked note.",
+      "disableGuidance": "Disable this if you do not use Quick Note, the Notes hot corner, or document backlink indicators. Notes.app itself still opens.",
       "systemImage": "note.text",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -4877,7 +4579,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 36,
-        "estimatedProcessReduction": 3
+        "estimatedProcessReduction": 2
       },
       "order": 410
     },
@@ -5094,7 +4796,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 45,
-        "estimatedProcessReduction": 19
+        "estimatedProcessReduction": 15
       },
       "order": 200
     },
@@ -5209,10 +4911,10 @@
     {
       "id": "accessibility-overlays",
       "categoryID": "accessibility",
-      "title": "VoiceOver & Accessibility Interface",
-      "question": "Do you use VoiceOver, Screen Zoom overlays, or accessibility focus rings?",
-      "description": "Provides the VoiceOver screen reader, zoom lenses, focus rings, and related accessibility visuals.",
-      "disableGuidance": "Disable this only if VoiceOver, Screen Zoom, motion tracking, and accessibility focus indicators are unused.",
+      "title": "Accessibility Overlays",
+      "question": "Do you use Screen Zoom overlays or accessibility focus rings?",
+      "description": "Renders zoom lenses, focus rings, and related accessibility visuals.",
+      "disableGuidance": "Disable this if you do not use zoom overlays or high-contrast focus indicators. Keep enabled if Screen Zoom is required.",
       "systemImage": "plus.magnifyingglass",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -5220,7 +4922,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 78,
-        "estimatedProcessReduction": 4
+        "estimatedProcessReduction": 3
       },
       "order": 300
     },
@@ -5371,18 +5073,18 @@
     {
       "id": "automount",
       "categoryID": "system-network",
-      "title": "File Systems & Automount",
-      "question": "Do you mount external, third-party, NFS, or SMB file systems?",
-      "description": "FSKit infrastructure for user-space file systems plus autofs network-share mounting.",
-      "disableGuidance": "Disable this only if external and third-party file systems and transparent NFS or SMB automount are unused.",
+      "title": "Network Automount",
+      "question": "Do you use transparent NFS or SMB automount under /net?",
+      "description": "Autofs daemon for automatic network share mounting.",
+      "disableGuidance": "Disable this if you mount shares manually in Finder. Manual SMB connections still work.",
       "systemImage": "externaldrive.connected.to.line.below",
       "defaultEnabled": true,
       "disableServiceGroups": [
         "automount"
       ],
       "impact": {
-        "estimatedMemoryMB": 26,
-        "estimatedProcessReduction": 4
+        "estimatedMemoryMB": 10,
+        "estimatedProcessReduction": 1
       },
       "order": 900
     },
@@ -5407,10 +5109,10 @@
     {
       "id": "image-capture",
       "categoryID": "system-network",
-      "title": "Printing & Image Capture",
-      "question": "Do you print or auto-discover scanners and PTP cameras?",
-      "description": "PrintCore and Print UI helpers together with Image Capture device discovery.",
-      "disableGuidance": "Disable this if printers, scanners, and PTP cameras are unused.",
+      "title": "Image Capture Discovery",
+      "question": "Auto-discover scanners and cameras for Image Capture?",
+      "description": "Image Capture device discovery daemon.",
+      "disableGuidance": "Disable this if scanners and PTP cameras are unused.",
       "systemImage": "scanner",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -5418,7 +5120,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 15,
-        "estimatedProcessReduction": 4
+        "estimatedProcessReduction": 1
       },
       "order": 1100
     },
@@ -5443,10 +5145,10 @@
     {
       "id": "hardware-repair",
       "categoryID": "system-network",
-      "title": "Repair & Reset Utilities",
-      "question": "Keep hardware repair verification and Erase All Content and Settings available?",
-      "description": "Repair diagnostics, verification helpers, and the privileged factory-reset helper.",
-      "disableGuidance": "Disable this only if background repair checks and Erase All Content and Settings are not needed.",
+      "title": "Repair Diagnostics",
+      "question": "Keep hardware repair verification agents running?",
+      "description": "Repair diagnostics and related verification helpers.",
+      "disableGuidance": "Disable this on coding machines that do not need background repair checks.",
       "systemImage": "wrench.and.screwdriver",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -5454,7 +5156,7 @@
       ],
       "impact": {
         "estimatedMemoryMB": 20,
-        "estimatedProcessReduction": 4
+        "estimatedProcessReduction": 3
       },
       "order": 1300
     },
@@ -5623,10 +5325,10 @@
     {
       "id": "misc-trims",
       "categoryID": "system-network",
-      "title": "Legacy & Developer Helpers",
-      "question": "Keep legacy maintenance helpers or macOS Automation Mode services?",
-      "description": "Small legacy helpers and developer automation services validated as removable on coding targets.",
-      "disableGuidance": "Disable this for lean cleanup when Automation Mode and the legacy helpers are unused.",
+      "title": "Legacy Maintenance Helpers",
+      "question": "Keep rarely used maintenance helpers such as warmd and IMK launch agent?",
+      "description": "Small legacy or low-value helpers validated as removable on coding targets.",
+      "disableGuidance": "Disable this for additional lean cleanup on coding machines.",
       "systemImage": "wrench",
       "defaultEnabled": true,
       "disableServiceGroups": [
@@ -5634,45 +5336,9 @@
       ],
       "impact": {
         "estimatedMemoryMB": 20,
-        "estimatedProcessReduction": 8
+        "estimatedProcessReduction": 6
       },
       "order": 2300
-    },
-    {
-      "id": "apple-account-core",
-      "categoryID": "icloud-store",
-      "title": "Apple Account Core",
-      "question": "Do you use an Apple Account, iCloud authentication, or Sign in with Apple?",
-      "description": "Core Apple Account and AuthKit services that manage account identity, authentication tokens, and device identity data.",
-      "disableGuidance": "Disable this only on a deliberately local-only Mac. Apple Account sign-in, iCloud authentication, Sign in with Apple, and services that depend on AuthKit may stop working.",
-      "systemImage": "person.crop.circle.badge.checkmark",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "apple-account-core"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 0,
-        "estimatedProcessReduction": 4
-      },
-      "order": 450
-    },
-    {
-      "id": "touch-bar",
-      "categoryID": "system-network",
-      "title": "Touch Bar",
-      "question": "Does this Mac have a Touch Bar that you use?",
-      "description": "Touch Bar server, Control Strip, app-space controls, Now Playing controls, and accessibility HUD services.",
-      "disableGuidance": "Disable this only on Macs without a Touch Bar, or when its interface is intentionally unused. Touch Bar controls and their accessibility overlay will stop working.",
-      "systemImage": "rectangle",
-      "defaultEnabled": true,
-      "disableServiceGroups": [
-        "touch-bar"
-      ],
-      "impact": {
-        "estimatedMemoryMB": 0,
-        "estimatedProcessReduction": 5
-      },
-      "order": 1700
     }
   ]
 }
