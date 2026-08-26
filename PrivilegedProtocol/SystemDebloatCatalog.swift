@@ -62,6 +62,8 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
 enum SystemDebloatCatalog {
   private static let assetsRoot = "/System/Library/AssetsV2"
   private static let dataAssetsRoot = "/System/Volumes/Data/System/Library/AssetsV2"
+  private static let spatialPhotosManifestPath = dataAssetsRoot
+    + "/manifests/com_apple_MobileAsset_UAF_Photos_SpatialPhotosRelive"
   private static let anedCachePath = "/Library/Caches/com.apple.aned"
   private static let aerialsPath = "~/Library/Application Support/com.apple.wallpaper/aerials"
   private static let personalIntelligencePaths: Set<String> = [
@@ -113,6 +115,17 @@ enum SystemDebloatCatalog {
       paths: assetPaths([
         "com_apple_MobileAsset_UAF_Photos_MagicCleanup"
       ])
+    ),
+    SystemDebloatComponent(
+      id: "spatial-photos-models",
+      title: "Spatial Photos Models",
+      summary: "Downloaded machine-learning assets used to relive and process spatial photos.",
+      consequence: "Spatial Photos processing may be unavailable until macOS downloads the models again.",
+      systemImage: "photo.stack",
+      category: .intelligence,
+      paths: dataAssetPaths([
+        "com_apple_MobileAsset_UAF_Photos_SpatialPhotosRelive"
+      ]) + [spatialPhotosManifestPath]
     ),
     SystemDebloatComponent(
       id: "siri-offline-models",
@@ -167,6 +180,8 @@ enum SystemDebloatCatalog {
       category: .languageAndSpeech,
       paths: assetPaths([
         "com_apple_MobileAsset_UAF_Translation_MMAssets"
+      ]) + dataAssetPaths([
+        "com_apple_MobileAsset_UAF_Translation_Assets"
       ])
     ),
     SystemDebloatComponent(
@@ -178,6 +193,8 @@ enum SystemDebloatCatalog {
       category: .languageAndSpeech,
       paths: assetPaths([
         "com_apple_MobileAsset_LinguisticData"
+      ]) + dataAssetPaths([
+        "com_apple_MobileAsset_UAF_LinguisticData"
       ])
     ),
     SystemDebloatComponent(
@@ -218,6 +235,17 @@ enum SystemDebloatCatalog {
         "com_apple_MobileAsset_UAF_SearchQueryUnderstandingOverrides",
         "com_apple_MobileAsset_CoreSuggestionsModels",
         "com_apple_MobileAsset_SpotlightResources",
+      ])
+    ),
+    SystemDebloatComponent(
+      id: "shortcuts-generator-model",
+      title: "Shortcuts Generator Model",
+      summary: "Downloaded generative model assets used to create and suggest shortcuts.",
+      consequence: "Shortcuts generation and intelligent suggestions may be unavailable until the model is downloaded again.",
+      systemImage: "wand.and.stars",
+      category: .intelligence,
+      paths: dataAssetPaths([
+        "com_apple_MobileAsset_UAF_Shortcuts_Generator"
       ])
     ),
     SystemDebloatComponent(
@@ -305,6 +333,11 @@ enum SystemDebloatCatalog {
     let standardizedPath = URL(fileURLWithPath: path).standardizedFileURL.path
     switch component.removalBehavior {
     case .removeDirectory:
+      if component.id == "spatial-photos-models",
+        standardizedPath == spatialPhotosManifestPath
+      {
+        return true
+      }
       return isDirectChild(standardizedPath, of: assetsRoot)
         || isDirectChild(standardizedPath, of: dataAssetsRoot)
     case .removeContents, .removeVolatileContents:
