@@ -25,57 +25,15 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
     }
   }
 
-  enum Group: String, CaseIterable, Sendable {
-    case appleIntelligence
-    case siri
-    case photosIntelligence
-    case searchAndSuggestions
-    case speechInput
-    case languageTools
-    case accessibilityVoices
-    case searchIndexes
-    case photosAnalysis
-    case siriPersonalData
-    case recommendationsAndActivity
-    case systemDownloads
-    case developerContent
-    case wallpapers
-    case rebuildableCaches
-    case diagnostics
-    case appleSystemData
-
-    var title: String {
-      switch self {
-      case .appleIntelligence: "Apple Intelligence"
-      case .siri: "Siri"
-      case .photosIntelligence: "Photos Intelligence"
-      case .searchAndSuggestions: "Search & Suggestions"
-      case .speechInput: "Speech Input"
-      case .languageTools: "Language Tools"
-      case .accessibilityVoices: "Accessibility Voices"
-      case .searchIndexes: "Search Indexes"
-      case .photosAnalysis: "Photos Analysis"
-      case .siriPersonalData: "Siri Personal Data"
-      case .recommendationsAndActivity: "Recommendations & Activity"
-      case .systemDownloads: "System Downloads"
-      case .developerContent: "Developer Content"
-      case .wallpapers: "Wallpapers"
-      case .rebuildableCaches: "Rebuildable Caches"
-      case .diagnostics: "Diagnostics"
-      case .appleSystemData: "Apple System Data"
-      }
-    }
-  }
-
   let id: String
   let title: String
   let summary: String
   let consequence: String
   let systemImage: String
   let category: Category
-  let group: Group
   let paths: [String]
   let removalBehavior: RemovalBehavior
+  let removalBehaviorOverrides: [String: RemovalBehavior]
 
   init(
     id: String,
@@ -84,9 +42,9 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
     consequence: String,
     systemImage: String,
     category: Category,
-    group: Group,
     paths: [String],
-    removalBehavior: RemovalBehavior = .removeDirectory
+    removalBehavior: RemovalBehavior = .removeDirectory,
+    removalBehaviorOverrides: [String: RemovalBehavior] = [:]
   ) {
     self.id = id
     self.title = title
@@ -94,9 +52,9 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
     self.consequence = consequence
     self.systemImage = systemImage
     self.category = category
-    self.group = group
     self.paths = paths
     self.removalBehavior = removalBehavior
+    self.removalBehaviorOverrides = removalBehaviorOverrides
   }
 }
 
@@ -139,7 +97,6 @@ enum SystemDebloatCatalog {
       consequence: "Apple Intelligence and Writing Tools will stop working until macOS downloads the models again.",
       systemImage: "apple.intelligence",
       category: .aiAndSmartFeatures,
-      group: .appleIntelligence,
       paths: assetPaths([
         "com_apple_MobileAsset_UAF_FM_GenerativeModels",
         "com_apple_MobileAsset_UAF_FM_Visual",
@@ -151,28 +108,18 @@ enum SystemDebloatCatalog {
       ])
     ),
     SystemDebloatComponent(
-      id: "photos-clean-up-models",
-      title: "Photos Clean Up Models",
-      summary: "Machine-learning assets used to remove objects from photos.",
-      consequence: "Clean Up in Photos will be unavailable until its models are downloaded again.",
-      systemImage: "photo",
-      category: .aiAndSmartFeatures,
-      group: .photosIntelligence,
-      paths: assetPaths([
-        "com_apple_MobileAsset_UAF_Photos_MagicCleanup"
-      ])
-    ),
-    SystemDebloatComponent(
-      id: "spatial-photos-models",
-      title: "Spatial Photos Models",
-      summary: "Downloaded machine-learning assets used to relive and process spatial photos.",
-      consequence: "Spatial Photos processing may be unavailable until macOS downloads the models again.",
+      id: "photos-intelligence-and-analysis-data",
+      title: "Photos Intelligence & Analysis Data",
+      summary: "Clean Up and Spatial Photos models, plus on-device photo library analysis data.",
+      consequence: "Clean Up and Spatial Photos will need their models again, and Photos may reanalyze faces, scenes, and media.",
       systemImage: "photo.stack",
       category: .aiAndSmartFeatures,
-      group: .photosIntelligence,
-      paths: dataAssetPaths([
+      paths: assetPaths([
+        "com_apple_MobileAsset_UAF_Photos_MagicCleanup"
+      ]) + dataAssetPaths([
         "com_apple_MobileAsset_UAF_Photos_SpatialPhotosRelive"
-      ]) + [spatialPhotosManifestPath]
+      ]) + [spatialPhotosManifestPath, photosAnalysisPath],
+      removalBehaviorOverrides: [photosAnalysisPath: .removeVolatileContents]
     ),
     SystemDebloatComponent(
       id: "siri-offline-models",
@@ -181,7 +128,6 @@ enum SystemDebloatCatalog {
       consequence: "Siri may lose offline features or become unavailable until macOS restores these assets.",
       systemImage: "waveform",
       category: .aiAndSmartFeatures,
-      group: .siri,
       paths: assetPaths([
         "com_apple_MobileAsset_UAF_Siri_Understanding",
         "com_apple_MobileAsset_UAF_Siri_UnderstandingASRHammer",
@@ -199,7 +145,6 @@ enum SystemDebloatCatalog {
       consequence: "Remove these assets only if you do not use Siri; voice activation and recognition may stop working until macOS downloads them again.",
       systemImage: "waveform.badge.mic",
       category: .aiAndSmartFeatures,
-      group: .siri,
       paths: dataAssetPaths([
         "com_apple_MobileAsset_VoiceTriggerAssetsASMac",
         "com_apple_MobileAsset_VoiceTriggerAssets",
@@ -216,7 +161,6 @@ enum SystemDebloatCatalog {
       consequence: "Offline Dictation and other speech-to-text features may stop working until redownloaded.",
       systemImage: "mic",
       category: .languageSpeechAndAccessibility,
-      group: .speechInput,
       paths: assetPaths([
         "com_apple_MobileAsset_UAF_Speech_AutomaticSpeechRecognition"
       ])
@@ -228,7 +172,6 @@ enum SystemDebloatCatalog {
       consequence: "Offline translation will be unavailable for removed languages until downloaded again.",
       systemImage: "translate",
       category: .languageSpeechAndAccessibility,
-      group: .languageTools,
       paths: assetPaths([
         "com_apple_MobileAsset_UAF_Translation_MMAssets"
       ]) + dataAssetPaths([
@@ -242,7 +185,6 @@ enum SystemDebloatCatalog {
       consequence: "Typing suggestions, spelling, and language-aware features may be reduced until restored.",
       systemImage: "character.book.closed",
       category: .languageSpeechAndAccessibility,
-      group: .languageTools,
       paths: assetPaths([
         "com_apple_MobileAsset_LinguisticData"
       ]) + dataAssetPaths([
@@ -256,7 +198,6 @@ enum SystemDebloatCatalog {
       consequence: "VoiceOver and spoken-content voices may be unavailable until macOS downloads them again.",
       systemImage: "accessibility",
       category: .languageSpeechAndAccessibility,
-      group: .accessibilityVoices,
       paths: assetPaths([
         "com_apple_MobileAsset_TTSAXResourceModelAssets",
         "com_apple_MobileAsset_VoiceServices_CombinedVocalizerVoices",
@@ -271,7 +212,6 @@ enum SystemDebloatCatalog {
       consequence: "Dictionary definitions may be missing until macOS downloads the assets again.",
       systemImage: "books.vertical",
       category: .languageSpeechAndAccessibility,
-      group: .languageTools,
       paths: assetPaths([
         "com_apple_MobileAsset_DictionaryServices_dictionary3macOS"
       ])
@@ -282,8 +222,7 @@ enum SystemDebloatCatalog {
       summary: "Downloaded query-understanding, suggestion, and Spotlight resource models.",
       consequence: "Spotlight and Siri suggestions may be reduced until macOS downloads these assets again.",
       systemImage: "magnifyingglass.circle",
-      category: .aiAndSmartFeatures,
-      group: .searchAndSuggestions,
+      category: .searchIndexesAndPersonalization,
       paths: dataAssetPaths([
         "com_apple_MobileAsset_UAF_SearchQueryUnderstanding",
         "com_apple_MobileAsset_CoreSuggestions",
@@ -299,7 +238,6 @@ enum SystemDebloatCatalog {
       consequence: "Shortcuts generation and intelligent suggestions may be unavailable until the model is downloaded again.",
       systemImage: "wand.and.stars",
       category: .aiAndSmartFeatures,
-      group: .appleIntelligence,
       paths: dataAssetPaths([
         "com_apple_MobileAsset_UAF_Shortcuts_Generator"
       ])
@@ -311,7 +249,6 @@ enum SystemDebloatCatalog {
       consequence: "macOS will recompile neural graphs as affected intelligence features are used again.",
       systemImage: "cpu",
       category: .cachesLogsAndMaintenance,
-      group: .rebuildableCaches,
       paths: [anedCachePath],
       removalBehavior: .removeContents
     ),
@@ -322,7 +259,6 @@ enum SystemDebloatCatalog {
       consequence: "Spotlight results may be incomplete while macOS rebuilds the user index.",
       systemImage: "magnifyingglass",
       category: .searchIndexesAndPersonalization,
-      group: .searchIndexes,
       paths: [spotlightUserIndexPath],
       removalBehavior: .removeVolatileContents
     ),
@@ -333,40 +269,26 @@ enum SystemDebloatCatalog {
       consequence: "System search results may be incomplete while macOS rebuilds the index.",
       systemImage: "internaldrive",
       category: .searchIndexesAndPersonalization,
-      group: .searchIndexes,
       paths: [spotlightSystemIndexPath],
       removalBehavior: .removeVolatileContents
     ),
     SystemDebloatComponent(
-      id: "photos-analysis-data",
-      title: "Photos Analysis Data",
-      summary: "On-device media analysis data generated for the current user's photo library.",
-      consequence: "Photos may reanalyze faces, scenes, and media after this data is removed.",
-      systemImage: "photo.on.rectangle",
-      category: .searchIndexesAndPersonalization,
-      group: .photosAnalysis,
-      paths: [photosAnalysisPath],
-      removalBehavior: .removeVolatileContents
-    ),
-    SystemDebloatComponent(
       id: "siri-personal-data",
-      title: "Siri Voice Data",
+      title: "Downloaded Siri Voices",
       summary: "Downloaded Siri speech and text-to-speech data stored for the current user.",
       consequence: "Siri voices may be unavailable until macOS downloads their data again.",
       systemImage: "waveform",
-      category: .searchIndexesAndPersonalization,
-      group: .siriPersonalData,
+      category: .aiAndSmartFeatures,
       paths: [siriPersonalDataPath],
       removalBehavior: .removeVolatileContents
     ),
     SystemDebloatComponent(
       id: "personal-suggestions-activity-data",
-      title: "Personal Suggestions & Activity Data",
+      title: "Suggestions & Activity Data",
       summary: "Duet and Biome activity data used for personalized suggestions and predictions.",
       consequence: "Personalized suggestions and learned activity patterns may be temporarily reset.",
       systemImage: "person.crop.circle.badge.sparkles",
       category: .searchIndexesAndPersonalization,
-      group: .recommendationsAndActivity,
       paths: Array(recommendationsAndActivityPaths).sorted(),
       removalBehavior: .removeVolatileContents
     ),
@@ -377,7 +299,6 @@ enum SystemDebloatCatalog {
       consequence: "Historical diagnostics, reports, analytics, and statistics will be discarded.",
       systemImage: "waveform.path.ecg",
       category: .cachesLogsAndMaintenance,
-      group: .diagnostics,
       paths: Array(logAndAnalyticsPaths).sorted(),
       removalBehavior: .removeVolatileContents
     ),
@@ -388,7 +309,6 @@ enum SystemDebloatCatalog {
       consequence: "macOS may recreate or download experiment assignments and supporting data.",
       systemImage: "testtube.2",
       category: .cachesLogsAndMaintenance,
-      group: .appleSystemData,
       paths: [trialDataPath],
       removalBehavior: .removeVolatileContents
     ),
@@ -399,7 +319,6 @@ enum SystemDebloatCatalog {
       consequence: "Affected Simulator devices will not boot until Xcode downloads their runtimes again.",
       systemImage: "iphone.gen3",
       category: .downloadedContent,
-      group: .developerContent,
       paths: assetPaths([
         "com_apple_MobileAsset_iOSSimulatorRuntime"
       ])
@@ -411,7 +330,6 @@ enum SystemDebloatCatalog {
       consequence: "macOS may need to download the update data again before installing an update.",
       systemImage: "arrow.down.circle",
       category: .downloadedContent,
-      group: .systemDownloads,
       paths: Array(preloadedUpdatePaths).sorted(),
       removalBehavior: .removeContents
     ),
@@ -422,7 +340,6 @@ enum SystemDebloatCatalog {
       consequence: "Removed wallpapers will need to be downloaded again before they can be used.",
       systemImage: "photo.on.rectangle.angled",
       category: .downloadedContent,
-      group: .wallpapers,
       paths: [aerialsPath],
       removalBehavior: .removeContents
     ),
@@ -433,7 +350,6 @@ enum SystemDebloatCatalog {
       consequence: "Icons may appear slowly or temporarily blank while macOS rebuilds the cache.",
       systemImage: "app.dashed",
       category: .cachesLogsAndMaintenance,
-      group: .rebuildableCaches,
       paths: [iconCachePath],
       removalBehavior: .removeVolatileContents
     ),
@@ -459,9 +375,9 @@ enum SystemDebloatCatalog {
     homeDirectory: URL
   ) -> Bool {
     let standardizedPath = URL(fileURLWithPath: path).standardizedFileURL.path
-    switch component.removalBehavior {
+    switch removalBehavior(for: path, in: component, homeDirectory: homeDirectory) {
     case .removeDirectory:
-      if component.id == "spatial-photos-models",
+      if component.id == "photos-intelligence-and-analysis-data",
         standardizedPath == spatialPhotosManifestPath
       {
         return true
@@ -488,18 +404,18 @@ enum SystemDebloatCatalog {
       if component.id == "apple-feature-experiment-data" {
         return standardizedPath == trialDataPath
       }
+      if component.id == "photos-intelligence-and-analysis-data" {
+        return standardizedPath == resolvedUserPath(
+          photosAnalysisPath,
+          homeDirectory: homeDirectory
+        )
+      }
       if component.id == "spotlight-system-index" {
         return standardizedPath == spotlightSystemIndexPath
       }
       if component.id == "spotlight-user-index" {
         return standardizedPath == resolvedUserPath(
           spotlightUserIndexPath,
-          homeDirectory: homeDirectory
-        )
-      }
-      if component.id == "photos-analysis-data" {
-        return standardizedPath == resolvedUserPath(
-          photosAnalysisPath,
           homeDirectory: homeDirectory
         )
       }
@@ -517,6 +433,23 @@ enum SystemDebloatCatalog {
       }
       return false
     }
+  }
+
+  static func removalBehavior(
+    for path: String,
+    in component: SystemDebloatComponent,
+    homeDirectory: URL
+  ) -> SystemDebloatComponent.RemovalBehavior {
+    let standardizedPath = URL(fileURLWithPath: path).standardizedFileURL.path
+    for (catalogPath, behavior) in component.removalBehaviorOverrides {
+      let resolvedOverridePath = catalogPath.hasPrefix("~/")
+        ? resolvedUserPath(catalogPath, homeDirectory: homeDirectory)
+        : catalogPath
+      if standardizedPath == URL(fileURLWithPath: resolvedOverridePath).standardizedFileURL.path {
+        return behavior
+      }
+    }
+    return component.removalBehavior
   }
 
   private static func assetPaths(_ directoryNames: [String]) -> [String] {

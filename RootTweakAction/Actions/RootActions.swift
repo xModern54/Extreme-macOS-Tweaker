@@ -426,24 +426,40 @@ enum RootActions {
       )
     }
 
-    let existingRootPaths = componentPaths.filter {
-      FileManager.default.fileExists(atPath: $0)
+    let existingRootPaths = componentPaths.compactMap { path -> (
+      path: String,
+      behavior: SystemDebloatComponent.RemovalBehavior
+    )? in
+      guard FileManager.default.fileExists(atPath: path) else { return nil }
+      return (
+        path,
+        SystemDebloatCatalog.removalBehavior(
+          for: path,
+          in: component,
+          homeDirectory: userHomeDirectory
+        )
+      )
     }
-    let removalTargets = try componentPaths.flatMap { path -> [String] in
-      guard FileManager.default.fileExists(atPath: path) else { return [] }
-      switch component.removalBehavior {
+    let removalTargets = try existingRootPaths.flatMap { root -> [(
+      path: String,
+      behavior: SystemDebloatComponent.RemovalBehavior
+    )] in
+      switch root.behavior {
       case .removeDirectory:
-        return [path]
+        return [root]
       case .removeContents, .removeVolatileContents:
-        let attributes = try FileManager.default.attributesOfItem(atPath: path)
+        let attributes = try FileManager.default.attributesOfItem(atPath: root.path)
         guard attributes[.type] as? FileAttributeType != .typeSymbolicLink else {
           throw RootActionError.operationFailed(
             code: "unsafe_component_path",
             message: "A cleanup directory cannot be a symbolic link."
           )
         }
-        return try FileManager.default.contentsOfDirectory(atPath: path).map {
-          URL(fileURLWithPath: path, isDirectory: true).appendingPathComponent($0).path
+        return try FileManager.default.contentsOfDirectory(atPath: root.path).map {
+          (
+            URL(fileURLWithPath: root.path, isDirectory: true).appendingPathComponent($0).path,
+            root.behavior
+          )
         }
       }
     }
@@ -455,13 +471,16 @@ enum RootActions {
       )
     }
 
-    for (index, path) in removalTargets.enumerated() {
+    for (index, target) in removalTargets.enumerated() {
       let fraction = 0.15 + 0.7 * Double(index) / Double(max(removalTargets.count, 1))
-      context.events.progress(fraction, "Removing \(URL(fileURLWithPath: path).lastPathComponent)")
-      _ = try context.commands.requireSuccess("/bin/rm", ["-rf", "--", path])
+      context.events.progress(
+        fraction,
+        "Removing \(URL(fileURLWithPath: target.path).lastPathComponent)"
+      )
+      _ = try context.commands.requireSuccess("/bin/rm", ["-rf", "--", target.path])
       guard
-        component.removalBehavior == .removeVolatileContents
-          || !FileManager.default.fileExists(atPath: path)
+        target.behavior == .removeVolatileContents
+          || !FileManager.default.fileExists(atPath: target.path)
       else {
         throw RootActionError.operationFailed(
           code: "deletion_verification_failed",
@@ -470,22 +489,20 @@ enum RootActions {
       }
     }
 
-    if component.removalBehavior == .removeContents {
-      for path in existingRootPaths {
-        guard
-          FileManager.default.fileExists(atPath: path),
-          try FileManager.default.contentsOfDirectory(atPath: path).isEmpty
-        else {
-          throw RootActionError.operationFailed(
-            code: "deletion_verification_failed",
-            message: "An update data directory was removed or is not empty after the cleanup operation."
-          )
-        }
+    for root in existingRootPaths where root.behavior == .removeContents {
+      guard
+        FileManager.default.fileExists(atPath: root.path),
+        try FileManager.default.contentsOfDirectory(atPath: root.path).isEmpty
+      else {
+        throw RootActionError.operationFailed(
+          code: "deletion_verification_failed",
+          message: "An update data directory was removed or is not empty after the cleanup operation."
+        )
       }
     }
 
     return (
-      component.removalBehavior == .removeDirectory
+      existingRootPaths.allSatisfy { $0.behavior == .removeDirectory }
         ? "\(component.title) was removed"
         : "\(component.title) data was cleared",
       true,

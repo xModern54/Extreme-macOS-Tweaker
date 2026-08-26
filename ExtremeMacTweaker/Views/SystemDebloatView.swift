@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct SystemDebloatView: View {
@@ -8,6 +9,16 @@ struct SystemDebloatView: View {
     model.items.reduce(0) { total, item in
       total + (optimizationStore.isSystemComponentSelected(item.id) ? item.sizeInBytes : 0)
     }
+  }
+
+  private var selectedSizeIsIncomplete: Bool {
+    model.items.contains {
+      $0.sizeIsIncomplete && optimizationStore.isSystemComponentSelected($0.id)
+    }
+  }
+
+  private var hasIncompleteSizes: Bool {
+    model.items.contains(where: \.sizeIsIncomplete)
   }
 
   var body: some View {
@@ -35,6 +46,9 @@ struct SystemDebloatView: View {
   private var content: some View {
     VStack(alignment: .leading, spacing: 0) {
       header
+      if hasIncompleteSizes {
+        incompleteSizeNotice
+      }
       Divider()
 
       ScrollView {
@@ -65,10 +79,14 @@ struct SystemDebloatView: View {
       Spacer()
 
       VStack(alignment: .trailing, spacing: 3) {
-        Text(formattedSize(selectedSizeInBytes))
+        Text((selectedSizeIsIncomplete ? "At least " : "") + formattedSize(selectedSizeInBytes))
           .font(.headline.monospacedDigit())
           .foregroundStyle(selectedSizeInBytes > 0 ? Color.accentColor : Color.secondary)
-        Text(selectedSizeInBytes > 0 ? "Selected to remove" : "Nothing selected")
+        Text(
+          selectedSizeIsIncomplete
+            ? "Selected size is incomplete"
+            : (selectedSizeInBytes > 0 ? "Selected to remove" : "Nothing selected")
+        )
           .font(.caption)
           .foregroundStyle(.secondary)
       }
@@ -83,43 +101,40 @@ struct SystemDebloatView: View {
     .padding(.bottom, 16)
   }
 
+  private var incompleteSizeNotice: some View {
+    HStack(spacing: 10) {
+      Image(systemName: "externaldrive.badge.exclamationmark")
+        .foregroundStyle(.orange)
+
+      VStack(alignment: .leading, spacing: 2) {
+        Text("Full Disk Access Required")
+          .font(.caption.weight(.semibold))
+        Text("Protected model sizes are hidden until Tweaker is allowed in Privacy & Security.")
+          .font(.caption2)
+          .foregroundStyle(.secondary)
+      }
+
+      Spacer()
+
+      Button("Open Privacy Settings") {
+        openPrivacyAndSecuritySettings()
+      }
+      .controlSize(.small)
+    }
+    .padding(.horizontal, 24)
+    .padding(.vertical, 10)
+    .background(Color.orange.opacity(0.08))
+  }
+
   private func categorySection(
     category: SystemDebloatComponent.Category,
     items: [SystemDebloatItem]
   ) -> some View {
-    VStack(alignment: .leading, spacing: 12) {
+    VStack(alignment: .leading, spacing: 9) {
       Text(category.title)
-        .font(.headline.weight(.semibold))
-
-      VStack(alignment: .leading, spacing: 14) {
-        ForEach(SystemDebloatComponent.Group.allCases, id: \.self) { group in
-          let groupItems = items.filter { $0.component.group == group }
-          if !groupItems.isEmpty {
-            componentGroup(group: group, items: groupItems)
-          }
-        }
-      }
-    }
-  }
-
-  private func componentGroup(
-    group: SystemDebloatComponent.Group,
-    items: [SystemDebloatItem]
-  ) -> some View {
-    VStack(alignment: .leading, spacing: 7) {
-      HStack(spacing: 8) {
-        Text(group.title)
-          .font(.caption.weight(.semibold))
-          .foregroundStyle(.secondary)
-          .textCase(.uppercase)
-
-        Spacer()
-
-        Text(formattedSize(items.reduce(0) { $0 + $1.sizeInBytes }))
-          .font(.caption2.monospacedDigit())
-          .foregroundStyle(.tertiary)
-      }
-      .padding(.horizontal, 2)
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(.secondary)
+        .textCase(.uppercase)
 
       VStack(spacing: 0) {
         ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
@@ -157,6 +172,13 @@ struct SystemDebloatView: View {
 
   private func formattedSize(_ bytes: Int64) -> String {
     ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file)
+  }
+
+  private func openPrivacyAndSecuritySettings() {
+    guard let url = URL(
+      string: "x-apple.systempreferences:com.apple.settings.PrivacySecurity.extension"
+    ) else { return }
+    NSWorkspace.shared.open(url)
   }
 }
 
@@ -198,12 +220,19 @@ private struct SystemDebloatRow: View {
 
       Spacer(minLength: 10)
 
-      Text(ByteCountFormatter.string(fromByteCount: item.sizeInBytes, countStyle: .file))
+      Text(
+        item.sizeIsIncomplete
+          ? "Access Required"
+          : ByteCountFormatter.string(fromByteCount: item.sizeInBytes, countStyle: .file)
+      )
         .font(.caption.weight(.semibold).monospacedDigit())
-        .foregroundStyle(Color.accentColor)
+        .foregroundStyle(item.sizeIsIncomplete ? Color.orange : Color.accentColor)
         .padding(.horizontal, 9)
         .frame(height: 24)
-        .background(Color.accentColor.opacity(0.1), in: Capsule())
+        .background(
+          (item.sizeIsIncomplete ? Color.orange : Color.accentColor).opacity(0.1),
+          in: Capsule()
+        )
         .fixedSize()
 
       Toggle("", isOn: selectionBinding)
@@ -216,7 +245,9 @@ private struct SystemDebloatRow: View {
     .accessibilityElement(children: .combine)
     .accessibilityLabel(item.component.title)
     .accessibilityValue(
-      "\(ByteCountFormatter.string(fromByteCount: item.sizeInBytes, countStyle: .file)), "
+      (item.sizeIsIncomplete
+        ? "Full Disk Access required, "
+        : "\(ByteCountFormatter.string(fromByteCount: item.sizeInBytes, countStyle: .file)), ")
         + (isSelected ? "selected for removal" : "kept")
     )
   }
