@@ -10,6 +10,7 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
     case intelligence
     case languageAndSpeech
     case searchAndReference
+    case spotlightAndSiriCaches
     case developer
     case updates
     case wallpapers
@@ -19,6 +20,7 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
       case .intelligence: "Intelligence"
       case .languageAndSpeech: "Language & Speech"
       case .searchAndReference: "Search & Reference"
+      case .spotlightAndSiriCaches: "Spotlight and Siri Caches"
       case .developer: "Developer"
       case .updates: "Updates"
       case .wallpapers: "Wallpapers"
@@ -58,6 +60,7 @@ struct SystemDebloatComponent: Identifiable, Hashable, Sendable {
 
 enum SystemDebloatCatalog {
   private static let assetsRoot = "/System/Library/AssetsV2"
+  private static let dataAssetsRoot = "/System/Volumes/Data/System/Library/AssetsV2"
   private static let aerialsPath = "~/Library/Application Support/com.apple.wallpaper/aerials"
   private static let aerialsRelativePath = "Library/Application Support/com.apple.wallpaper/aerials"
   private static let preloadedUpdatePaths: Set<String> = [
@@ -171,14 +174,18 @@ enum SystemDebloatCatalog {
       ])
     ),
     SystemDebloatComponent(
-      id: "spotlight-resources",
-      title: "Spotlight Resources",
-      summary: "Downloaded resources used by Spotlight search and suggestions.",
-      consequence: "Spotlight results and suggestions may be reduced while resources are absent.",
-      systemImage: "magnifyingglass",
-      category: .searchAndReference,
-      paths: assetPaths([
-        "com_apple_MobileAsset_SpotlightResources"
+      id: "spotlight-and-siri-caches",
+      title: "Search and Suggestions Models",
+      summary: "Downloaded query-understanding, suggestion, and Spotlight resource models.",
+      consequence: "Spotlight and Siri suggestions may be reduced until macOS downloads these assets again.",
+      systemImage: "magnifyingglass.circle",
+      category: .spotlightAndSiriCaches,
+      paths: dataAssetPaths([
+        "com_apple_MobileAsset_UAF_SearchQueryUnderstanding",
+        "com_apple_MobileAsset_CoreSuggestions",
+        "com_apple_MobileAsset_UAF_SearchQueryUnderstandingOverrides",
+        "com_apple_MobileAsset_CoreSuggestionsModels",
+        "com_apple_MobileAsset_SpotlightResources",
       ])
     ),
     SystemDebloatComponent(
@@ -236,8 +243,8 @@ enum SystemDebloatCatalog {
     let standardizedPath = URL(fileURLWithPath: path).standardizedFileURL.path
     switch component.removalBehavior {
     case .removeDirectory:
-      return standardizedPath.hasPrefix(assetsRoot + "/")
-        && !standardizedPath.dropFirst(assetsRoot.count + 1).contains("/")
+      return isDirectChild(standardizedPath, of: assetsRoot)
+        || isDirectChild(standardizedPath, of: dataAssetsRoot)
     case .removeContents:
       if component.id == "macos-preloaded-update" {
         return preloadedUpdatePaths.contains(standardizedPath)
@@ -254,5 +261,14 @@ enum SystemDebloatCatalog {
 
   private static func assetPaths(_ directoryNames: [String]) -> [String] {
     directoryNames.map { assetsRoot + "/" + $0 }
+  }
+
+  private static func dataAssetPaths(_ directoryNames: [String]) -> [String] {
+    directoryNames.map { dataAssetsRoot + "/" + $0 }
+  }
+
+  private static func isDirectChild(_ path: String, of root: String) -> Bool {
+    path.hasPrefix(root + "/")
+      && !path.dropFirst(root.count + 1).contains("/")
   }
 }
