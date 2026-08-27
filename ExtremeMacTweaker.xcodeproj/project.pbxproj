@@ -362,7 +362,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.6;
+				MARKETING_VERSION = 0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.extrememactweaker.app;
 				PRODUCT_NAME = Tweaker;
 				REGISTER_APP_GROUPS = NO;
@@ -399,7 +399,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.6;
+				MARKETING_VERSION = 0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.extrememactweaker.app;
 				PRODUCT_NAME = Tweaker;
 				REGISTER_APP_GROUPS = NO;
@@ -420,7 +420,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 0.6;
+				MARKETING_VERSION = 0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.extrememactweaker.RootTweakAction;
 				PRODUCT_NAME = RootTweakAction;
 				SKIP_INSTALL = YES;
@@ -440,7 +440,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 0.6;
+				MARKETING_VERSION = 0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.extrememactweaker.RootTweakAction;
 				PRODUCT_NAME = RootTweakAction;
 				SKIP_INSTALL = YES;

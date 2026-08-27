@@ -104,7 +104,7 @@ struct SidebarView: View {
 
   private var appVersion: String {
     Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-      ?? "0.6"
+      ?? "0.7"
   }
 
   private var pendingChangesLabel: String {
