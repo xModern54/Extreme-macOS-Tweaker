@@ -220,16 +220,18 @@ private struct SystemDebloatRow: View {
 
       Spacer(minLength: 10)
 
-      Text(sizeLabel)
-        .font(.caption.weight(.semibold).monospacedDigit())
-        .foregroundStyle(item.requiresFullDiskAccess ? Color.orange : Color.accentColor)
-        .padding(.horizontal, 9)
-        .frame(height: 24)
-        .background(
-          (item.requiresFullDiskAccess ? Color.orange : Color.accentColor).opacity(0.1),
-          in: Capsule()
-        )
-        .fixedSize()
+      if let sizeLabel {
+        Text(sizeLabel)
+          .font(.caption.weight(.semibold).monospacedDigit())
+          .foregroundStyle(item.requiresFullDiskAccess ? Color.orange : Color.accentColor)
+          .padding(.horizontal, 9)
+          .frame(height: 24)
+          .background(
+            (item.requiresFullDiskAccess ? Color.orange : Color.accentColor).opacity(0.1),
+            in: Capsule()
+          )
+          .fixedSize()
+      }
 
       Toggle("", isOn: selectionBinding)
         .labelsHidden()
@@ -243,19 +245,17 @@ private struct SystemDebloatRow: View {
     .accessibilityValue(
       (item.requiresFullDiskAccess
         ? "Full Disk Access required, "
-        : "\(sizeLabel), ")
+        : sizeLabel.map { "\($0), " } ?? "")
         + (isSelected ? "selected for removal" : "kept")
     )
   }
 
-  private var sizeLabel: String {
+  private var sizeLabel: String? {
     if item.requiresFullDiskAccess {
       return "Access Required"
     }
     if item.sizeIsIncomplete {
-      guard item.sizeInBytes > 0 else { return "Size Unavailable" }
-      return "At least "
-        + ByteCountFormatter.string(fromByteCount: item.sizeInBytes, countStyle: .file)
+      return nil
     }
     return ByteCountFormatter.string(fromByteCount: item.sizeInBytes, countStyle: .file)
   }
