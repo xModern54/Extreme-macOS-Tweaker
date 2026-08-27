@@ -1,13 +1,16 @@
 import Foundation
 
 enum SystemDebloatScanner {
+  private static let appDataPermissionProbePath =
+    "Library/Containers/com.apple.mediaanalysisd"
+
   private struct SizeScan {
     let bytes: Int64
-    let fullDiskAccessDenied: Bool
+    let dataAccessDenied: Bool
     let permissionDenied: Bool
 
     var sizeIsIncomplete: Bool {
-      fullDiskAccessDenied || permissionDenied
+      dataAccessDenied || permissionDenied
     }
   }
 
@@ -19,9 +22,19 @@ enum SystemDebloatScanner {
         component: component,
         sizeInBytes: scan.bytes,
         sizeIsIncomplete: scan.sizeIsIncomplete,
-        requiresFullDiskAccess: scan.fullDiskAccessDenied
+        requiresDataAccess: scan.dataAccessDenied
       )
     }
+  }
+
+  static func requestAppDataAccess() {
+    let path = FileManager.default.homeDirectoryForCurrentUser
+      .appendingPathComponent(appDataPermissionProbePath)
+      .path
+    guard FileManager.default.fileExists(atPath: path) else { return }
+
+    // Access from the app process so macOS can present its Other Application Data prompt.
+    _ = try? FileManager.default.contentsOfDirectory(atPath: path)
   }
 
   static func allocatedSize(of component: SystemDebloatComponent) -> Int64 {
@@ -33,12 +46,12 @@ enum SystemDebloatScanner {
       for: component,
       homeDirectory: FileManager.default.homeDirectoryForCurrentUser
     ).reduce(
-      SizeScan(bytes: 0, fullDiskAccessDenied: false, permissionDenied: false)
+      SizeScan(bytes: 0, dataAccessDenied: false, permissionDenied: false)
     ) { total, path in
       let pathScan = allocatedSize(atPath: path)
       return SizeScan(
         bytes: total.bytes + pathScan.bytes,
-        fullDiskAccessDenied: total.fullDiskAccessDenied || pathScan.fullDiskAccessDenied,
+        dataAccessDenied: total.dataAccessDenied || pathScan.dataAccessDenied,
         permissionDenied: total.permissionDenied || pathScan.permissionDenied
       )
     }
@@ -51,7 +64,7 @@ enum SystemDebloatScanner {
 
   private static func allocatedSize(atPath path: String) -> SizeScan {
     guard FileManager.default.fileExists(atPath: path) else {
-      return SizeScan(bytes: 0, fullDiskAccessDenied: false, permissionDenied: false)
+      return SizeScan(bytes: 0, dataAccessDenied: false, permissionDenied: false)
     }
 
     let process = Process()
@@ -69,7 +82,7 @@ enum SystemDebloatScanner {
       guard process.terminationStatus == 0 else {
         return SizeScan(
           bytes: 0,
-          fullDiskAccessDenied: output.localizedCaseInsensitiveContains(
+          dataAccessDenied: output.localizedCaseInsensitiveContains(
             "operation not permitted"
           ),
           permissionDenied: output.localizedCaseInsensitiveContains("permission denied")
@@ -81,11 +94,11 @@ enum SystemDebloatScanner {
         .first
       return SizeScan(
         bytes: (Int64(firstField ?? "") ?? 0) * 1_024,
-        fullDiskAccessDenied: false,
+        dataAccessDenied: false,
         permissionDenied: false
       )
     } catch {
-      return SizeScan(bytes: 0, fullDiskAccessDenied: false, permissionDenied: false)
+      return SizeScan(bytes: 0, dataAccessDenied: false, permissionDenied: false)
     }
   }
 }

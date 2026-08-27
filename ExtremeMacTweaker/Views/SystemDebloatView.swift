@@ -18,7 +18,7 @@ struct SystemDebloatView: View {
   }
 
   private var hasIncompleteSizes: Bool {
-    model.items.contains(where: \.requiresFullDiskAccess)
+    model.items.contains(where: \.requiresDataAccess)
   }
 
   var body: some View {
@@ -107,9 +107,9 @@ struct SystemDebloatView: View {
         .foregroundStyle(.orange)
 
       VStack(alignment: .leading, spacing: 2) {
-        Text("Full Disk Access Required")
+        Text("Data Access Required")
           .font(.caption.weight(.semibold))
-        Text("Protected model sizes are hidden until Tweaker is allowed in Privacy & Security.")
+        Text("Please allow Tweaker to access other app data in Privacy & Security to show protected asset sizes.")
           .font(.caption2)
           .foregroundStyle(.secondary)
       }
@@ -223,11 +223,11 @@ private struct SystemDebloatRow: View {
       if let sizeLabel {
         Text(sizeLabel)
           .font(.caption.weight(.semibold).monospacedDigit())
-          .foregroundStyle(item.requiresFullDiskAccess ? Color.orange : Color.accentColor)
+          .foregroundStyle(item.requiresDataAccess ? Color.orange : Color.accentColor)
           .padding(.horizontal, 9)
           .frame(height: 24)
           .background(
-            (item.requiresFullDiskAccess ? Color.orange : Color.accentColor).opacity(0.1),
+            (item.requiresDataAccess ? Color.orange : Color.accentColor).opacity(0.1),
             in: Capsule()
           )
           .fixedSize()
@@ -243,15 +243,15 @@ private struct SystemDebloatRow: View {
     .accessibilityElement(children: .combine)
     .accessibilityLabel(item.component.title)
     .accessibilityValue(
-      (item.requiresFullDiskAccess
-        ? "Full Disk Access required, "
+      (item.requiresDataAccess
+        ? "Data access required, "
         : sizeLabel.map { "\($0), " } ?? "")
         + (isSelected ? "selected for removal" : "kept")
     )
   }
 
   private var sizeLabel: String? {
-    if item.requiresFullDiskAccess {
+    if item.requiresDataAccess {
       return "Access Required"
     }
     if item.sizeIsIncomplete {

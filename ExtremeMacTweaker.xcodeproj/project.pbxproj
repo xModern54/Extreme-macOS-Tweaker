@@ -357,6 +357,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Tweaker;
 				INFOPLIST_KEY_CFBundleName = Tweaker;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSAppDataUsageDescription = "Tweaker needs access to other applications' data to calculate the size of removable system assets.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -393,6 +394,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Tweaker;
 				INFOPLIST_KEY_CFBundleName = Tweaker;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSAppDataUsageDescription = "Tweaker needs access to other applications' data to calculate the size of removable system assets.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

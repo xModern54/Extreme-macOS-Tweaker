@@ -13,7 +13,8 @@ final class SystemDebloatViewModel: ObservableObject {
   func load() async {
     isLoading = true
     items = await Task.detached(priority: .utility) {
-      SystemDebloatScanner.scan()
+      SystemDebloatScanner.requestAppDataAccess()
+      return SystemDebloatScanner.scan()
     }.value
     isLoading = false
   }
