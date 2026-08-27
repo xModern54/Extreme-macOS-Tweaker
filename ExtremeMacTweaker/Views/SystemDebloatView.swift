@@ -18,7 +18,7 @@ struct SystemDebloatView: View {
   }
 
   private var hasIncompleteSizes: Bool {
-    model.items.contains(where: \.sizeIsIncomplete)
+    model.items.contains(where: \.requiresFullDiskAccess)
   }
 
   var body: some View {
@@ -220,17 +220,13 @@ private struct SystemDebloatRow: View {
 
       Spacer(minLength: 10)
 
-      Text(
-        item.sizeIsIncomplete
-          ? "Access Required"
-          : ByteCountFormatter.string(fromByteCount: item.sizeInBytes, countStyle: .file)
-      )
+      Text(sizeLabel)
         .font(.caption.weight(.semibold).monospacedDigit())
-        .foregroundStyle(item.sizeIsIncomplete ? Color.orange : Color.accentColor)
+        .foregroundStyle(item.requiresFullDiskAccess ? Color.orange : Color.accentColor)
         .padding(.horizontal, 9)
         .frame(height: 24)
         .background(
-          (item.sizeIsIncomplete ? Color.orange : Color.accentColor).opacity(0.1),
+          (item.requiresFullDiskAccess ? Color.orange : Color.accentColor).opacity(0.1),
           in: Capsule()
         )
         .fixedSize()
@@ -245,11 +241,23 @@ private struct SystemDebloatRow: View {
     .accessibilityElement(children: .combine)
     .accessibilityLabel(item.component.title)
     .accessibilityValue(
-      (item.sizeIsIncomplete
+      (item.requiresFullDiskAccess
         ? "Full Disk Access required, "
-        : "\(ByteCountFormatter.string(fromByteCount: item.sizeInBytes, countStyle: .file)), ")
+        : "\(sizeLabel), ")
         + (isSelected ? "selected for removal" : "kept")
     )
+  }
+
+  private var sizeLabel: String {
+    if item.requiresFullDiskAccess {
+      return "Access Required"
+    }
+    if item.sizeIsIncomplete {
+      guard item.sizeInBytes > 0 else { return "Size Unavailable" }
+      return "At least "
+        + ByteCountFormatter.string(fromByteCount: item.sizeInBytes, countStyle: .file)
+    }
+    return ByteCountFormatter.string(fromByteCount: item.sizeInBytes, countStyle: .file)
   }
 
   private var selectionBinding: Binding<Bool> {
